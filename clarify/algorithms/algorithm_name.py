@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2026 Kwon Hyukwon <hw3090@gmail.com>
+# SPDX-FileCopyrightText: 2026 Kwon Hyukwon <gerbera3090@kaist.ac.kr>
 # SPDX-FileCopyrightText: 2026 Sihyun Ahn <sihyun.ahn@kaist.ac.kr>
 #
 # SPDX-License-Identifier: MIT
@@ -10,7 +10,7 @@ It makes no model calls or clarification requests and claims no performance resu
 
 Team: TEAM_NAME
 Team Members: Kwon Hyukwon (HYUKWON_AFFILIATION), Sihyun Ahn (SIHYUN_AFFILIATION)
-Main Contact: Kwon Hyukwon <hw3090@gmail.com>
+Main Contact: Kwon Hyukwon <gerbera3090@kaist.ac.kr>
 """
 
 from clarify.baselines import ClarificationAlgorithmBase
