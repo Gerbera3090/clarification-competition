@@ -190,7 +190,7 @@ class ClarificationEnvironment:
 
     def decide(self, questions: dict[str, Any], context="") -> dict[str, Any]:
         """
-        Simple API to query decision models. 
+        Simple API to query decision models.
 
         Inputs:
         questions - Named questions requesting probabilities, choices, or scores.
