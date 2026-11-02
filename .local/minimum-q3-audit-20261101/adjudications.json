@@ -1,0 +1,33 @@
+{
+  "assessment_kind": "root_model_adjudication_after_peer_review",
+  "overrides": {
+    "Mbpp/628": {
+      "confidence": "medium",
+      "interpretive_alternative_minimums": [
+        {
+          "minimum": 0,
+          "policy_ko": "어떤 문자나 대체값도 정하지 않은 추가 변경 요구를 미완성 부수 지시로 보고, 명시된 공백 치환만 구현하는 정책"
+        }
+      ],
+      "root_adjudication_ko": "최소 추정은 1개로 유지한다. 공백 이외의 문자도 바꾸라는 문장은 다양한 문자 인코딩이라는 실행 가능한 행동 확장을 요구하므로, 나머지는 유지하는지 확인할 의미가 있다. 기본 분기의 리스트 반환이 명시된 HumanEval/33이나 YES/NO라는 리터럴을 정수·실수로 만들라는 불가능한 지시인 HumanEval/127과 구별한다. 추가 동작을 미완성 부수 지시로 무시하는 더 공격적인 추론 정책에서는 0개도 가능하므로 신뢰도를 medium으로 두고 대안값을 보존한다."
+    },
+    "HumanEval/99": {
+      "intended_contract_minimum": 0,
+      "root_adjudication_ko": "정확한 십진 문자열에 대한 정상 수학 명세는 이미 충분하므로 정상 계약의 질문 수는 0이다. ideal_requirement_minimum=1은 현재 oracle의 정밀도 동작에 대한 제한 없는 추가 정보 수이며 정상 계약의 최소 Q3 수가 아니다."
+    },
+    "Mbpp/577": {
+      "ideal_requirement_minimum": null,
+      "intended_contract_minimum": 0,
+      "minimality_argument_ko": "정수 팩토리얼 마지막 숫자라는 정상 계약에는 추가 질문이 0개지만, 현재 plus의 비정수 기대값은 정상 계약과 다른 동작이다. 그 동작을 위한 제한 없는 추가 정보 수조차 일반 명세로 확정하지 못하므로 ideal_requirement_minimum은 null이다. 실제 hidden에도 비정수 규칙이 없어 현재 목표를 source-backed Q3만으로 회복하는 최소값 역시 null로 둔다.",
+      "root_adjudication_ko": "원시 annotation의 ideal 0은 정상 수학 계약을 뜻했다. 최종 자료에서는 intended_contract_minimum=0으로 분리하고, 현재 목표 동작에 대한 제한 없는 정보 수는 미확정으로 통일했다."
+    }
+  },
+  "accepted_minimizations": {
+    "HumanEval/18": "출현 횟수는 함수명·겹침 규칙·공개 예시로 추론하고 반환 표현 하나만 묻는다.",
+    "HumanEval/156": "로마 숫자 문자열 표현을 확인하면 그 숫자를 나타내는 표준 기호 순서가 따라온다.",
+    "HumanEval/162": "MD5 16진 digest 표현을 확인하면 digest 기호 순서는 정의로 정해진다.",
+    "HumanEval/7": "공개 예시로 입력과 순서를 추론하지만 출력 wrapper와 대소문자 정책은 서로 독립이다.",
+    "Mbpp/627": "이상적으로 탐색 시작점 한 사실이면 최대 누락값이 존재하지 않는다는 정의로 최소 선택을 추론한다. 현재 hidden에는 시작점을 결정하는 근거가 없다.",
+    "Mbpp/753": "최소/최대와 비교 키는 독립이며, hidden의 첫 예시는 기본 튜플 정렬과 두 번째 필드 정렬을 구별하지 못한다."
+  }
+}

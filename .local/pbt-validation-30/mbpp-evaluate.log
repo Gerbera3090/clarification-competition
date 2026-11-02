@@ -1,0 +1,422 @@
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/ee43ecabebf20deef4bb776a405ac5b1.pkl
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl
+Loaded 770 instances...
+Loaded 15 result instances...
+  0%|          | 0/770 [00:00<?, ?it/s]4caa8b0ff42a2c3d118c30fcb5afbea5d62e6d04206043b3e47ae9f87b872533
+pytester_732185b8-1c40-4914-9114-ac74fac8498f
+╭─────────────────────────── ✅ Success (Mbpp/371) ────────────────────────────╮
+│ ```python                                                                    │
+│ def smallest_missing(arr, low, high):                                        │
+│     """                                                                      │
+│     Find the smallest non-negative integer missing in arr.                   │
+│     arr is sorted with distinct non-negative integers.                       │
+│     If none missing, return high + 1.                                        │
+│     """                                                                      │
+│     if low > high:                                                           │
+│         return low  # empty range, smallest missing is low                   │
+│                                                                              │
+│     left, right = low, high                                                  │
+│     while left <= right:                                                     │
+│         mid = (left + right) // 2                                            │
+│         expected = low + (mid - low)                                         │
+│         if arr == expected:                                                  │
+│             left = mid + 1                                                   │
+│         else:                                                                │
+│             right = mid - 1                                                  │
+│     # left is the index where arr != low + (left - low),                     │
+│     # so smallest missing is low + (left - low) == left                      │
+│     return left if left <= high else high + 1                                │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   0%|          | 0/770 [00:01<?, ?it/s]Pass@1: 100.00:   0%|          | 1/770 [00:01<13:22,  1.04s/it]8715ee79423251fc25cf6c03ab79420037ce471673360e976532f1bd4242ac76
+pytester_1ad27dd2-919c-457c-a828-a5221833dd51
+╭──────────────────────────── ✅ Success (Mbpp/72) ────────────────────────────╮
+│ ```python                                                                    │
+│ def dif_Square(n: int) -> bool:                                              │
+│     """                                                                      │
+│     Check if the integer n can be represented as the difference of two       │
+│ squares:                                                                     │
+│     n = a^2 - b^2 for some integers a and b.                                 │
+│                                                                              │
+│     Returns True if such integers exist, False otherwise.                    │
+│     """                                                                      │
+│     # For integers a,b, n = a^2 - b^2 = (a-b)(a+b)                           │
+│     # Let x = a-b, y = a+b, then n = x*y with x,y integers and y > x.        │
+│     # Also, since a = (x+y)/2 and b = (y - x)/2 must be integers,            │
+│     # x and y must be both even or both odd.                                 │
+│     # So, we look for factor pairs (x,y) of n where x < y, and x,y have same │
+│ parity.                                                                      │
+│                                                                              │
+│     # Handle n=0 separately: 0 = 0^2 - 0^2                                   │
+│     if n == 0:                                                               │
+│         return True                                                          │
+│                                                                              │
+│     abs_n = abs(n)                                                           │
+│     # Iterate over all possible factors x of n (including negative factors)  │
+│     # to find y = n // x, and check parity conditions                        │
+│     # To find all factor pairs of n, consider divisors of abs(n)             │
+│     # and generate both positive and negative pairs.                         │
+│                                                                              │
+│     # We'll check factors from 1 to int(sqrt(abs_n)) inclusive               │
+│     from math import isqrt                                                   │
+│                                                                              │
+│     for x in range(1, isqrt(abs_n) + 1):                                     │
+│         if abs_n % x == 0:                                                   │
+│             y = abs_n // x                                                   │
+│                                                                              │
+│             # Try factor pair (x, y)                                         │
+│             for sign_x in (1, -1):                                           │
+│                 for sign_y in (1, -1):                                       │
+│                     X = sign_x * x                                           │
+│                     Y = sign_y * y                                           │
+│                                                                              │
+│                     # Check if X*Y == n                                      │
+│                     if X * Y == n:                                           │
+│                         # Check parity condition: X and Y have same parity   │
+│                         if (X % 2) == (Y % 2):                               │
+│                             # Then a = (X + Y)//2, b = (Y - X)//2 are        │
+│ integers                                                                     │
+│                             # So n = a^2 - b^2                               │
+│                             return True                                      │
+│                                                                              │
+│     return False                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   0%|          | 1/770 [00:01<13:22,  1.04s/it]Pass@1: 100.00:   0%|          | 2/770 [00:01<11:41,  1.09it/s]91aefc4f4ee1284fb7b9de3fc7ac953a6e271ae7c65dad4b175c783b7b2bb30e
+pytester_c4f46fd1-117a-4dda-b501-529f6f8729ee
+╭─────────────────────────── ✅ Success (Mbpp/105) ────────────────────────────╮
+│ ```python                                                                    │
+│ def count(lst):                                                              │
+│     return sum(1 for x in lst if x is True)                                  │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   0%|          | 2/770 [00:02<11:41,  1.09it/s]Pass@1: 100.00:   0%|          | 3/770 [00:02<11:38,  1.10it/s]51c1f96f61c34e9f6747d09cf2bdfb94174a5b6958c1f21193082d4e67963110
+pytester_419c488c-4ab1-428c-a737-674c627c27e0
+╭──────────────────────────── ✅ Success (Mbpp/95) ────────────────────────────╮
+│ ```python                                                                    │
+│ def Find_Min_Length(lst):                                                    │
+│     """                                                                      │
+│     Find the minimum length among sublists in the given non-empty list.      │
+│                                                                              │
+│     Parameters:                                                              │
+│     lst (list of lists): A non-empty list where each element is a list       │
+│ (possibly empty).                                                            │
+│                                                                              │
+│     Returns:                                                                 │
+│     int: The minimum length of the sublists.                                 │
+│                                                                              │
+│     Raises:                                                                  │
+│     ValueError: If the input list is empty.                                  │
+│     """                                                                      │
+│     if not lst:                                                              │
+│         raise ValueError("Input list must be non-empty.")                    │
+│     return min(len(sublist) for sublist in lst)                              │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   0%|          | 3/770 [00:03<11:38,  1.10it/s]Pass@1: 100.00:   1%|          | 4/770 [00:03<11:10,  1.14it/s]9c01e109e85661f196840a0c07cadde5d0f6140121feb16b010d289869951ced
+pytester_5cbfea16-b73d-451e-92ce-3f2266812836
+╭─────────────────────────── ❌ Failure (Mbpp/960) ────────────────────────────╮
+│ ```python                                                                    │
+│ def get_noOfways(n):                                                         │
+│     """                                                                      │
+│     Returns the number of ways to tile a 2 x n board using 2 x 1 tiles.      │
+│                                                                              │
+│     Parameters:                                                              │
+│     n (int): The length of the board.                                        │
+│                                                                              │
+│     Returns:                                                                 │
+│     int: The number of ways to tile the board.                               │
+│     """                                                                      │
+│     if n < 0:                                                                │
+│         return 0                                                             │
+│     if n == 0:                                                               │
+│         return 1                                                             │
+│     if n == 1:                                                               │
+│         return 1                                                             │
+│                                                                              │
+│     dp = [0] * (n + 1)                                                       │
+│     dp[0], dp[1] = 1, 1                                                      │
+│                                                                              │
+│     for i in range(2, n + 1):                                                │
+│         dp = dp + dp                                                         │
+│                                                                              │
+│     return dp                                                                │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 27, in <module>                           │
+│     assert get_noOfways(4)==3                                                │
+│            ^^^^^^^^^^^^^^^^^^                                                │
+│ AssertionError                                                               │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 80.00:   1%|          | 4/770 [00:04<11:10,  1.14it/s] Pass@1: 80.00:   1%|          | 5/770 [00:04<09:39,  1.32it/s]f531e273cd41212271de931e3ad4e878257a028b168d8734dbd762b10c46aef1
+pytester_e0109a5e-911c-492c-9b4c-714d948b9435
+╭──────────────────────────── ✅ Success (Mbpp/82) ────────────────────────────╮
+│ ```python                                                                    │
+│ import math                                                                  │
+│                                                                              │
+│ def volume_sphere(r):                                                        │
+│     return (4/3) * math.pi * r**3                                            │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 83.33:   1%|          | 5/770 [00:04<09:39,  1.32it/s]Pass@1: 83.33:   1%|          | 6/770 [00:04<09:25,  1.35it/s]bbf4e8a332c3510cca33604373fee26c937dae2658bde290a97f49c31fbb13b6
+pytester_1fbcd06e-9377-404f-badb-2fea3d664ba3
+╭─────────────────────────── ✅ Success (Mbpp/888) ────────────────────────────╮
+│ ```python                                                                    │
+│ def substract_elements(a, b):                                                │
+│     if not (isinstance(a, tuple) and isinstance(b, tuple)):                  │
+│         raise TypeError("Both inputs must be tuples.")                       │
+│     if len(a) != len(b):                                                     │
+│         raise ValueError("Tuples must have the same length.")                │
+│     result = []                                                              │
+│     for x, y in zip(a, b):                                                   │
+│         if isinstance(x, tuple) and isinstance(y, tuple):                    │
+│             result.append(substract_elements(x, y))                          │
+│         elif isinstance(x, (int, float)) and isinstance(y, (int, float)):    │
+│             result.append(x - y)                                             │
+│         else:                                                                │
+│             raise TypeError("Elements must be both tuples or both numbers.") │
+│     return tuple(result)                                                     │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 85.71:   1%|          | 6/770 [00:05<09:25,  1.35it/s]Pass@1: 85.71:   1%|          | 7/770 [00:05<08:25,  1.51it/s]56ac275418319950a6cdc0fb2ae05b20e6c20c539d6cbfa2b8f46e5662aaa165
+pytester_8858ce5b-2e5d-436e-b9d8-915547bdd6ca
+╭─────────────────────────── ❌ Failure (Mbpp/715) ────────────────────────────╮
+│ ```python                                                                    │
+│ def str_to_tuple(s: str) -> tuple:                                           │
+│     if not s.isdigit():                                                      │
+│         raise ValueError("Input string contains non-digit characters")       │
+│     return tuple(int(ch) for ch in s)                                        │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 7, in <module>                            │
+│     assert str_to_tuple("1, -5, 4, 6, 7") == (1, -5, 4, 6, 7)                │
+│            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                    │
+│   File "/app/temp_script.py", line 4, in str_to_tuple                        │
+│     raise ValueError("Input string contains non-digit characters")           │
+│ ValueError: Input string contains non-digit characters                       │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 75.00:   1%|          | 7/770 [00:05<08:25,  1.51it/s]Pass@1: 75.00:   1%|          | 8/770 [00:05<08:08,  1.56it/s]1f84c25516966c546c6586740b4123c1b0411e62e67f8cfe86f7fdb8aedac063
+pytester_b3bc3eea-c37a-49b9-8ac4-eeb015913284
+╭─────────────────────────── ✅ Success (Mbpp/167) ────────────────────────────╮
+│ ```python                                                                    │
+│ def next_power_of_2(n: int) -> int:                                          │
+│     if n <= 1:                                                               │
+│         return 1                                                             │
+│     power = 1                                                                │
+│     while power < n:                                                         │
+│         power <<= 1                                                          │
+│     return power                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 77.78:   1%|          | 8/770 [00:06<08:08,  1.56it/s]Pass@1: 77.78:   1%|          | 9/770 [00:06<08:36,  1.47it/s]9518b962566b92127e634435005dd8173c2c28c01755e35ec52a02bd8fb5cafb
+pytester_4fa74351-b90b-42aa-b81a-03f9a74d683e
+╭─────────────────────────── ❌ Failure (Mbpp/285) ────────────────────────────╮
+│ ```python                                                                    │
+│ import re                                                                    │
+│                                                                              │
+│ def text_match_two_three(text):                                              │
+│     pattern = r'^ab{2,3}$'                                                   │
+│     return bool(re.match(pattern, text))                                     │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 34, in <module>                           │
+│     assertion(text_match_two_three(*inp), exp, 0, inp)                       │
+│   File "/app/temp_script.py", line 29, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '['abbbba']': Expected 'True', but got     │
+│ False                                                                        │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 70.00:   1%|          | 9/770 [00:07<08:36,  1.47it/s]Pass@1: 70.00:   1%|▏         | 10/770 [00:07<08:48,  1.44it/s]1c080776436327e8479c8fc03e893a1396934593144fa500b437a2c13c54f28c
+pytester_0a8c21c9-249e-4324-8fd3-b4924f7ec6da
+╭─────────────────────────── ✅ Success (Mbpp/850) ────────────────────────────╮
+│ ```python                                                                    │
+│ def is_triangleexists(a: int, b: int, c: int) -> bool:                       │
+│     return 0 < a < 180 and 0 < b < 180 and 0 < c < 180 and (a + b + c) ==    │
+│ 180                                                                          │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 72.73:   1%|▏         | 10/770 [00:07<08:48,  1.44it/s]Pass@1: 72.73:   1%|▏         | 11/770 [00:07<07:58,  1.59it/s]a6c2abb1fd2213d6cd380fe3057889ceaeb7e7798c57867437f1394403aed28b
+pytester_17e1c8fa-ddca-45ee-b42d-7518e685b28f
+╭─────────────────────────── ❌ Failure (Mbpp/239) ────────────────────────────╮
+│ ```python                                                                    │
+│ def get_total_number_of_sequences(n, m):                                     │
+│     # dp = number of sequences of length i ending with element x             │
+│     # Elements are positive integers <= m                                    │
+│     # For each next element y, y >= 2*x and y <= m                           │
+│                                                                              │
+│     if n == 1:                                                               │
+│         return m  # all single-element sequences from 1 to m                 │
+│                                                                              │
+│     dp = [0] * (m + 1)                                                       │
+│     for x in range(1, m + 1):                                                │
+│         dp = 1  # sequences of length 1                                      │
+│                                                                              │
+│     for length in range(2, n + 1):                                           │
+│         new_dp = [0] * (m + 1)                                               │
+│         # To optimize, we can precompute prefix sums to quickly sum dp over  │
+│ valid x                                                                      │
+│         # But here we do the direct approach since constraints are not       │
+│ given.                                                                       │
+│                                                                              │
+│         # For each possible ending y, sum dp over all x where y >= 2*x       │
+│         # i.e. x <= y//2                                                     │
+│                                                                              │
+│         # We'll compute prefix sums of dp to do this efficiently             │
+│         prefix = [0] * (m + 2)                                               │
+│         for i in range(1, m + 1):                                            │
+│             prefix = prefix + dp                                             │
+│                                                                              │
+│         for y in range(1, m + 1):                                            │
+│             max_x = y // 2                                                   │
+│             if max_x >= 1:                                                   │
+│                 new_dp = prefix                                              │
+│             else:                                                            │
+│                 new_dp = 0                                                   │
+│         dp = new_dp                                                          │
+│                                                                              │
+│     return sum(dp[1:])                                                       │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 63, in <module>                           │
+│     assertion(get_total_number_of_sequences(*inp), exp, 0, inp)              │
+│   File "/app/temp_script.py", line 58, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[10, 4]': Expected '4', but got 0         │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 66.67:   1%|▏         | 11/770 [00:08<07:58,  1.59it/s]Pass@1: 66.67:   2%|▏         | 12/770 [00:08<08:05,  1.56it/s]8660b6059010f8cc8d74cd48f301e038b2ef58d3effc33fd9d27b4c85c1d0a29
+pytester_316ca156-52a6-4a39-b598-f46e78fc97a2
+╭─────────────────────────── ❌ Failure (Mbpp/644) ────────────────────────────╮
+│ ```python                                                                    │
+│ def reverse_Array_Upto_K(arr, k):                                            │
+│     if not isinstance(arr, list):                                            │
+│         raise TypeError("Input arr must be a list.")                         │
+│     if not isinstance(k, int):                                               │
+│         raise TypeError("Position k must be an integer.")                    │
+│     if k < 0 or k >= len(arr):                                               │
+│         return arr[:]                                                        │
+│     return arr[:k+1][::-1] + arr                                             │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 37, in <module>                           │
+│     assertion(reverse_Array_Upto_K(*inp), exp, 0, inp)                       │
+│   File "/app/temp_script.py", line 32, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[[1, 2, 3, 4, 5, 6], 4]': Expected '[4,   │
+│ 3, 2, 1, 5, 6]', but got [5, 4, 3, 2, 1, 6]                                  │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 61.54:   2%|▏         | 12/770 [00:09<08:05,  1.56it/s]Pass@1: 61.54:   2%|▏         | 13/770 [00:09<08:13,  1.53it/s]ff928ca60fad6f7fc55f85ea18f6e26e532c1fa7676498a0c816c6610b718730
+pytester_bc4079f6-118a-402c-a7ee-dacc7ac55708
+╭─────────────────────────── ❌ Failure (Mbpp/301) ────────────────────────────╮
+│ ```python                                                                    │
+│ def dict_depth(d):                                                           │
+│     if not isinstance(d, dict):                                              │
+│         return 0                                                             │
+│     max_depth = 1                                                            │
+│     for v in d.values():                                                     │
+│         if isinstance(v, dict):                                              │
+│             max_depth = max(max_depth, 1 + dict_depth(v))                    │
+│         elif isinstance(v, (list, tuple)):                                   │
+│             for item in v:                                                   │
+│                 if isinstance(item, dict):                                   │
+│                     max_depth = max(max_depth, 2)  # at least depth 2 if a   │
+│ dict inside list/tuple                                                       │
+│                     max_depth = max(max_depth, 1 + dict_depth(item))         │
+│     return max_depth                                                         │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 42, in <module>                           │
+│     assertion(dict_depth(*inp), exp, 0, inp)                                 │
+│   File "/app/temp_script.py", line 37, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[{'1': None, '2': {'3': [1, 2, 3, 'four', │
+│ {'five': []}]}}]': Expected '2', but got 3                                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 57.14:   2%|▏         | 13/770 [00:10<08:13,  1.53it/s]Pass@1: 57.14:   2%|▏         | 14/770 [00:10<08:54,  1.41it/s]c1322f82b710b4f137580b28e40dd6a5076932e730b5727046eecd9a3bee3557
+pytester_2c6f412e-b684-4126-b621-8e092dff76fa
+╭─────────────────────────── ✅ Success (Mbpp/827) ────────────────────────────╮
+│ ```python                                                                    │
+│ def sum_column(matrix, col_index):                                           │
+│     total = 0                                                                │
+│     for row in matrix:                                                       │
+│         if col_index >= len(row) or col_index < 0:                           │
+│             raise IndexError(f"Column index {col_index} out of range for row │
+│ {row}")                                                                      │
+│         total += row                                                         │
+│     return total                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 60.00:   2%|▏         | 14/770 [00:10<08:54,  1.41it/s]Pass@1: 60.00:   2%|▏         | 15/770 [00:10<08:07,  1.55it/s]Pass@1: 60.00:   2%|▏         | 15/770 [00:10<08:53,  1.41it/s]
+                         Test Results (PBTClarifier)                          
+┏━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Task ID  ┃ Status ┃ Clarify? ┃ Output                                      ┃
+┡━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Mbpp/105 │   ✅   │    ☠️    │ The provided implementation passed all t... │
+│ Mbpp/167 │   ✅   │    ☠️    │ The provided implementation passed all t... │
+│ Mbpp/239 │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ Mbpp/285 │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ Mbpp/301 │   ❌   │    ☠️    │ The provided implementation failed. Outp... │
+│ Mbpp/371 │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/644 │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ Mbpp/715 │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ Mbpp/72  │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/82  │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/827 │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/850 │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/888 │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/95  │   ✅   │    ☠️    │ The provided implementation passed all t... │
+│ Mbpp/960 │   ❌   │    ☠️    │ The provided implementation failed. Outp... │
+└──────────┴────────┴──────────┴─────────────────────────────────────────────┘
+              Run Statistics              
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Metric                       ┃ Results ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━┩
+│ Total                        │ 15      │
+│ Turn Discounted Success      │ 0.5762  │
+│ nDCG                         │ 0.6667  │
+│ Pass@1                       │ 60.00   │
+│ Clarification rate           │ 100.00% │
+│ Overasking rate              │ 100.00% │
+│ High quality clarification   │ 66.67%  │
+│ Average clarification length │ 115.20  │
+└──────────────────────────────┴─────────┘
+real 19.03
+user 6.59
+sys 2.85

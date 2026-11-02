@@ -1,0 +1,442 @@
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/ee43ecabebf20deef4bb776a405ac5b1.pkl
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl
+Loaded 770 instances...
+Loaded 15 result instances...
+  0%|          | 0/770 [00:00<?, ?it/s]bc152224f2b03acc782abe37e8f7e3c9c0ed4093a7b0e813e4e19cd0bac91095
+pytester_45f30a84-79a1-404e-a4bb-f85ab19c0a95
+╭─────────────────────────── ❌ Failure (Mbpp/371) ────────────────────────────╮
+│ ```python                                                                    │
+│ def smallest_missing(arr, low, high):                                        │
+│     """                                                                      │
+│     Find the smallest non-negative integer that does not appear in the       │
+│ sorted array arr                                                             │
+│     within the index range . If no integer is missing in that subarray,      │
+│     return high + 1.                                                         │
+│                                                                              │
+│     Parameters:                                                              │
+│     arr (list of int): Sorted array of distinct non-negative integers.       │
+│     low (int): Lower index of the subarray.                                  │
+│     high (int): Upper index of the subarray.                                 │
+│                                                                              │
+│     Returns:                                                                 │
+│     int: The smallest missing non-negative integer within arr,               │
+│          or high + 1 if none is missing.                                     │
+│     """                                                                      │
+│     while low <= high:                                                       │
+│         mid = (low + high) // 2                                              │
+│         expected = arr + (mid - low)                                         │
+│         if arr == expected:                                                  │
+│             # Left half contains no missing, search right half               │
+│             low = mid + 1                                                    │
+│         else:                                                                │
+│             # Missing is in left half (including mid)                        │
+│             high = mid - 1                                                   │
+│     # If no missing found, return arr + (low - low) == arr + 0,              │
+│     # but since low > high, missing is arr+1 or high+1 as per specification. │
+│     # According to the problem, return high + 1.                             │
+│     return high + 1                                                          │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 33, in <module>                           │
+│     assert smallest_missing([1, 2, 3, 4, 6, 9, 11, 15], 0, 7) == 0           │
+│            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^           │
+│ AssertionError                                                               │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 0.00:   0%|          | 0/770 [00:00<?, ?it/s]Pass@1: 0.00:   0%|          | 1/770 [00:00<11:16,  1.14it/s]9320473e35c4ef502d45d82789b66c1cf16880863c2c9b727dcbd16d24932b55
+pytester_3f1747d9-8da0-4262-b134-e37a94a404c7
+╭──────────────────────────── ✅ Success (Mbpp/72) ────────────────────────────╮
+│ ```python                                                                    │
+│ def dif_Square(n: int) -> bool:                                              │
+│     """                                                                      │
+│     Check if the integer n can be represented as the difference of squares   │
+│ of two integers:                                                             │
+│     n = a^2 - b^2 for some integers a, b.                                    │
+│                                                                              │
+│     Parameters:                                                              │
+│     n (int): The integer to check.                                           │
+│                                                                              │
+│     Returns:                                                                 │
+│     bool: True if n can be represented as difference of two squares, False   │
+│ otherwise.                                                                   │
+│     """                                                                      │
+│     # A number n can be represented as a^2 - b^2 = (a+b)(a-b).               │
+│     # Let x = a+b and y = a-b, then n = x*y.                                 │
+│     # Both x and y must be integers and have the same parity (both odd or    │
+│ both even),                                                                  │
+│     # because a = (x+y)/2 and b = (x-y)/2 must be integers.                  │
+│     #                                                                        │
+│     # So, n can be expressed as difference of squares if and only if         │
+│     # there exist integer factors x,y of n such that x*y = n and x,y have    │
+│ the same parity.                                                             │
+│                                                                              │
+│     # Special case: n = 0                                                    │
+│     # 0 = 0^2 - 0^2 so return True                                           │
+│     if n == 0:                                                               │
+│         return True                                                          │
+│                                                                              │
+│     abs_n = abs(n)                                                           │
+│                                                                              │
+│     # Iterate over all divisors of abs(n)                                    │
+│     # For each divisor d, check if (d, n//d) have same parity                │
+│     # If yes, return True                                                    │
+│                                                                              │
+│     # To optimize, only iterate up to sqrt(abs_n)                            │
+│     import math                                                              │
+│     limit = int(math.isqrt(abs_n))                                           │
+│     for d in range(1, limit + 1):                                            │
+│         if abs_n % d == 0:                                                   │
+│             x, y = d, abs_n // d                                             │
+│             # Check parity for (x,y)                                         │
+│             if (x % 2) == (y % 2):                                           │
+│                 # For negative n, x*y = abs_n, so actual factors could be    │
+│ (-x,y), (x,-y), (-x,-y)                                                      │
+│                 # Check all sign combinations to see if product matches n    │
+│ and parity condition holds                                                   │
+│                 # But parity won't change with sign, so just check if any    │
+│ sign combination yields product n                                            │
+│                 # Since both x,y positive, possible products:                │
+│                 # x*y = abs_n                                                │
+│                 # -x*y = -abs_n                                              │
+│                 # x*(-y) = -abs_n                                            │
+│                 # -x*(-y) = abs_n                                            │
+│                 # So if n > 0, product must be abs_n, if n < 0, product must │
+│ be -abs_n                                                                    │
+│                 # So for n positive, (x,y) works directly                    │
+│                 # For n negative, (x,-y) or (-x,y) works                     │
+│                 if (n > 0 and x * y == n) or (n < 0 and (-x) * y == n) or (n │
+│ < 0 and x * (-y) == n):                                                      │
+│                     return True                                              │
+│                                                                              │
+│     return False                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 50.00:   0%|          | 1/770 [00:01<11:16,  1.14it/s]Pass@1: 50.00:   0%|          | 2/770 [00:01<12:01,  1.06it/s]5bcacc7befa1ddb1c4508c9250d1530b3256b6f0302f0d0e597b47e8513ec664
+pytester_22f3fbe9-cec5-4301-b738-64974d2aee40
+╭─────────────────────────── ✅ Success (Mbpp/105) ────────────────────────────╮
+│ ```python                                                                    │
+│ def count(lst):                                                              │
+│     return sum(lst)                                                          │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 66.67:   0%|          | 2/770 [00:02<12:01,  1.06it/s]Pass@1: 66.67:   0%|          | 3/770 [00:02<10:59,  1.16it/s]767eda14ab20d845df2391239ec419dc685814ce50ca03c77bdb3b6865df7a02
+pytester_72ba9f4f-9711-4cee-8b29-b457845a17da
+╭──────────────────────────── ✅ Success (Mbpp/95) ────────────────────────────╮
+│ ```python                                                                    │
+│ def Find_Min_Length(lst):                                                    │
+│     if not lst:                                                              │
+│         raise ValueError("Input list must be non-empty")                     │
+│     if not all(isinstance(sublist, list) for sublist in lst):                │
+│         raise ValueError("All elements of input must be lists")              │
+│     return min(len(sublist) for sublist in lst)                              │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 75.00:   0%|          | 3/770 [00:03<10:59,  1.16it/s]Pass@1: 75.00:   1%|          | 4/770 [00:03<10:18,  1.24it/s]dac695358165f9f96e5932b01b13ae6618d616b243fed6d08d170b749ca25737
+pytester_589e96d8-6750-472b-85c9-73ce64f02460
+╭─────────────────────────── ❌ Failure (Mbpp/960) ────────────────────────────╮
+│ ```python                                                                    │
+│ def get_noOfways(n: int) -> int:                                             │
+│     if n == 0:                                                               │
+│         return 0                                                             │
+│     if n == 1:                                                               │
+│         return 1                                                             │
+│     dp = [0] * (n + 1)                                                       │
+│     dp[0], dp[1] = 1, 1                                                      │
+│     for i in range(2, n + 1):                                                │
+│         dp = dp + dp                                                         │
+│     return dp                                                                │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 13, in <module>                           │
+│     assert get_noOfways(4)==3                                                │
+│            ^^^^^^^^^^^^^^^^^^                                                │
+│ AssertionError                                                               │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 60.00:   1%|          | 4/770 [00:03<10:18,  1.24it/s]Pass@1: 60.00:   1%|          | 5/770 [00:03<09:06,  1.40it/s]871d49be453ac72168b2e9f82a59b42723f96c635afa0b6f6fefc17034bafd00
+pytester_80060560-7b8d-42f1-a7cd-f5f2e8dabcf7
+╭──────────────────────────── ✅ Success (Mbpp/82) ────────────────────────────╮
+│ ```python                                                                    │
+│ import math                                                                  │
+│                                                                              │
+│ def volume_sphere(r):                                                        │
+│     return (4/3) * math.pi * r**3                                            │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 66.67:   1%|          | 5/770 [00:04<09:06,  1.40it/s]Pass@1: 66.67:   1%|          | 6/770 [00:04<09:12,  1.38it/s]7f484b501df8a27e6bc7d07781880a33be532f92330a6c7410e9d235ab5b89c7
+pytester_9b5b503c-070f-4cae-94e9-94203dff28aa
+╭─────────────────────────── ✅ Success (Mbpp/888) ────────────────────────────╮
+│ ```python                                                                    │
+│ def substract_elements(t1, t2):                                              │
+│     """                                                                      │
+│     Subtract elements of two nested tuples element-wise.                     │
+│     Assumes t1 and t2 have the same nested structure.                        │
+│     If elements are tuples, subtract recursively.                            │
+│     If elements are numbers, subtract directly.                              │
+│     """                                                                      │
+│     if isinstance(t1, tuple) and isinstance(t2, tuple):                      │
+│         if len(t1) != len(t2):                                               │
+│             raise ValueError("Tuples must have the same structure")          │
+│         return tuple(substract_elements(a, b) for a, b in zip(t1, t2))       │
+│     else:                                                                    │
+│         return t1 - t2                                                       │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 71.43:   1%|          | 6/770 [00:05<09:12,  1.38it/s]Pass@1: 71.43:   1%|          | 7/770 [00:05<08:22,  1.52it/s]da4dd8ec7b6a0f1d04f8c229e705c2fd879e0be796b5d95db32ebac35e257c52
+pytester_9822c44f-96a7-406d-83e4-1fbb0476721f
+╭─────────────────────────── ❌ Failure (Mbpp/715) ────────────────────────────╮
+│ ```python                                                                    │
+│ def str_to_tuple(s):                                                         │
+│     """                                                                      │
+│     Convert a string containing numbers separated by spaces into a tuple of  │
+│ integers.                                                                    │
+│     If the string contains numbers without spaces, treat the entire string   │
+│ as one number.                                                               │
+│                                                                              │
+│     Examples:                                                                │
+│     str_to_tuple("1 2 3") -> (1, 2, 3)                                       │
+│     str_to_tuple("123") -> (123,)                                            │
+│     str_to_tuple("") -> ()                                                   │
+│     """                                                                      │
+│     if not s.strip():                                                        │
+│         return ()                                                            │
+│     # Split by whitespace and convert each to int                            │
+│     return tuple(int(num) for num in s.split())                              │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 17, in <module>                           │
+│     assert str_to_tuple("1, -5, 4, 6, 7") == (1, -5, 4, 6, 7)                │
+│            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                    │
+│   File "/app/temp_script.py", line 15, in str_to_tuple                       │
+│     return tuple(int(num) for num in s.split())                              │
+│            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                              │
+│   File "/app/temp_script.py", line 15, in <genexpr>                          │
+│     return tuple(int(num) for num in s.split())                              │
+│                  ^^^^^^^^                                                    │
+│ ValueError: invalid literal for int() with base 10: '1,'                     │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 62.50:   1%|          | 7/770 [00:05<08:22,  1.52it/s]Pass@1: 62.50:   1%|          | 8/770 [00:05<07:47,  1.63it/s]76f98d4298b2ed017e2c3e527af372dac26f16d0d47eb4ad8046514173b90c70
+pytester_09486b83-2c3c-4ac6-a27f-e46fd689f3ea
+╭─────────────────────────── ✅ Success (Mbpp/167) ────────────────────────────╮
+│ ```python                                                                    │
+│ def next_power_of_2(n: int) -> int:                                          │
+│     if n <= 0:                                                               │
+│         return 1                                                             │
+│     power = 1                                                                │
+│     while power < n:                                                         │
+│         power <<= 1                                                          │
+│     return power                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 66.67:   1%|          | 8/770 [00:06<07:47,  1.63it/s]Pass@1: 66.67:   1%|          | 9/770 [00:06<08:09,  1.56it/s]6119cd64553cac0fd48cddf1d65b1b96b88cf3b461b02721174141d4e3285d09
+pytester_5074382e-213f-43a0-bab1-0f3120f80481
+╭─────────────────────────── ✅ Success (Mbpp/285) ────────────────────────────╮
+│ ```python                                                                    │
+│ import re                                                                    │
+│                                                                              │
+│ def text_match_two_three(text):                                              │
+│     return bool(re.search(r'ab{2,3}', text))                                 │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 70.00:   1%|          | 9/770 [00:07<08:09,  1.56it/s]Pass@1: 70.00:   1%|▏         | 10/770 [00:07<08:20,  1.52it/s]18b9fd65740d9c23167f0e76eb789775ca6b328c6e9cb02932873bb55064ff9d
+pytester_9bca5d7d-2240-4a15-9307-de8fc58d8f18
+╭─────────────────────────── ✅ Success (Mbpp/850) ────────────────────────────╮
+│ ```python                                                                    │
+│ def is_triangleexists(a, b, c):                                              │
+│     """                                                                      │
+│     Determine if a triangle with angles a, b, and c can exist.               │
+│                                                                              │
+│     A triangle exists if and only if:                                        │
+│     - All angles are positive                                                │
+│     - The sum of the angles is exactly 180 degrees                           │
+│                                                                              │
+│     Parameters:                                                              │
+│     a, b, c (int or float): Angles in degrees                                │
+│                                                                              │
+│     Returns:                                                                 │
+│     bool: True if the triangle exists, False otherwise                       │
+│     """                                                                      │
+│     return all(angle > 0 for angle in (a, b, c)) and (a + b + c) == 180      │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 72.73:   1%|▏         | 10/770 [00:07<08:20,  1.52it/s]Pass@1: 72.73:   1%|▏         | 11/770 [00:07<07:43,  1.64it/s]01ae8d4bd432f804c6dec2c7323eaebfedf89f5f325f329faf9331202f80330e
+pytester_0b8ddadb-5b3a-43f0-89a2-6f854ff8426e
+╭─────────────────────────── ❌ Failure (Mbpp/239) ────────────────────────────╮
+│ ```python                                                                    │
+│ def get_total_number_of_sequences(n: int, m: int) -> int:                    │
+│     # dp: number of sequences of length i ending with element x              │
+│     # Elements range from 1 to m                                             │
+│     # Each successive element >= 2 * previous element and strictly           │
+│ increasing                                                                   │
+│                                                                              │
+│     if n == 1:                                                               │
+│         # Any element from 1 to m can form a sequence of length 1            │
+│         return m                                                             │
+│                                                                              │
+│     dp = [0] * (m + 1)                                                       │
+│     # Base case: sequences of length 1                                       │
+│     for x in range(1, m + 1):                                                │
+│         dp = 1                                                               │
+│                                                                              │
+│     for length in range(2, n + 1):                                           │
+│         new_dp = [0] * (m + 1)                                               │
+│         # To efficiently compute sums for previous dp based on the           │
+│ constraint,                                                                  │
+│         # we can precompute prefix sums of dp.                               │
+│         prefix_sum = [0] * (m + 2)                                           │
+│         for x in range(1, m + 1):                                            │
+│             prefix_sum = prefix_sum + dp                                     │
+│                                                                              │
+│         # For each possible current element x,                               │
+│         # previous element y must satisfy y <= x/2 (since x >= 2*y)          │
+│         # So sum dp for y in [1, floor(x/2)]                                 │
+│         for x in range(1, m + 1):                                            │
+│             max_prev = x // 2                                                │
+│             if max_prev >= 1:                                                │
+│                 new_dp = prefix_sum                                          │
+│                                                                              │
+│         dp = new_dp                                                          │
+│                                                                              │
+│     return sum(dp[1:])                                                       │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 62, in <module>                           │
+│     assertion(get_total_number_of_sequences(*inp), exp, 0, inp)              │
+│   File "/app/temp_script.py", line 57, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[10, 4]': Expected '4', but got 0         │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 66.67:   1%|▏         | 11/770 [00:08<07:43,  1.64it/s]Pass@1: 66.67:   2%|▏         | 12/770 [00:08<09:39,  1.31it/s]5490ded48c681dd6dbbf9b68aa4ef885ada39506d3529f72147727a4ab3924b0
+pytester_8a8ee9d0-9e64-4233-842e-615ff8ed1c56
+╭─────────────────────────── ✅ Success (Mbpp/644) ────────────────────────────╮
+│ ```python                                                                    │
+│ def reverse_Array_Upto_K(arr, K):                                            │
+│     """                                                                      │
+│     Returns a new array where elements from index 0 up to (but not           │
+│ including) K are reversed.                                                   │
+│     The original array remains unchanged.                                    │
+│                                                                              │
+│     Parameters:                                                              │
+│     arr (list): The input list.                                              │
+│     K (int): The position up to which elements are reversed (exclusive).     │
+│                                                                              │
+│     Returns:                                                                 │
+│     list: A new list with the specified portion reversed.                    │
+│     """                                                                      │
+│     if not isinstance(arr, list):                                            │
+│         raise TypeError("arr must be a list")                                │
+│     n = len(arr)                                                             │
+│     # Handle K according to bounds:                                          │
+│     # If K <= 0, no reversal occurs; return a copy                           │
+│     # If K > n, reverse entire array                                         │
+│     if K <= 0:                                                               │
+│         return arr[:]                                                        │
+│     if K > n:                                                                │
+│         K = n                                                                │
+│     return arr[:K][::-1] + arr[K:]                                           │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 69.23:   2%|▏         | 12/770 [00:09<09:39,  1.31it/s]Pass@1: 69.23:   2%|▏         | 13/770 [00:09<11:22,  1.11it/s]dd3ce7b6d3dbaf2d0cfe45cf31f64d826bead02b2b8868055b419259ded89c58
+pytester_8697fb7b-9680-460b-ac60-73e91dc2ebd8
+╭─────────────────────────── ❌ Failure (Mbpp/301) ────────────────────────────╮
+│ ```python                                                                    │
+│ def dict_depth(d):                                                           │
+│     if not isinstance(d, (dict, list, tuple)):                               │
+│         return 0                                                             │
+│     if isinstance(d, dict):                                                  │
+│         if not d:                                                            │
+│             return 1                                                         │
+│         return 1 + max(dict_depth(v) for v in d.values())                    │
+│     else:  # list or tuple                                                   │
+│         if not d:                                                            │
+│             return 1                                                         │
+│         return 1 + max(dict_depth(item) for item in d)                       │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 40, in <module>                           │
+│     assertion(dict_depth(*inp), exp, 0, inp)                                 │
+│   File "/app/temp_script.py", line 35, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[{'1': None, '2': {'3': [1, 2, 3, 'four', │
+│ {'five': []}]}}]': Expected '2', but got 5                                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 64.29:   2%|▏         | 13/770 [00:10<11:22,  1.11it/s]Pass@1: 64.29:   2%|▏         | 14/770 [00:10<10:58,  1.15it/s]97a22bb5f36c3293d8489132b53526dff1176885808e55768e82bcc5815832d3
+pytester_90ea2497-4721-42b9-977f-336338f098df
+╭─────────────────────────── ✅ Success (Mbpp/827) ────────────────────────────╮
+│ ```python                                                                    │
+│ def sum_column(data, col_index):                                             │
+│     total = None                                                             │
+│     for row in data:                                                         │
+│         if col_index < len(row):                                             │
+│             value = row                                                      │
+│             if total is None:                                                │
+│                 total = value                                                │
+│             else:                                                            │
+│                 total += value                                               │
+│     return total                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 66.67:   2%|▏         | 14/770 [00:11<10:58,  1.15it/s]Pass@1: 66.67:   2%|▏         | 15/770 [00:11<09:42,  1.30it/s]Pass@1: 66.67:   2%|▏         | 15/770 [00:11<09:26,  1.33it/s]
+                         Test Results (PBTClarifier1)                         
+┏━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Task ID  ┃ Status ┃ Clarify? ┃ Output                                      ┃
+┡━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Mbpp/105 │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/167 │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/239 │   ❌   │    ☠️    │ The provided implementation failed. Outp... │
+│ Mbpp/285 │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/301 │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ Mbpp/371 │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ Mbpp/644 │   ✅   │    ☠️    │ The provided implementation passed all t... │
+│ Mbpp/715 │   ❌   │    ☠️    │ The provided implementation failed. Outp... │
+│ Mbpp/72  │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/82  │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/827 │   ✅   │    ☠️    │ The provided implementation passed all t... │
+│ Mbpp/850 │   ✅   │    ☠️    │ The provided implementation passed all t... │
+│ Mbpp/888 │   ✅   │    ☠️    │ The provided implementation passed all t... │
+│ Mbpp/95  │   ✅   │    ☠️    │ The provided implementation passed all t... │
+│ Mbpp/960 │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+└──────────┴────────┴──────────┴─────────────────────────────────────────────┘
+              Run Statistics              
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Metric                       ┃ Results ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━┩
+│ Total                        │ 15      │
+│ Turn Discounted Success      │ 0.6402  │
+│ nDCG                         │ 0.5333  │
+│ Pass@1                       │ 66.67   │
+│ Clarification rate           │ 100.00% │
+│ Overasking rate              │ 100.00% │
+│ High quality clarification   │ 53.33%  │
+│ Average clarification length │ 123.93  │
+└──────────────────────────────┴─────────┘
+real 19.70
+user 6.63
+sys 3.05

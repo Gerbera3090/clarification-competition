@@ -1,0 +1,709 @@
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/ee43ecabebf20deef4bb776a405ac5b1.pkl
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl
+Loaded 7961 instances...
+Loaded 10 result instances...
+  0%|          | 0/7961 [00:00<?, ?it/s]e692f0a67d6282a801f1185df3bf3c0cc08ff6df9f8206baf1215571812beebf
+pytester_f9c0ca43-42bc-470d-9478-3579e8d80e09
+╭───────────────────────── ✅ Success (HumanEval/107) ─────────────────────────╮
+│ ```python                                                                    │
+│ def even_odd_palindrome(n):                                                  │
+│     def is_palindrome(x):                                                    │
+│         s = str(x)                                                           │
+│         return s == s[::-1]                                                  │
+│                                                                              │
+│     even_count = 0                                                           │
+│     odd_count = 0                                                            │
+│     for num in range(1, n + 1):                                              │
+│         if is_palindrome(num):                                               │
+│             if num % 2 == 0:                                                 │
+│                 even_count += 1                                              │
+│             else:                                                            │
+│                 odd_count += 1                                               │
+│     return (even_count, odd_count)                                           │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   0%|          | 0/7961 [00:03<?, ?it/s]Pass@1: 100.00:   0%|          | 1/7961 [00:03<7:43:48,  3.50s/it]2128b9e3c51c3302601e2ee61a8a73ed78a68cf9e9d0ea2e806132dd6622fa71
+pytester_8b4e0f45-0291-4411-8645-460a21795b45
+╭───────────────────────── ✅ Success (HumanEval/87) ──────────────────────────╮
+│ ```python                                                                    │
+│ def get_row(lst, x):                                                         │
+│     """                                                                      │
+│     You are given a 2 dimensional data, as a nested lists,                   │
+│     which is similar to matrix, however, unlike matrices,                    │
+│     each row may contain a different number of columns.                      │
+│     Given lst, and integer x, find integers x in the list,                   │
+│     and return list of tuples, [(x1, y1), (x2, y2) ...] such that            │
+│     each tuple is a coordinate - (row, columns), starting with 0.            │
+│     Sort coordinates initially by rows in ascending order.                   │
+│     Also, sort coordinates of the row by columns in descending order.        │
+│     """                                                                      │
+│     coords = []                                                              │
+│     for r, row in enumerate(lst):                                            │
+│         for c, val in enumerate(row):                                        │
+│             if val == x:                                                     │
+│                 coords.append((r, c))                                        │
+│     # sort by row ascending, then by column descending                       │
+│     coords.sort(key=lambda t: (t[0], -t[1]))                                 │
+│     return coords                                                            │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   0%|          | 1/7961 [00:04<7:43:48,  3.50s/it]Pass@1: 100.00:   0%|          | 2/7961 [00:04<4:08:26,  1.87s/it]477571c8395c3464c18eb590cb0de8eadf2a40c88204b2d6b6460db19eae8393
+pytester_bca2d00c-55dd-4727-ba8d-6d5cbc4722e4
+╭───────────────────────── ✅ Success (HumanEval/33) ──────────────────────────╮
+│ ```python                                                                    │
+│ def sort_third(l: list, ascending: bool = True):                             │
+│     """This function takes a list l and a boolean ascending and returns an   │
+│ integer. If ascending is True, it returns a                                  │
+│     list l' such that l' is identical to l in the indicies that are not      │
+│ divisible by three, while its values at the indicies                         │
+│     that are divisible by three are equal to the values of the corresponding │
+│ indicies of l, but sorted in ascending order. If                             │
+│     ascending is False, it returns the sum of all elements in the list. The  │
+│ implementation should not use any loops.                                     │
+│                                                                              │
+│     >>> sort_third([1, 2, 3])                                                │
+│     1                                                                        │
+│     >>> sort_third([5, 6, 3, 4, 8, 9, 2])                                    │
+│     10                                                                       │
+│     >>> sort_third([1, 2, 3], False)                                         │
+│     6                                                                        │
+│     """                                                                      │
+│     if not ascending:                                                        │
+│         return sum(l)                                                        │
+│     # Extract elements at indices divisible by 3                             │
+│     divisible_by_three = l[0::3]                                             │
+│     # Sort those elements                                                    │
+│     sorted_vals = sorted(divisible_by_three)                                 │
+│     # Rebuild the list by replacing elements at indices divisible by 3 with  │
+│ sorted values                                                                │
+│     def helper(i=0):                                                         │
+│         if i >= len(l):                                                      │
+│             return []                                                        │
+│         val = sorted_vals if i % 3 == 0 else l                               │
+│         return  + helper(i + 1)                                              │
+│     return helper()                                                          │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   0%|          | 2/7961 [00:05<4:08:26,  1.87s/it]Pass@1: 100.00:   0%|          | 3/7961 [00:05<3:04:45,  1.39s/it]ab303c7913fbfc76fbc3bb1b84af60bdb316e6f28a44a505897346ed6cf534a8
+pytester_6aaa7413-baaf-424d-a5b1-40b71abf6b38
+╭───────────────────────── ❌ Failure (HumanEval/62) ──────────────────────────╮
+│ ```python                                                                    │
+│ def derivative(xs: list, format: str = 'string'):                            │
+│     """ xs represent coefficients of a polynomial.                           │
+│     xs[0] + xs[1] * x + xs[2] * x^2 + ....                                   │
+│     Return derivative of this polynomial in the same form and ensure that    │
+│ the original ordering of the elements in the list is maintained.             │
+│     The output should be a string or list depending on 'format' parameter.   │
+│     This function works without any loops and in O(1) time complexity.       │
+│     """                                                                      │
+│     # Precomputed derivatives for input length up to 5 (arbitrary limit)     │
+│     # Because no loops allowed and O(1) time, we can only handle fixed max   │
+│ length inputs.                                                               │
+│     # Otherwise, we cannot process arbitrary length lists without loops or   │
+│ recursion.                                                                   │
+│     # The function will handle up to length 5 input polynomials as example,  │
+│     # longer inputs will raise an error.                                     │
+│                                                                              │
+│     length = len(xs)                                                         │
+│     if length == 0 or length == 1:                                           │
+│         # Derivative of constant or empty polynomial is zero polynomial []   │
+│         res = []                                                             │
+│     elif length == 2:                                                        │
+│         # derivative: [xs[1]]                                                │
+│         res = [xs[1]]                                                        │
+│     elif length == 3:                                                        │
+│         # derivative: [xs[1], 2*xs[2]]                                       │
+│         res = [xs[1], 2*xs[2]]                                               │
+│     elif length == 4:                                                        │
+│         # derivative: [xs[1], 2*xs[2], 3*xs[3]]                              │
+│         res = [xs[1], 2*xs[2], 3*xs[3]]                                      │
+│     elif length == 5:                                                        │
+│         # derivative: [xs[1], 2*xs[2], 3*xs[3], 4*xs[4]]                     │
+│         res = [xs[1], 2*xs[2], 3*xs[3], 4*xs[4]]                             │
+│     else:                                                                    │
+│         raise ValueError("Input length greater than 5 not supported due to   │
+│ O(1) and no loops constraints")                                              │
+│                                                                              │
+│     if format == 'string':                                                   │
+│         return ', '.join(str(i) for i in res)                                │
+│     elif format == 'list':                                                   │
+│         return res                                                           │
+│     else:                                                                    │
+│         raise ValueError("format must be 'string' or 'list'")                │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 67, in <module>                           │
+│     assertion(derivative(*inp), exp, 0, inp)                                 │
+│   File "/app/temp_script.py", line 62, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[[3, 1, 2, 4, 5]]': Expected '[1, 4, 12,  │
+│ 20]', but got 1, 4, 12, 20                                                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 75.00:   0%|          | 3/7961 [00:06<3:04:45,  1.39s/it] Pass@1: 75.00:   0%|          | 4/7961 [00:06<2:42:54,  1.23s/it]ef590159d1228a562640a5ee108e204d87addff1d99c6a0a6c37de3753a10503
+pytester_43f54a84-5bae-4878-baa1-47fb3bebf03d
+╭───────────────────────── ❌ Failure (HumanEval/75) ──────────────────────────╮
+│ ```python                                                                    │
+│ def is_multiply_prime(a):                                                    │
+│     """Return True and a list of 3 prime factors if a is a product of        │
+│ exactly 3 primes, else False and empty list.                                 │
+│     Works for inputs less than 100, no loops, O(1) complexity, and handles   │
+│ non-numeric inputs."""                                                       │
+│                                                                              │
+│     # Predefined list of primes under 100                                    │
+│     primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,    │
+│ 59, 61, 67, 71, 73, 79, 83, 89, 97]                                          │
+│                                                                              │
+│     # Validate input: convert to int if possible, else return False, []      │
+│     try:                                                                     │
+│         n = int(a)                                                           │
+│     except:                                                                  │
+│         return False, []                                                     │
+│                                                                              │
+│     if n < 2 or n >= 100:                                                    │
+│         return False, []                                                     │
+│                                                                              │
+│     # Try all combinations of 3 primes with repetition allowed (order        │
+│ doesn't matter)                                                              │
+│     # No loops allowed, so we do nested ifs manually (since primes list      │
+│ length is 25, 25^3=15625 combinations - huge)                                │
+│     # But for O(1) and no loops, must hardcode or find a better approach     │
+│                                                                              │
+│     # To avoid loops, we hardcode all prime triples with product < 100       │
+│     # Precompute all such triples and store in a dictionary for O(1) lookup  │
+│                                                                              │
+│     # Precomputed dictionary: product -> one triple of primes (sorted)       │
+│     triplets = {                                                             │
+│         8: [2, 2, 2],                                                        │
+│         12: [2, 2, 3],                                                       │
+│         18: [2, 3, 3],                                                       │
+│         20: [2, 2, 5],                                                       │
+│         27: [3, 3, 3],                                                       │
+│         28: [2, 2, 7],                                                       │
+│         30: [2, 3, 5],                                                       │
+│         32: [2, 2, 2],  # 32 = 2^5, but we want exactly 3 primes: 2*2*8 no,  │
+│ 8 not prime, so no                                                           │
+│             # 32 is 2^5, cannot express as exactly 3 primes multiplicative   │
+│ factors                                                                      │
+│             # Remove 32                                                      │
+│         36: [2, 2, 3],  # 2*2*3=12 not 36, 36=2^2*3^2=2*2*3*3 four primes,   │
+│ no                                                                           │
+│             # Remove 36                                                      │
+│         40: [2, 2, 5],                                                       │
+│         42: [2, 3, 7],                                                       │
+│         44: [2, 2, 11],                                                      │
+│         45: [3, 3, 5],                                                       │
+│         48: [2, 2, 2],  # 48=2^4*3, four or more primes, no                  │
+│         50: [2, 5, 5],                                                       │
+│         54: [2, 3, 3],  # 54=2*3^3 four primes, no                           │
+│         56: [2, 2, 7],                                                       │
+│         60: [2, 3, 5],                                                       │
+│         63: [3, 3, 7],                                                       │
+│         64: [2, 2, 2],  # 64=2^6, no                                         │
+│         66: [2, 3, 11],                                                      │
+│         70: [2, 5, 7],                                                       │
+│         72: [2, 2, 3],  # 72=2^3*3^2 more than 3 primes, no                  │
+│         75: [3, 5, 5],                                                       │
+│         77: [7, 11, 1], # 1 not prime, no                                    │
+│         78: [2, 3, 13],                                                      │
+│         80: [2, 2, 5],  # 80=2^4*5 four or more primes no                    │
+│         81: [3, 3, 3],                                                       │
+│         84: [2, 3, 7],                                                       │
+│         88: [2, 2, 11],                                                      │
+│         90: [2, 3, 5],                                                       │
+│         92: [2, 2, 23],                                                      │
+│         93: [3, 31, 1], # 1 no                                               │
+│         94: [2, 47, 1], # no                                                 │
+│         95: [5, 19, 1], # no                                                 │
+│         96: [2, 2, 2],  # 96=2^5*3 four or more primes no                    │
+│         98: [2, 7, 7],                                                       │
+│         99: [3, 3, 11],                                                      │
+│     }                                                                        │
+│                                                                              │
+│     # Remove invalid entries noted above, keep only those whose product is   │
+│ exactly the product of exactly 3 primes                                      │
+│     # Let's manually list all triples of 3 primes with product under 100:    │
+│     # 2*2*2=8                                                                │
+│     # 2*2*3=12                                                               │
+│     # 2*3*3=18                                                               │
+│     # 2*2*5=20                                                               │
+│     # 3*3*3=27                                                               │
+│     # 2*2*7=28                                                               │
+│     # 2*3*5=30                                                               │
+│     # 2*2*11=44                                                              │
+│     # 3*3*5=45                                                               │
+│     # 2*5*5=50                                                               │
+│     # 2*3*7=42                                                               │
+│     # 3*3*7=63                                                               │
+│     # 2*3*11=66                                                              │
+│     # 2*5*7=70                                                               │
+│     # 3*5*5=75                                                               │
+│     # 2*3*13=78                                                              │
+│     # 2*2*23=92                                                              │
+│     # 2*7*7=98                                                               │
+│     # 3*3*11=99                                                              │
+│                                                                              │
+│     triplets = {                                                             │
+│         8: [2, 2, 2],                                                        │
+│         12: [2, 2, 3],                                                       │
+│         18: [2, 3, 3],                                                       │
+│         20: [2, 2, 5],                                                       │
+│         27: [3, 3, 3],                                                       │
+│         28: [2, 2, 7],                                                       │
+│         30: [2, 3, 5],                                                       │
+│         42: [2, 3, 7],                                                       │
+│         44: [2, 2, 11],                                                      │
+│         45: [3, 3, 5],                                                       │
+│         50: [2, 5, 5],                                                       │
+│         63: [3, 3, 7],                                                       │
+│         66: [2, 3, 11],                                                      │
+│         70: [2, 5, 7],                                                       │
+│         75: [3, 5, 5],                                                       │
+│         78: [2, 3, 13],                                                      │
+│         92: [2, 2, 23],                                                      │
+│         98: [2, 7, 7],                                                       │
+│         99: [3, 3, 11],                                                      │
+│     }                                                                        │
+│                                                                              │
+│     if n in triplets:                                                        │
+│         return True, triplets                                                │
+│     return False, []                                                         │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 144, in <module>                          │
+│     assertion(is_multiply_prime(*inp), exp, 0, inp)                          │
+│   File "/app/temp_script.py", line 139, in assertion                         │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[5]': Expected 'False', but got (False,   │
+│ [])                                                                          │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 60.00:   0%|          | 4/7961 [00:06<2:42:54,  1.23s/it]Pass@1: 60.00:   0%|          | 5/7961 [00:06<2:19:55,  1.06s/it]a0364681ef6c0fd02185b5997f942251ea54b1e96fe4551cafdd500fadd2d74d
+pytester_e3fca774-2171-40a8-99d6-6a0dab029985
+╭───────────────────────── ❌ Failure (HumanEval/55) ──────────────────────────╮
+│ ```python                                                                    │
+│ def fib(n, s=None):                                                          │
+│     """                                                                      │
+│     Return n-th Fibonacci number as a string. If input is string, output is  │
+│ string.                                                                      │
+│     The function does not use loops or recursion and runs in O(1) time.      │
+│                                                                              │
+│     Valid input: n (int or str) representing positive integer >= 1.          │
+│     Raises ValueError for invalid inputs.                                    │
+│                                                                              │
+│     >>> fib(10)                                                              │
+│     55                                                                       │
+│     >>> fib('10')                                                            │
+│     '55'                                                                     │
+│     >>> fib(1)                                                               │
+│     1                                                                        │
+│     >>> fib(8)                                                               │
+│     21                                                                       │
+│     """                                                                      │
+│     # Determine input type and parse n                                       │
+│     if s is not None:                                                        │
+│         raise TypeError("Function takes only one argument")                  │
+│     if isinstance(n, str):                                                   │
+│         if not n.isdigit():                                                  │
+│             raise ValueError("Input string must represent a positive         │
+│ integer")                                                                    │
+│         n_int = int(n)                                                       │
+│         return _fib_number(n_int, as_str=True)                               │
+│     elif isinstance(n, int):                                                 │
+│         return _fib_number(n, as_str=False)                                  │
+│     else:                                                                    │
+│         raise TypeError("Input must be int or str representing positive      │
+│ integer")                                                                    │
+│                                                                              │
+│ def _fib_number(n, as_str):                                                  │
+│     if n < 1:                                                                │
+│         raise ValueError("Input must be a positive integer >= 1")            │
+│                                                                              │
+│     # Use the closed form (Binet's formula) with rounding.                   │
+│     # fib(n) = round(phi^n / sqrt(5))                                        │
+│     from math import sqrt                                                    │
+│                                                                              │
+│     phi = (1 + sqrt(5)) / 2                                                  │
+│     fib_n = int(round(phi ** n / sqrt(5)))                                   │
+│                                                                              │
+│     return str(fib_n) if as_str else fib_n                                   │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 71, in <module>                           │
+│     assertion(fib(*inp), exp, 0, inp)                                        │
+│               ^^^^^^^^^                                                      │
+│   File "/app/temp_script.py", line 28, in fib                                │
+│     return _fib_number(n, as_str=False)                                      │
+│            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                      │
+│   File "/app/temp_script.py", line 34, in _fib_number                        │
+│     raise ValueError("Input must be a positive integer >= 1")                │
+│ ValueError: Input must be a positive integer >= 1                            │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 50.00:   0%|          | 5/7961 [00:07<2:19:55,  1.06s/it]Pass@1: 50.00:   0%|          | 6/7961 [00:07<2:11:55,  1.01it/s]2c9dfb01cb2a0766c5f19709d30a38ecf6691029943e30e9b941515c6fdd5733
+pytester_7ca2c81f-518d-439f-b331-ea7b73c2f104
+╭───────────────────────── ✅ Success (HumanEval/156) ─────────────────────────╮
+│ ```python                                                                    │
+│ def int_to_mini_roman(number):                                               │
+│     """                                                                      │
+│     Given a positive integer or a string, obtain its roman numeral           │
+│ equivalent as a string and return it in lowercase and as an integer.         │
+│     The function should not use any loops or recursion and the time          │
+│ complexity should be O(1).                                                   │
+│     The Roman numeral should be sorted in decreasing order (standard Roman   │
+│ numeral format).                                                             │
+│                                                                              │
+│     Restrictions: 1 <= num <= 1000 or num is a string of length <= 1000      │
+│                                                                              │
+│     Examples:                                                                │
+│     >>> int_to_mini_roman(19) == 19                                          │
+│     >>> int_to_mini_roman('152') == 'clii'                                   │
+│     >>> int_to_mini_roman(426) == 'cdxxvi'                                   │
+│     """                                                                      │
+│     # If input is int, convert to string                                     │
+│     s = str(number)                                                          │
+│                                                                              │
+│     # If input is all digits, convert to int value                           │
+│     if s.isdigit():                                                          │
+│         val = int(s)                                                         │
+│         # If val in 1..1000, return roman numeral string in lowercase        │
+│         if 1 <= val <= 1000:                                                 │
+│             # Predefined mapping tuples for roman conversion                 │
+│             romans = [                                                       │
+│                 (1000, "M"),                                                 │
+│                 (900, "CM"),                                                 │
+│                 (500, "D"),                                                  │
+│                 (400, "CD"),                                                 │
+│                 (100, "C"),                                                  │
+│                 (90, "XC"),                                                  │
+│                 (50, "L"),                                                   │
+│                 (40, "XL"),                                                  │
+│                 (10, "X"),                                                   │
+│                 (9, "IX"),                                                   │
+│                 (5, "V"),                                                    │
+│                 (4, "IV"),                                                   │
+│                 (1, "I"),                                                    │
+│             ]                                                                │
+│             # Because no loops or recursion allowed, expand all steps        │
+│ explicitly:                                                                  │
+│             # We'll build the roman numeral greedily by subtracting values   │
+│ in O(1) steps.                                                               │
+│                                                                              │
+│             # Extract counts for each numeral:                               │
+│             # For 1000 (M)                                                   │
+│             M_count = val // 1000                                            │
+│             rem = val % 1000                                                 │
+│                                                                              │
+│             # For 900 (CM)                                                   │
+│             CM_count = rem // 900                                            │
+│             rem %= 900                                                       │
+│                                                                              │
+│             # For 500 (D)                                                    │
+│             D_count = rem // 500                                             │
+│             rem %= 500                                                       │
+│                                                                              │
+│             # For 400 (CD)                                                   │
+│             CD_count = rem // 400                                            │
+│             rem %= 400                                                       │
+│                                                                              │
+│             # For 100 (C)                                                    │
+│             C_count = rem // 100                                             │
+│             rem %= 100                                                       │
+│                                                                              │
+│             # For 90 (XC)                                                    │
+│             XC_count = rem // 90                                             │
+│             rem %= 90                                                        │
+│                                                                              │
+│             # For 50 (L)                                                     │
+│             L_count = rem // 50                                              │
+│             rem %= 50                                                        │
+│                                                                              │
+│             # For 40 (XL)                                                    │
+│             XL_count = rem // 40                                             │
+│             rem %= 40                                                        │
+│                                                                              │
+│             # For 10 (X)                                                     │
+│             X_count = rem // 10                                              │
+│             rem %= 10                                                        │
+│                                                                              │
+│             # For 9 (IX)                                                     │
+│             IX_count = rem // 9                                              │
+│             rem %= 9                                                         │
+│                                                                              │
+│             # For 5 (V)                                                      │
+│             V_count = rem // 5                                               │
+│             rem %= 5                                                         │
+│                                                                              │
+│             # For 4 (IV)                                                     │
+│             IV_count = rem // 4                                              │
+│             rem %= 4                                                         │
+│                                                                              │
+│             # For 1 (I)                                                      │
+│             I_count = rem                                                    │
+│                                                                              │
+│             # Build the roman numeral string                                 │
+│             roman = (                                                        │
+│                 "M" * M_count                                                │
+│                 + "CM" * CM_count                                            │
+│                 + "D" * D_count                                              │
+│                 + "CD" * CD_count                                            │
+│                 + "C" * C_count                                              │
+│                 + "XC" * XC_count                                            │
+│                 + "L" * L_count                                              │
+│                 + "XL" * XL_count                                            │
+│                 + "X" * X_count                                              │
+│                 + "IX" * IX_count                                            │
+│                 + "V" * V_count                                              │
+│                 + "IV" * IV_count                                            │
+│                 + "I" * I_count                                              │
+│             )                                                                │
+│             return roman.lower()                                             │
+│         else:                                                                │
+│             # If outside 1..1000 and input is integer, just return as is     │
+│ (per example 19->19)                                                         │
+│             return val                                                       │
+│     else:                                                                    │
+│         # If input is string but not digit (e.g. '152'), convert each digit  │
+│ to int and to roman individually,                                            │
+│         # then concatenate all roman numerals in order preserving original   │
+│ order                                                                        │
+│         # For each digit char, convert to int and then to roman numeral      │
+│ using the same method as above.                                              │
+│         # Because string length <= 1000, and no loops allowed, we must       │
+│ handle length 1 only or fixed size:                                          │
+│         # But problem states no loops or recursion, so we cannot iterate     │
+│ over the string.                                                             │
+│         # Thus, we cannot handle arbitrary length string inputs under no     │
+│ loops/recursion.                                                             │
+│         # So we treat the string input as a decimal number and convert it to │
+│ int, then to roman if <=1000.                                                │
+│         # Otherwise, convert each character to roman and concatenate.        │
+│                                                                              │
+│         # The example shows '152' -> 'clii' which is 100 + 50 + 2 in roman,  │
+│ so convert each digit separately.                                            │
+│                                                                              │
+│         # Since no loops, we handle up to length 4 explicitly (length <=     │
+│ 1000 means max length 4 for digits)                                          │
+│                                                                              │
+│         length = len(s)                                                      │
+│         roman_digits = []                                                    │
+│                                                                              │
+│         def digit_to_roman(d):                                               │
+│             d = int(d)                                                       │
+│             if d == 9:                                                       │
+│                 return "ix"                                                  │
+│             elif d >= 5:                                                     │
+│                 return "v" + "i" * (d - 5)                                   │
+│             elif d == 4:                                                     │
+│                 return "iv"                                                  │
+│             else:                                                            │
+│                 return "i" * d                                               │
+│                                                                              │
+│         # Map positional roman bases for each digit place (from right to     │
+│ left)                                                                        │
+│         # units, tens, hundreds, thousands                                   │
+│         # We'll define a helper to scale the digit_to_roman with the place:  │
+│                                                                              │
+│         def scale_roman(r, place):                                           │
+│             # place: 0=units,1=tens,2=hundreds,3=thousands                   │
+│             # scale "i,v,x" to appropriate letters:                          │
+│             # units: i,v,x                                                   │
+│             # tens: x,l,c                                                    │
+│             # hundreds: c,d,m                                                │
+│             # thousands: m                                                   │
+│             if place == 0:                                                   │
+│                 # units: i,v,x                                               │
+│                 return r                                                     │
+│             elif place == 1:                                                 │
+│                 # replace i->x, v->l, x->c                                   │
+│                 return r.replace("i", "x").replace("v", "l").replace("x",    │
+│ "c")                                                                         │
+│             elif place == 2:                                                 │
+│                 # replace i->c, v->d, x->m                                   │
+│                 return r.replace("i", "c").replace("v", "d").replace("x",    │
+│ "m")                                                                         │
+│             elif place == 3:                                                 │
+│                 # thousands place only "m"                                   │
+│                 return "m" * r.count("i")                                    │
+│             return r                                                         │
+│                                                                              │
+│         # Because no loops or recursion, we handle up to length 4            │
+│ explicitly:                                                                  │
+│         if length == 1:                                                      │
+│             return scale_roman(digit_to_roman(s[0]), 0)                      │
+│         elif length == 2:                                                    │
+│             return scale_roman(digit_to_roman(s[0]), 1) +                    │
+│ scale_roman(digit_to_roman(s[1]), 0)                                         │
+│         elif length == 3:                                                    │
+│             return (                                                         │
+│                 scale_roman(digit_to_roman(s[0]), 2)                         │
+│                 + scale_roman(digit_to_roman(s[1]), 1)                       │
+│                 + scale_roman(digit_to_roman(s[2]), 0)                       │
+│             )                                                                │
+│         elif length == 4:                                                    │
+│             return (                                                         │
+│                 scale_roman(digit_to_roman(s[0]), 3)                         │
+│                 + scale_roman(digit_to_roman(s[1]), 2)                       │
+│                 + scale_roman(digit_to_roman(s[2]), 1)                       │
+│                 + scale_roman(digit_to_roman(s[3]), 0)                       │
+│             )                                                                │
+│         else:                                                                │
+│             # length > 4 can't be handled without loops or recursion; return │
+│ input as is                                                                  │
+│             return s                                                         │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 57.14:   0%|          | 6/7961 [00:09<2:11:55,  1.01it/s]Pass@1: 57.14:   0%|          | 7/7961 [00:09<2:30:41,  1.14s/it]65f0efa93ccc16e0d7c4912af108ab3beba07e0cef83f7938ea58a094c375a8e
+pytester_a8dbe074-dc85-4d92-bb10-ca2eca5ec46d
+╭───────────────────────── ✅ Success (HumanEval/43) ──────────────────────────╮
+│ ```python                                                                    │
+│ def pairs_sum_to_zero(l):                                                    │
+│     """                                                                      │
+│     pairs_sum_to_zero takes a list of integers as an input.                  │
+│     it returns True if there are two distinct elements in the list that      │
+│     sum to zero, and False otherwise.                                        │
+│     >>> pairs_sum_to_zero([1, 3, 5, 0])                                      │
+│     False                                                                    │
+│     >>> pairs_sum_to_zero([1, 3, -2, 1])                                     │
+│     False                                                                    │
+│     >>> pairs_sum_to_zero([1, 2, 3, 7])                                      │
+│     False                                                                    │
+│     >>> pairs_sum_to_zero([2, 4, -5, 3, 5, 7])                               │
+│     True                                                                     │
+│     >>> pairs_sum_to_zero([1])                                               │
+│     False                                                                    │
+│     """                                                                      │
+│     seen = {}                                                                │
+│     for i, num in enumerate(l):                                              │
+│         complement = -num                                                    │
+│         if complement in seen:                                               │
+│             # check distinct indices                                         │
+│             for idx in seen:                                                 │
+│                 if idx != i:                                                 │
+│                     return True                                              │
+│         if num in seen:                                                      │
+│             seen.append(i)                                                   │
+│         else:                                                                │
+│             seen =                                                           │
+│     return False                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 62.50:   0%|          | 7/7961 [00:10<2:30:41,  1.14s/it]Pass@1: 62.50:   0%|          | 8/7961 [00:10<2:25:06,  1.09s/it]45df3636900c6980559d88812b582dbe02a2c1bd5da01e8aa6990831d7006a68
+pytester_bd3b17ea-26e8-4a81-847e-4dd2d7e70379
+╭───────────────────────── ✅ Success (HumanEval/90) ──────────────────────────╮
+│ ```python                                                                    │
+│ def next_smallest(lst):                                                      │
+│     """                                                                      │
+│     You are given a list of integers.                                        │
+│     Write a function next_smallest() that returns the 2nd smallest element   │
+│ of the list.                                                                 │
+│     Return None if there is no such element.                                 │
+│                                                                              │
+│     next_smallest([1, 2, 3, 4, 5]) == 2                                      │
+│     next_smallest([5, 1, 4, 3, 2]) == 2                                      │
+│     next_smallest([]) == None                                                │
+│     next_smallest([1, 1]) == None                                            │
+│     """                                                                      │
+│     unique_vals = sorted(set(lst))                                           │
+│     if len(unique_vals) < 2:                                                 │
+│         return None                                                          │
+│     return unique_vals[1]                                                    │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 66.67:   0%|          | 8/7961 [00:10<2:25:06,  1.09s/it]Pass@1: 66.67:   0%|          | 9/7961 [00:10<2:16:44,  1.03s/it]8bd394fe223e86b0f0e56bb8240c48f42262bf21bdacea0aecbf0b49c3f2dfdb
+pytester_c83a9d78-2e22-42db-8fe1-0d2b9da21f4c
+╭───────────────────────── ❌ Failure (HumanEval/116) ─────────────────────────╮
+│ ```python                                                                    │
+│ def sort_array(arr):                                                         │
+│     """                                                                      │
+│     In this Kata, you have to sort an array of non-negative integers         │
+│ according to                                                                 │
+│     number of ones in their binary representation in ascending order.        │
+│     For similar number of ones, sort based on decimal value.                 │
+│                                                                              │
+│     Negative numbers should be sorted in ascending decimal order, without    │
+│ considering binary ones count.                                               │
+│                                                                              │
+│     >>> sort_array([1, 5, 2, 3, 4])                                          │
+│     [1, 2, 3, 4, 5]                                                          │
+│     >>> sort_array([-2, -3, -4, -5, -6])                                     │
+│     [-6, -5, -4, -3, -2]                                                     │
+│     >>> sort_array([1, 0, 2, 3, 4])                                          │
+│     [0, 1, 2, 3, 4]                                                          │
+│     """                                                                      │
+│     # Separate negative and non-negative numbers                             │
+│     negatives =                                                              │
+│     non_negatives =                                                          │
+│                                                                              │
+│     # Sort negatives ascending by value                                      │
+│     negatives.sort()                                                         │
+│                                                                              │
+│     # Sort non-negatives by (number of ones in binary, then decimal value)   │
+│     non_negatives.sort(key=lambda x: (bin(x).count('1'), x))                 │
+│                                                                              │
+│     # Return combined list                                                   │
+│     return negatives + non_negatives                                         │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 56, in <module>                           │
+│     assertion(sort_array(*inp), exp, 0, inp)                                 │
+│   File "/app/temp_script.py", line 51, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[[-2, -3, -4, -5, -6]]': Expected '[-4,   │
+│ -2, -6, -5, -3]', but got [-6, -5, -4, -3, -2]                               │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 60.00:   0%|          | 9/7961 [00:11<2:16:44,  1.03s/it]Pass@1: 60.00:   0%|          | 10/7961 [00:11<2:10:25,  1.02it/s]Pass@1: 60.00:   0%|          | 10/7961 [00:11<2:37:11,  1.19s/it]
+                          Test Results (PBTClarifier2)                          
+┏━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Task ID    ┃ Status ┃ Clarify? ┃ Output                                      ┃
+┡━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ HumanEval… │   ✅   │    ❌    │ The provided implementation passed all t... │
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+└────────────┴────────┴──────────┴─────────────────────────────────────────────┘
+              Run Statistics              
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Metric                       ┃ Results ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━┩
+│ Total                        │ 10      │
+│ Turn Discounted Success      │ 0.5801  │
+│ nDCG                         │ 0.9000  │
+│ Pass@1                       │ 60.00   │
+│ Clarification rate           │ 90.00%  │
+│ Overasking rate              │ 0.00%   │
+│ High quality clarification   │ 100.00% │
+│ Average clarification length │ 163.67  │
+└──────────────────────────────┴─────────┘
+real 21.28
+user 6.65
+sys 3.10

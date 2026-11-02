@@ -1,0 +1,3206 @@
+{
+  "HumanEval/157": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 158,
+    "record_sha256": "cd717e14a6beaf49e6e2302ff0edadd5e6ab1795e723bf5c2bcba5bc102e4a04",
+    "authority": "official_evalplus",
+    "test_sha256": "f5a228a4e85c4b2835c0b397832a4a64fb16edd05a445a801b09cc25ffbd3a6e",
+    "canonical_sha256": "6c423447887a2f6de105ea2670d8508cfdf60ee921c0f963c3070af86ba25b88",
+    "base_input_count": 11,
+    "plus_input_count": 1000,
+    "assertion_count": 11,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate(3, 4, 5) == True, \"This prints if this assert fails 1 (good for debugging!)\"\n    assert candidate(1, 2, 3) == False\n    assert candidate(10, 6, 8) == True\n    assert candidate(2, 2, 2) == False\n    assert candidate(7, 24, 25) == True\n    assert candidate(10, 5, 7) == False\n    assert candidate(5, 12, 13) == True\n    assert candidate(15, 8, 17) == True\n    assert candidate(48, 55, 73) == True\n\n    # Check some edge cases that are easy to work out by hand.\n    assert candidate(1, 1, 1) == False, \"This prints if this assert fails 2 (also good for debugging!)\"\n    assert candidate(2, 2, 10) == False\n\n\ncheck(right_angle_triangle)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/157",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[3, 4, 5]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[1, 2, 3]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[10, 6, 8]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/43": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 44,
+    "record_sha256": "2df074a9f67c1586995650c6877fc6119aa6767f86fc8ebff9e4c401590a7d65",
+    "authority": "official_evalplus",
+    "test_sha256": "9682224c13e15c61af34c3bcf12b0c2221f437e55375ddb517028ea513b2d086",
+    "canonical_sha256": "3ca465833bf0a307a1a9a830ede39d312bb55510a682bd5d6e203a7bc7ea0abf",
+    "base_input_count": 9,
+    "plus_input_count": 974,
+    "assertion_count": 9,
+    "test_text": "\n\nMETADATA = {}\n\n\ndef check(candidate):\n    assert candidate([1, 3, 5, 0]) == False\n    assert candidate([1, 3, -2, 1]) == False\n    assert candidate([1, 2, 3, 7]) == False\n    assert candidate([2, 4, -5, 3, 5, 7]) == True\n    assert candidate([1]) == False\n\n    assert candidate([-3, 9, -1, 3, 2, 30]) == True\n    assert candidate([-3, 9, -1, 3, 2, 31]) == True\n    assert candidate([-3, 9, -1, 4, 2, 30]) == False\n    assert candidate([-3, 9, -1, 4, 2, 31]) == False\n\n\ncheck(pairs_sum_to_zero)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/43",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[1, 3, 5, 0]]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 3, -2, 1]]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 2, 3, 7]]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/67": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 68,
+    "record_sha256": "e576af12f5e838324b515ac7cf2eee37a0feb03953ce2821123dd47d6f2a72d3",
+    "authority": "official_evalplus",
+    "test_sha256": "f40e119008a805c8884d6e32e42bba15eb1584b7db7e24b8d77cdf7d552fffa8",
+    "canonical_sha256": "0aa00b0ea68dd0668800f5132540e325dfdc6c540adbe773183bc06b289732f1",
+    "base_input_count": 7,
+    "plus_input_count": 341,
+    "assertion_count": 7,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate(\"5 apples and 6 oranges\",19) == 8\n    assert candidate(\"5 apples and 6 oranges\",21) == 10\n    assert candidate(\"0 apples and 1 oranges\",3) == 2\n    assert candidate(\"1 apples and 0 oranges\",3) == 2\n    assert candidate(\"2 apples and 3 oranges\",100) == 95\n    assert candidate(\"2 apples and 3 oranges\",5) == 0\n    assert candidate(\"1 apples and 100 oranges\",120) == 19\n\ncheck(fruit_distribution)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/67",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['5 apples and 6 oranges', 19]",
+          "expected_repr": "8",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['5 apples and 6 oranges', 21]",
+          "expected_repr": "10",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['0 apples and 1 oranges', 3]",
+          "expected_repr": "2",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/106": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 107,
+    "record_sha256": "f6ba815aec8faa73740bdd82fa121606f58e82ff5defafaa16e6d0f6357b68cb",
+    "authority": "official_evalplus",
+    "test_sha256": "9992a5218df788d1845d3f5eb6d54fa2227c749413f92a7d5de1bf8b6d7aea66",
+    "canonical_sha256": "d4e09fc9c682fb887b1b46830ee756621c8bd533c9166df7b2c5b44699b22f1d",
+    "base_input_count": 4,
+    "plus_input_count": 104,
+    "assertion_count": 4,
+    "test_text": "def check(candidate):\n\n    assert candidate(5) == [1, 2, 6, 24, 15]\n    assert candidate(7) == [1, 2, 6, 24, 15, 720, 28]\n    assert candidate(1) == [1]\n    assert candidate(3) == [1, 2, 6]\n\ncheck(f)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/106",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[5]",
+          "expected_repr": "[1, 2, 6, 24, 15]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[7]",
+          "expected_repr": "[1, 2, 6, 24, 15, 720, 28]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[1]",
+          "expected_repr": "[1]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/21": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 22,
+    "record_sha256": "cf651949096960eab8fd7ff10d4a45346f8300696d0c900c73d946449e74e352",
+    "authority": "official_evalplus",
+    "test_sha256": "63a7d2cb7ceb0c3c6929301fddc0a94d12af967fc845f62084bd9cdfe79183e3",
+    "canonical_sha256": "c8c0336ab9e16f75e79ad947ec1cc0b6ed030dd6ce47b34ba96e82777562df8e",
+    "base_input_count": 5,
+    "plus_input_count": 999,
+    "assertion_count": 5,
+    "test_text": "\n\nMETADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate([2.0, 49.9]) == [0.0, 1.0]\n    assert candidate([100.0, 49.9]) == [1.0, 0.0]\n    assert candidate([1.0, 2.0, 3.0, 4.0, 5.0]) == [0.0, 0.25, 0.5, 0.75, 1.0]\n    assert candidate([2.0, 1.0, 5.0, 3.0, 4.0]) == [0.25, 0.0, 1.0, 0.5, 0.75]\n    assert candidate([12.0, 11.0, 15.0, 13.0, 14.0]) == [0.25, 0.0, 1.0, 0.5, 0.75]\n\ncheck(rescale_to_unit)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/21",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[2.0, 49.9]]",
+          "expected_repr": "[0.0, 1.0]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[100.0, 49.9]]",
+          "expected_repr": "[1.0, 0.0]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1.0, 2.0, 3.0, 4.0, 5.0]]",
+          "expected_repr": "[0.0, 0.25, 0.5, 0.75, 1.0]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/24": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 25,
+    "record_sha256": "a7b97e4a2c8628319ba50ab4ed65af220dc0f89221a945c3d73bee0518c337ed",
+    "authority": "official_evalplus",
+    "test_sha256": "9d225b690163a224b690043e5c07572367cf757e1b4554780d43e3e973ac2e9b",
+    "canonical_sha256": "fae22796e142dde95bf260df49adac3af89961107b7ee7fb15d31c4706df3888",
+    "base_input_count": 5,
+    "plus_input_count": 168,
+    "assertion_count": 5,
+    "test_text": "\n\nMETADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate(3) == 1\n    assert candidate(7) == 1\n    assert candidate(10) == 5\n    assert candidate(100) == 50\n    assert candidate(49) == 7\n\ncheck(largest_divisor)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/24",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[3]",
+          "expected_repr": "1",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[7]",
+          "expected_repr": "1",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[10]",
+          "expected_repr": "5",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/13": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 14,
+    "record_sha256": "232c0e7c83a90a6340e69d418188e38787c5571bcd17e91c6031ac4510dccb10",
+    "authority": "official_evalplus",
+    "test_sha256": "245153c48280cad5c1625ebe1b19ef3e2f18b499ceb5d0823c802518ffc56a3c",
+    "canonical_sha256": "4ed16eb12abe6304149d49af143d175106ef8ebd7672031d70b2212213e0e3bd",
+    "base_input_count": 4,
+    "plus_input_count": 987,
+    "assertion_count": 4,
+    "test_text": "\n\nMETADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate(3, 7) == 1\n    assert candidate(10, 15) == 5\n    assert candidate(49, 14) == 7\n    assert candidate(144, 60) == 12\n\ncheck(greatest_common_divisor)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/13",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[3, 7]",
+          "expected_repr": "1",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[10, 15]",
+          "expected_repr": "5",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[49, 14]",
+          "expected_repr": "7",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/143": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 144,
+    "record_sha256": "6d6859bd3553d79fb0704c25a40ad1d2053aba613084cbf1c205309250c87ef7",
+    "authority": "official_evalplus",
+    "test_sha256": "b0466a76a90784f2ff5ab9e04831975f6efd9228bc15afd894049f75d3319c39",
+    "canonical_sha256": "a09f461f05b31b1b6bdba4bed35253f372440475a19a9be60a122b75e3b43f8e",
+    "base_input_count": 7,
+    "plus_input_count": 1000,
+    "assertion_count": 7,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate(\"This is a test\") == \"is\"\n    assert candidate(\"lets go for swimming\") == \"go for\"\n    assert candidate(\"there is no place available here\") == \"there is no place\"\n    assert candidate(\"Hi I am Hussein\") == \"Hi am Hussein\"\n    assert candidate(\"go for it\") == \"go for it\"\n\n    # Check some edge cases that are easy to work out by hand.\n    assert candidate(\"here\") == \"\"\n    assert candidate(\"here is\") == \"is\"\n\n\ncheck(words_in_sentence)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/143",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['This is a test']",
+          "expected_repr": "'is'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['lets go for swimming']",
+          "expected_repr": "'go for'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['there is no place available here']",
+          "expected_repr": "'there is no place'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/136": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 137,
+    "record_sha256": "03563b92414fdd8cd571a1e2312ed9887f304bde8bf27020a92ae69ea4ad5190",
+    "authority": "official_evalplus",
+    "test_sha256": "be6eef42e4153625bfde32d9ffdbe5fb3644fe1d92cd2c3ab21242c9a7024994",
+    "canonical_sha256": "1574d7ffcd2bea7358bfda98081775b3e3718eed04e53101085d608106e01810",
+    "base_input_count": 11,
+    "plus_input_count": 998,
+    "assertion_count": 12,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate([2, 4, 1, 3, 5, 7]) == (None, 1)\n    assert candidate([2, 4, 1, 3, 5, 7, 0]) == (None, 1)\n    assert candidate([1, 3, 2, 4, 5, 6, -2]) == (-2, 1)\n    assert candidate([4, 5, 3, 6, 2, 7, -7]) == (-7, 2)\n    assert candidate([7, 3, 8, 4, 9, 2, 5, -9]) == (-9, 2)\n    assert candidate([]) == (None, None)\n    assert candidate([0]) == (None, None)\n    assert candidate([-1, -3, -5, -6]) == (-1, None)\n    assert candidate([-1, -3, -5, -6, 0]) == (-1, None)\n    assert candidate([-6, -4, -4, -3, 1]) == (-3, 1)\n    assert candidate([-6, -4, -4, -3, -100, 1]) == (-3, 1)\n\n    # Check some edge cases that are easy to work out by hand.\n    assert True\n\ncheck(largest_smallest_integers)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/136",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[2, 4, 1, 3, 5, 7]]",
+          "expected_repr": "(None, 1)",
+          "expected_type": "tuple",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[2, 4, 1, 3, 5, 7, 0]]",
+          "expected_repr": "(None, 1)",
+          "expected_type": "tuple",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 3, 2, 4, 5, 6, -2]]",
+          "expected_repr": "(-2, 1)",
+          "expected_type": "tuple",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/153": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 154,
+    "record_sha256": "42dc6acdb558291ffcc0aa07599eee72dca1a3c8b2b55ede7d92fd0fad1ed48c",
+    "authority": "official_evalplus",
+    "test_sha256": "f74ec959c53d64fa336d980177149249cb836f05f964eb2721ad97dcbc62e34c",
+    "canonical_sha256": "67e25349adaccb5b8802139a68029e10eaa274258af04c0cf209a95c038b709c",
+    "base_input_count": 9,
+    "plus_input_count": 194,
+    "assertion_count": 9,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate('Watashi', ['tEN', 'niNE', 'eIGHt8OKe']) == 'Watashi.eIGHt8OKe'\n    assert candidate('Boku123', ['nani', 'NazeDa', 'YEs.WeCaNe', '32145tggg']) == 'Boku123.YEs.WeCaNe'\n    assert candidate('__YESIMHERE', ['t', 'eMptY', 'nothing', 'zeR00', 'NuLl__', '123NoooneB321']) == '__YESIMHERE.NuLl__'\n    assert candidate('K', ['Ta', 'TAR', 't234An', 'cosSo']) == 'K.TAR'\n    assert candidate('__HAHA', ['Tab', '123', '781345', '-_-']) == '__HAHA.123'\n    assert candidate('YameRore', ['HhAas', 'okIWILL123', 'WorkOut', 'Fails', '-_-']) == 'YameRore.okIWILL123'\n    assert candidate('finNNalLLly', ['Die', 'NowW', 'Wow', 'WoW']) == 'finNNalLLly.WoW'\n\n    # Check some edge cases that are easy to work out by hand.\n    assert candidate('_', ['Bb', '91245']) == '_.Bb'\n    assert candidate('Sp', ['671235', 'Bb']) == 'Sp.671235'\n    \n\ncheck(Strongest_Extension)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/153",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['Watashi', ['tEN', 'niNE', 'eIGHt8OKe']]",
+          "expected_repr": "'Watashi.eIGHt8OKe'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['Boku123', ['nani', 'NazeDa', 'YEs.WeCaNe', '32145tggg']]",
+          "expected_repr": "'Boku123.YEs.WeCaNe'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['__YESIMHERE', ['t', 'eMptY', 'nothing', 'zeR00', 'NuLl__', '123NoooneB321']]",
+          "expected_repr": "'__YESIMHERE.NuLl__'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/116": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 117,
+    "record_sha256": "dfeb8e96d663e9ef88ea5395fe23ed5f34c465e3f6646a69ea2f90e73255d53c",
+    "authority": "official_evalplus",
+    "test_sha256": "271d2e4b3b909701128fb8118254c0c251e9934893221a1ac9d1ab9b0800e9d9",
+    "canonical_sha256": "4406b9c54c2aeaf76302542686774cee427137dad26161efb4baedbfd25253ae",
+    "base_input_count": 8,
+    "plus_input_count": 722,
+    "assertion_count": 10,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert True, \"This prints if this assert fails 1 (good for debugging!)\"\n    assert candidate([1,5,2,3,4]) == [1, 2, 4, 3, 5]\n    assert candidate([-2,-3,-4,-5,-6]) == [-4, -2, -6, -5, -3]\n    assert candidate([1,0,2,3,4]) == [0, 1, 2, 4, 3]\n    assert candidate([]) == []\n    assert candidate([2,5,77,4,5,3,5,7,2,3,4]) == [2, 2, 4, 4, 3, 3, 5, 5, 5, 7, 77]\n    assert candidate([3,6,44,12,32,5]) == [32, 3, 5, 6, 12, 44]\n    assert candidate([2,4,8,16,32]) == [2, 4, 8, 16, 32]\n    assert candidate([2,4,8,16,32]) == [2, 4, 8, 16, 32]\n\n    # Check some edge cases that are easy to work out by hand.\n    assert True, \"This prints if this assert fails 2 (also good for debugging!)\"\n\n\ncheck(sort_array)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/116",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[1, 5, 2, 3, 4]]",
+          "expected_repr": "[1, 2, 4, 3, 5]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[-2, -3, -4, -5, -6]]",
+          "expected_repr": "[-4, -2, -6, -5, -3]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 0, 2, 3, 4]]",
+          "expected_repr": "[0, 1, 2, 4, 3]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/42": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 43,
+    "record_sha256": "0236de3310c887eecbd33bf2b3c91e385bac8fe2a23b9420aed36e28a014a8cc",
+    "authority": "official_evalplus",
+    "test_sha256": "964fc2793370a5cb039140eea24dba45179c3b224a973473ba5f138ff4e489c4",
+    "canonical_sha256": "5d3f81b59dbb5d42464e36186da77c849c65ee85aa5375bf545ecc8556e97dba",
+    "base_input_count": 3,
+    "plus_input_count": 999,
+    "assertion_count": 3,
+    "test_text": "\n\nMETADATA = {}\n\n\ndef check(candidate):\n    assert candidate([]) == []\n    assert candidate([3, 2, 1]) == [4, 3, 2]\n    assert candidate([5, 2, 5, 2, 3, 3, 9, 0, 123]) == [6, 3, 6, 3, 4, 4, 10, 1, 124]\n\n\ncheck(incr_list)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/42",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[]]",
+          "expected_repr": "[]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[3, 2, 1]]",
+          "expected_repr": "[4, 3, 2]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[5, 2, 5, 2, 3, 3, 9, 0, 123]]",
+          "expected_repr": "[6, 3, 6, 3, 4, 4, 10, 1, 124]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/89": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 90,
+    "record_sha256": "d65a8f0cb97229ca8a59dc3ac69c0275fcc7d36d056b66464de16e46e09e5a64",
+    "authority": "official_evalplus",
+    "test_sha256": "74f4783d17d91fe6580b544636946dd78c761c93c5f69fc295c6da59360dc2f6",
+    "canonical_sha256": "783eb6ff9d448b827aad80cb28790e84ce14b62b4c3e7e6ba89c730badd34949",
+    "base_input_count": 8,
+    "plus_input_count": 1000,
+    "assertion_count": 8,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate('hi') == 'lm', \"This prints if this assert fails 1 (good for debugging!)\"\n    assert candidate('asdfghjkl') == 'ewhjklnop', \"This prints if this assert fails 1 (good for debugging!)\"\n    assert candidate('gf') == 'kj', \"This prints if this assert fails 1 (good for debugging!)\"\n    assert candidate('et') == 'ix', \"This prints if this assert fails 1 (good for debugging!)\"\n\n    assert candidate('faewfawefaewg')=='jeiajeaijeiak', \"This prints if this assert fails 1 (good for debugging!)\"\n    assert candidate('hellomyfriend')=='lippsqcjvmirh', \"This prints if this assert fails 2 (good for debugging!)\"\n    assert candidate('dxzdlmnilfuhmilufhlihufnmlimnufhlimnufhfucufh')=='hbdhpqrmpjylqmpyjlpmlyjrqpmqryjlpmqryjljygyjl', \"This prints if this assert fails 3 (good for debugging!)\"\n\n    # Check some edge cases that are easy to work out by hand.\n    assert candidate('a')=='e', \"This prints if this assert fails 2 (also good for debugging!)\"\n\n\ncheck(encrypt)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/89",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['hi']",
+          "expected_repr": "'lm'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['asdfghjkl']",
+          "expected_repr": "'ewhjklnop'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['gf']",
+          "expected_repr": "'kj'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/119": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 120,
+    "record_sha256": "48ad0a41983423d8e61e4ce0d82baedf673cd0cc57da62490116d674c6118a04",
+    "authority": "official_evalplus",
+    "test_sha256": "788395fbb99415fe168c77eb3b6ab1d7bfdbf0b7c95101a7179171efd83c2c81",
+    "canonical_sha256": "3c7347b1857a8ff48f82b55bc5611e077c13324e6f3cf6b26d722e72d4a25d67",
+    "base_input_count": 12,
+    "plus_input_count": 648,
+    "assertion_count": 12,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate(['()(', ')']) == 'Yes'\n    assert candidate([')', ')']) == 'No'\n    assert candidate(['(()(())', '())())']) == 'No'\n    assert candidate([')())', '(()()(']) == 'Yes'\n    assert candidate(['(())))', '(()())((']) == 'Yes'\n    assert candidate(['()', '())']) == 'No'\n    assert candidate(['(()(', '()))()']) == 'Yes'\n    assert candidate(['((((', '((())']) == 'No'\n    assert candidate([')(()', '(()(']) == 'No'\n    assert candidate([')(', ')(']) == 'No'\n    \n\n    # Check some edge cases that are easy to work out by hand.\n    assert candidate(['(', ')']) == 'Yes'\n    assert candidate([')', '(']) == 'Yes' \n\n\ncheck(match_parens)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/119",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[['()(', ')']]",
+          "expected_repr": "'Yes'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[')', ')']]",
+          "expected_repr": "'No'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[['(()(())', '())())']]",
+          "expected_repr": "'No'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/107": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 108,
+    "record_sha256": "0cee803dd1ec46fcdd0a9af33f4556d585beefa84e21a0f6a035076a28daf45f",
+    "authority": "official_evalplus",
+    "test_sha256": "f47b50c861d66db293be099f4eaff0d9c16c25beff4451868dddfdb735336d71",
+    "canonical_sha256": "b5d961b4d08fd1c2593c511e8ef0629edcbc7ce2b135062f5c5b0f4632ee7e31",
+    "base_input_count": 8,
+    "plus_input_count": 169,
+    "assertion_count": 8,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate(123) == (8, 13)\n    assert candidate(12) == (4, 6)\n    assert candidate(3) == (1, 2)\n    assert candidate(63) == (6, 8)\n    assert candidate(25) == (5, 6)\n    assert candidate(19) == (4, 6)\n    assert candidate(9) == (4, 5), \"This prints if this assert fails 1 (good for debugging!)\"\n\n    # Check some edge cases that are easy to work out by hand.\n    assert candidate(1) == (0, 1), \"This prints if this assert fails 2 (also good for debugging!)\"\n\n\ncheck(even_odd_palindrome)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/107",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[123]",
+          "expected_repr": "(8, 13)",
+          "expected_type": "tuple",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[12]",
+          "expected_repr": "(4, 6)",
+          "expected_type": "tuple",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[3]",
+          "expected_repr": "(1, 2)",
+          "expected_type": "tuple",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/100": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 101,
+    "record_sha256": "81da93efe62ed93a390d1189651be3dfdc85abc659975742fb03278c1c057f58",
+    "authority": "official_evalplus",
+    "test_sha256": "cab6350c0d369d2a43ac9797f8a22001951146cc4dcf83765e532fc7b1e1cee9",
+    "canonical_sha256": "1faeef15d117840d4f52d43f0f2f73801237693b7580dabc0ce1c87111e805b8",
+    "base_input_count": 5,
+    "plus_input_count": 112,
+    "assertion_count": 6,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate(3) == [3, 5, 7], \"Test 3\"\n    assert candidate(4) == [4,6,8,10], \"Test 4\"\n    assert candidate(5) == [5, 7, 9, 11, 13]\n    assert candidate(6) == [6, 8, 10, 12, 14, 16]\n    assert candidate(8) == [8, 10, 12, 14, 16, 18, 20, 22]\n\n    # Check some edge cases that are easy to work out by hand.\n    assert True, \"This prints if this assert fails 2 (also good for debugging!)\"\n\n\ncheck(make_a_pile)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/100",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[3]",
+          "expected_repr": "[3, 5, 7]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[4]",
+          "expected_repr": "[4, 6, 8, 10]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[5]",
+          "expected_repr": "[5, 7, 9, 11, 13]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/90": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 91,
+    "record_sha256": "65a44c625f07765d74eeca753150dfdb25d420f7a720aab5005f2e6496d012de",
+    "authority": "official_evalplus",
+    "test_sha256": "b3b28037b90d0e1f763eeb657a188ba86cac61f62bd16a8f3135c0726970870e",
+    "canonical_sha256": "fa7beac967f03d40e526c5e2351f1c5d2cc3b680d7c71ffba4a42d9492b325d8",
+    "base_input_count": 7,
+    "plus_input_count": 822,
+    "assertion_count": 8,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate([1, 2, 3, 4, 5]) == 2\n    assert candidate([5, 1, 4, 3, 2]) == 2\n    assert candidate([]) == None\n    assert candidate([1, 1]) == None\n    assert candidate([1,1,1,1,0]) == 1\n    assert candidate([1, 0**0]) == None\n    assert candidate([-35, 34, 12, -45]) == -35\n\n    # Check some edge cases that are easy to work out by hand.\n    assert True\n\n\ncheck(next_smallest)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/90",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[1, 2, 3, 4, 5]]",
+          "expected_repr": "2",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[5, 1, 4, 3, 2]]",
+          "expected_repr": "2",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[]]",
+          "expected_repr": "None",
+          "expected_type": "NoneType",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/87": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 88,
+    "record_sha256": "2438940437dce63398e0afd8a36320281ddc9d7810e18c1d860d7a2e42eb9f5f",
+    "authority": "official_evalplus",
+    "test_sha256": "b59609874dc738933e4c6f6af02b1202b3cf9ad6e978f0dc2150bac8cd87a07f",
+    "canonical_sha256": "9882a31fe02f111fc4932b429b84a85fbba44ef50e64162ba216990578dc4c0b",
+    "base_input_count": 6,
+    "plus_input_count": 207,
+    "assertion_count": 7,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate([\n        [1,2,3,4,5,6],\n        [1,2,3,4,1,6],\n        [1,2,3,4,5,1]\n    ], 1) == [(0, 0), (1, 4), (1, 0), (2, 5), (2, 0)]\n    assert candidate([\n        [1,2,3,4,5,6],\n        [1,2,3,4,5,6],\n        [1,2,3,4,5,6],\n        [1,2,3,4,5,6],\n        [1,2,3,4,5,6],\n        [1,2,3,4,5,6]\n    ], 2) == [(0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (5, 1)]\n    assert candidate([\n        [1,2,3,4,5,6],\n        [1,2,3,4,5,6],\n        [1,1,3,4,5,6],\n        [1,2,1,4,5,6],\n        [1,2,3,1,5,6],\n        [1,2,3,4,1,6],\n        [1,2,3,4,5,1]\n    ], 1) == [(0, 0), (1, 0), (2, 1), (2, 0), (3, 2), (3, 0), (4, 3), (4, 0), (5, 4), (5, 0), (6, 5), (6, 0)]\n    assert candidate([], 1) == []\n    assert candidate([[1]], 2) == []\n    assert candidate([[], [1], [1, 2, 3]], 3) == [(2, 2)]\n\n    # Check some edge cases that are easy to work out by hand.\n    assert True\n\n\ncheck(get_row)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/87",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 1, 6], [1, 2, 3, 4, 5, 1]], 1]",
+          "expected_repr": "[(0, 0), (1, 4), (1, 0), (2, 5), (2, 0)]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6]], 2]",
+          "expected_repr": "[(0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (5, 1)]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 1, 3, 4, 5, 6], [1, 2, 1, 4, 5, 6], [1, 2, 3, 1, 5, 6], [1, 2, 3, 4, 1, 6], [1, 2, 3, 4, 5, 1]], 1]",
+          "expected_repr": "[(0, 0), (1, 0), (2, 1), (2, 0), (3, 2), (3, 0), (4, 3), (4, 0), (5, 4), (5, 0), (6, 5), (6, 0)]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/44": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 45,
+    "record_sha256": "27f010c9e010ee57402c7a52f428aaf4644dab052ee0b6c3673337f7920b4857",
+    "authority": "official_evalplus",
+    "test_sha256": "7637dd46ade5ad59cc5d2e9be3f45e081fa8b36498e7c375c6604e2dee3c7765",
+    "canonical_sha256": "892dc2324a7e54c119b8d5a6b4f344bec1dc2205955d150b61a454ebb7fe71ac",
+    "base_input_count": 12,
+    "plus_input_count": 466,
+    "assertion_count": 7,
+    "test_text": "\n\nMETADATA = {}\n\n\ndef check(candidate):\n    assert candidate(8, 3) == \"22\"\n    assert candidate(9, 3) == \"100\"\n    assert candidate(234, 2) == \"11101010\"\n    assert candidate(16, 2) == \"10000\"\n    assert candidate(8, 2) == \"1000\"\n    assert candidate(7, 2) == \"111\"\n    for x in range(2, 8):\n        assert candidate(x, x + 1) == str(x)\n\n\ncheck(change_base)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/44",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[8, 3]",
+          "expected_repr": "'22'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[9, 3]",
+          "expected_repr": "'100'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[234, 2]",
+          "expected_repr": "'11101010'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/144": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 145,
+    "record_sha256": "bc65702fafacc23140fc1ae8cda91fb09e4e2354df07b46910817ff89a2cab26",
+    "authority": "official_evalplus",
+    "test_sha256": "29be89cb55904b50dd778a3ee8312df5a7de0b18178e466824750bc70d911cf7",
+    "canonical_sha256": "ff8992b3677c4ee08757e78a4aabc3c7eeb7da5dfa4f98d3a856e49f747bc52f",
+    "base_input_count": 13,
+    "plus_input_count": 998,
+    "assertion_count": 13,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate(\"1/5\", \"5/1\") == True, 'test1'\n    assert candidate(\"1/6\", \"2/1\") == False, 'test2'\n    assert candidate(\"5/1\", \"3/1\") == True, 'test3'\n    assert candidate(\"7/10\", \"10/2\") == False, 'test4'\n    assert candidate(\"2/10\", \"50/10\") == True, 'test5'\n    assert candidate(\"7/2\", \"4/2\") == True, 'test6'\n    assert candidate(\"11/6\", \"6/1\") == True, 'test7'\n    assert candidate(\"2/3\", \"5/2\") == False, 'test8'\n    assert candidate(\"5/2\", \"3/5\") == False, 'test9'\n    assert candidate(\"2/4\", \"8/4\") == True, 'test10'\n\n\n    # Check some edge cases that are easy to work out by hand.\n    assert candidate(\"2/4\", \"4/2\") == True, 'test11'\n    assert candidate(\"1/5\", \"5/1\") == True, 'test12'\n    assert candidate(\"1/5\", \"1/5\") == False, 'test13'\n\n\ncheck(simplify)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/144",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['1/5', '5/1']",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['1/6', '2/1']",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['5/1', '3/1']",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/52": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 53,
+    "record_sha256": "a467cfb4953c47467f86718e3458089fe9050a20578313e0e2dbbf122f6e595b",
+    "authority": "official_evalplus",
+    "test_sha256": "608f7be18645d2b0e27f84e7091a909402e467ce251d3abc451e2dd56f0b3e35",
+    "canonical_sha256": "bfb1178831b557b89f45fb2ea4ca7d45037652b218a8aed383bec25d07f2b0b4",
+    "base_input_count": 6,
+    "plus_input_count": 419,
+    "assertion_count": 6,
+    "test_text": "\n\nMETADATA = {}\n\n\ndef check(candidate):\n    assert candidate([1, 2, 4, 10], 100)\n    assert not candidate([1, 20, 4, 10], 5)\n    assert candidate([1, 20, 4, 10], 21)\n    assert candidate([1, 20, 4, 10], 22)\n    assert candidate([1, 8, 4, 10], 11)\n    assert not candidate([1, 8, 4, 10], 10)\n\n\ncheck(below_threshold)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/52",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[1, 2, 4, 10], 100]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 20, 4, 10], 5]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 20, 4, 10], 21]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/99": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 100,
+    "record_sha256": "32a2bafbf5255e0a046a47bbd68b1a01224251e937e67882748cfe2a8137b6ec",
+    "authority": "official_evalplus",
+    "test_sha256": "b82563d8cf5e036b24b8c4fd97f4f0e407332782927fff45500b7c961bc07e93",
+    "canonical_sha256": "4e9bd175e1262d54062a9179d7b51ad5de448b2f447f7a725c62b718c53ceb60",
+    "base_input_count": 5,
+    "plus_input_count": 710,
+    "assertion_count": 5,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate(\"10\") == 10, \"Test 1\"\n    assert candidate(\"14.5\") == 15, \"Test 2\"\n    assert candidate(\"-15.5\") == -16, \"Test 3\"\n    assert candidate(\"15.3\") == 15, \"Test 3\"\n\n    # Check some edge cases that are easy to work out by hand.\n    assert candidate(\"0\") == 0, \"Test 0\"\n\n\ncheck(closest_integer)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/99",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['10']",
+          "expected_repr": "10",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['10.23456789000000000001']",
+          "expected_repr": "10",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/93": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 94,
+    "record_sha256": "a4b8fb81f21878b7a8df6ffb70c119043f05ed9bd58322cb945f4774f9babbe2",
+    "authority": "official_evalplus",
+    "test_sha256": "68685e508441958439b4c46eaff5f1828d9ace9020d5f2b174928a580c029d5c",
+    "canonical_sha256": "4eb435a65d85d7a9ca7b5bf1247124c032a63082b482f1c5fb7117c8279bd7b4",
+    "base_input_count": 5,
+    "plus_input_count": 1000,
+    "assertion_count": 5,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate('TEST') == 'tgst', \"This prints if this assert fails 1 (good for debugging!)\"\n    assert candidate('Mudasir') == 'mWDCSKR', \"This prints if this assert fails 2 (good for debugging!)\"\n    assert candidate('YES') == 'ygs', \"This prints if this assert fails 3 (good for debugging!)\"\n    \n    # Check some edge cases that are easy to work out by hand.\n    assert candidate('This is a message') == 'tHKS KS C MGSSCGG', \"This prints if this assert fails 2 (also good for debugging!)\"\n    assert candidate(\"I DoNt KnOw WhAt tO WrItE\") == 'k dQnT kNqW wHcT Tq wRkTg', \"This prints if this assert fails 2 (also good for debugging!)\"\n\n\ncheck(encode)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/93",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['TEST']",
+          "expected_repr": "'tgst'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['Mudasir']",
+          "expected_repr": "'mWDCSKR'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['YES']",
+          "expected_repr": "'ygs'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/154": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 155,
+    "record_sha256": "42929485d8cc065d705d6d3e08c844e49367bd852da7b6d13a337445a762125c",
+    "authority": "official_evalplus",
+    "test_sha256": "580a2a98d3fc9b2b9e15398fd9ec8b1773c053bfd05049209fc925c5adf957d3",
+    "canonical_sha256": "583bb649957109dc4fa8abea4e1e6d9bf0b0e438c642cc143275fd375702f68b",
+    "base_input_count": 6,
+    "plus_input_count": 1000,
+    "assertion_count": 6,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    #assert True, \"This prints if this assert fails 1 (good for debugging!)\"\n\n    # Check some edge cases that are easy to work out by hand.\n    #assert True, \"This prints if this assert fails 2 (also good for debugging!)\"\n    assert  candidate(\"xyzw\",\"xyw\") == False , \"test #0\"\n    assert  candidate(\"yello\",\"ell\") == True , \"test #1\"\n    assert  candidate(\"whattup\",\"ptut\") == False , \"test #2\"\n    assert  candidate(\"efef\",\"fee\") == True , \"test #3\"\n    assert  candidate(\"abab\",\"aabb\") == False , \"test #4\"\n    assert  candidate(\"winemtt\",\"tinem\") == True , \"test #5\"\n\n\ncheck(cycpattern_check)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/154",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['xyzw', 'xyw']",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['yello', 'ell']",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['whattup', 'ptut']",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/140": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 141,
+    "record_sha256": "cc231ff43975881a69f3e2fff7e9d826a6d0c5715ba5aa78ba720710262a8d41",
+    "authority": "official_evalplus",
+    "test_sha256": "0137809df5737c3d5df7a2e05b7680e2fa8727cc4a669fe566a06278369dce3d",
+    "canonical_sha256": "aa7996d9388f19bb31e2e0c5c4ea2a124fe209b836f498127d344122d8f51745",
+    "base_input_count": 5,
+    "plus_input_count": 1000,
+    "assertion_count": 5,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate(\"Example\") == \"Example\", \"This prints if this assert fails 1 (good for debugging!)\"\n    assert candidate(\"Mudasir Hanif \") == \"Mudasir_Hanif_\", \"This prints if this assert fails 2 (good for debugging!)\"\n    assert candidate(\"Yellow Yellow  Dirty  Fellow\") == \"Yellow_Yellow__Dirty__Fellow\", \"This prints if this assert fails 3 (good for debugging!)\"\n    \n    # Check some edge cases that are easy to work out by hand.\n    assert candidate(\"Exa   mple\") == \"Exa-mple\", \"This prints if this assert fails 4 (good for debugging!)\"\n    assert candidate(\"   Exa 1 2 2 mple\") == \"-Exa_1_2_2_mple\", \"This prints if this assert fails 4 (good for debugging!)\"\n\n\ncheck(fix_spaces)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/140",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['Example']",
+          "expected_repr": "'Example'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['Mudasir Hanif ']",
+          "expected_repr": "'Mudasir_Hanif_'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['Yellow Yellow  Dirty  Fellow']",
+          "expected_repr": "'Yellow_Yellow__Dirty__Fellow'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/111": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 112,
+    "record_sha256": "d7f5ca5057522426f4a6c635b0e191c4e026dfa813758689749aefe4035b5c91",
+    "authority": "official_evalplus",
+    "test_sha256": "e81509932a078418b04e8e93b741a49733851b3768a52e13513d01080c3e715d",
+    "canonical_sha256": "9c4a07ff59622c86a5a45fcf022b36b2d46fe06410695e29a40565ef9c7cb0cd",
+    "base_input_count": 8,
+    "plus_input_count": 655,
+    "assertion_count": 8,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate('a b b a') == {'a':2,'b': 2}, \"This prints if this assert fails 1 (good for debugging!)\"\n    assert candidate('a b c a b') == {'a': 2, 'b': 2}, \"This prints if this assert fails 2 (good for debugging!)\"\n    assert candidate('a b c d g') == {'a': 1, 'b': 1, 'c': 1, 'd': 1, 'g': 1}, \"This prints if this assert fails 3 (good for debugging!)\"\n    assert candidate('r t g') == {'r': 1,'t': 1,'g': 1}, \"This prints if this assert fails 4 (good for debugging!)\"\n    assert candidate('b b b b a') == {'b': 4}, \"This prints if this assert fails 5 (good for debugging!)\"\n    assert candidate('r t g') == {'r': 1,'t': 1,'g': 1}, \"This prints if this assert fails 6 (good for debugging!)\"\n    \n    \n    # Check some edge cases that are easy to work out by hand.\n    assert candidate('') == {}, \"This prints if this assert fails 7 (also good for debugging!)\"\n    assert candidate('a') == {'a': 1}, \"This prints if this assert fails 8 (also good for debugging!)\"\n\n\ncheck(histogram)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/111",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['a b b a']",
+          "expected_repr": "{'a': 2, 'b': 2}",
+          "expected_type": "dict",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['a b c a b']",
+          "expected_repr": "{'a': 2, 'b': 2}",
+          "expected_type": "dict",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['a b c d g']",
+          "expected_repr": "{'a': 1, 'b': 1, 'c': 1, 'd': 1, 'g': 1}",
+          "expected_type": "dict",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/105": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 106,
+    "record_sha256": "4388bfab8be21059a6b6642affff9f46556b9c577da717f64e21c5677984bebb",
+    "authority": "official_evalplus",
+    "test_sha256": "7274854ad662682540800ebb22e38644966d2588c1fe8e8ae5666e9814f2cf80",
+    "canonical_sha256": "3cea29344c2d3ac5be6cbf625c2fddbd702ca5e3f3e75e8fd26673c081daf483",
+    "base_input_count": 5,
+    "plus_input_count": 999,
+    "assertion_count": 7,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert True, \"This prints if this assert fails 1 (good for debugging!)\"\n    assert candidate([2, 1, 1, 4, 5, 8, 2, 3]) == [\"Eight\", \"Five\", \"Four\", \"Three\", \"Two\", \"Two\", \"One\", \"One\"], \"Error\"\n    assert candidate([]) == [], \"Error\"\n    assert candidate([1, -1 , 55]) == ['One'], \"Error\"\n\n    # Check some edge cases that are easy to work out by hand.\n    assert True, \"This prints if this assert fails 2 (also good for debugging!)\"\n    assert candidate([1, -1, 3, 2]) == [\"Three\", \"Two\", \"One\"]\n    assert candidate([9, 4, 8]) == [\"Nine\", \"Eight\", \"Four\"]\n\n\ncheck(by_length)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/105",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[2, 1, 1, 4, 5, 8, 2, 3]]",
+          "expected_repr": "['Eight', 'Five', 'Four', 'Three', 'Two', 'Two', 'One', 'One']",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[]]",
+          "expected_repr": "[]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, -1, 55]]",
+          "expected_repr": "['One']",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/31": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 32,
+    "record_sha256": "6670d063dc1573fef02b90c4b524f53e3e56ff1191c2256421506d29df8d398b",
+    "authority": "official_evalplus",
+    "test_sha256": "ae459ad4ac1d0191776ba055ccd9676af5dedcfec472636c5a3dfae31ce6ffdb",
+    "canonical_sha256": "ab4f5e1299a7085d6435440248a5a5be79e941b1ae0733671db7507fcfad5b20",
+    "base_input_count": 13,
+    "plus_input_count": 154,
+    "assertion_count": 13,
+    "test_text": "\n\nMETADATA = {}\n\n\ndef check(candidate):\n    assert candidate(6) == False\n    assert candidate(101) == True\n    assert candidate(11) == True\n    assert candidate(13441) == True\n    assert candidate(61) == True\n    assert candidate(4) == False\n    assert candidate(1) == False\n    assert candidate(5) == True\n    assert candidate(11) == True\n    assert candidate(17) == True\n    assert candidate(5 * 17) == False\n    assert candidate(11 * 7) == False\n    assert candidate(13441 * 19) == False\n\n\ncheck(is_prime)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/31",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[6]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[101]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[11]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/156": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 157,
+    "record_sha256": "3f65d665f3ecca483c86de8390ef0828d65072905de3b600f711269bb33e9c69",
+    "authority": "official_evalplus",
+    "test_sha256": "c7c8580c421a3259513490eaa68f570e3bb29817aa2ac3b8d11d2b3080b33204",
+    "canonical_sha256": "af079caca7d09cadbe8ae2717aff2f3d722dca4d1051ee0428ba2e7c8988772e",
+    "base_input_count": 14,
+    "plus_input_count": 206,
+    "assertion_count": 15,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate(19) == 'xix'\n    assert candidate(152) == 'clii'\n    assert candidate(251) == 'ccli'\n    assert candidate(426) == 'cdxxvi'\n    assert candidate(500) == 'd'\n    assert candidate(1) == 'i'\n    assert candidate(4) == 'iv'\n    assert candidate(43) == 'xliii'\n    assert candidate(90) == 'xc'\n    assert candidate(94) == 'xciv'\n    assert candidate(532) == 'dxxxii'\n    assert candidate(900) == 'cm'\n    assert candidate(994) == 'cmxciv'\n    assert candidate(1000) == 'm'\n\n    # Check some edge cases that are easy to work out by hand.\n    assert True\n\n\ncheck(int_to_mini_roman)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/156",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[19]",
+          "expected_repr": "'xix'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[152]",
+          "expected_repr": "'clii'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[251]",
+          "expected_repr": "'ccli'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/18": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 19,
+    "record_sha256": "cd08e1827e79f87cf388b3371fad59550c3f648c1725919ae3199012fe37796a",
+    "authority": "official_evalplus",
+    "test_sha256": "b0e95a6f936a26aee8335c90da59546aa93bddd8ab1c759b81c005eb131cc670",
+    "canonical_sha256": "c3d44873cd59bd8ccd3f2cf9cfed16acc89d987cdee72bac19b141f126807250",
+    "base_input_count": 4,
+    "plus_input_count": 1000,
+    "assertion_count": 4,
+    "test_text": "\n\nMETADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate('', 'x') == 0\n    assert candidate('xyxyxyx', 'x') == 4\n    assert candidate('cacacacac', 'cac') == 4\n    assert candidate('john doe', 'john') == 1\n\ncheck(how_many_times)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/18",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['', 'x']",
+          "expected_repr": "0",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['xyxyxyx', 'x']",
+          "expected_repr": "4",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['cacacacac', 'cac']",
+          "expected_repr": "4",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/84": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 85,
+    "record_sha256": "8e067d9c17d657cd8cd75a55a43c29936dbf0754bc969d04a424a6b1134b949a",
+    "authority": "official_evalplus",
+    "test_sha256": "d6277a428936327646a3a2b9d20aaa7759c7347223941cb7ed739fc1345dcac7",
+    "canonical_sha256": "8b7edaf1f07b2ec953a9f4718728b12e108cb13b1675e4083fe65d5452393e69",
+    "base_input_count": 5,
+    "plus_input_count": 211,
+    "assertion_count": 7,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert True, \"This prints if this assert fails 1 (good for debugging!)\"\n    assert candidate(1000) == \"1\", \"Error\"\n    assert candidate(150) == \"110\", \"Error\"\n    assert candidate(147) == \"1100\", \"Error\"\n\n    # Check some edge cases that are easy to work out by hand.\n    assert True, \"This prints if this assert fails 2 (also good for debugging!)\"\n    assert candidate(333) == \"1001\", \"Error\"\n    assert candidate(963) == \"10010\", \"Error\"\n\n\ncheck(solve)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/84",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[1000]",
+          "expected_repr": "'1'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[150]",
+          "expected_repr": "'110'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[147]",
+          "expected_repr": "'1100'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/33": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 34,
+    "record_sha256": "ea605f48c0a2c7f7faff4f06819d5e5e46e9e71ef5c78c60311cf6c94607c4c2",
+    "authority": "official_evalplus",
+    "test_sha256": "5ce16db51bcb16ae239563da6675b7a1932b8f1c27cc402b9458832db1e3a3a7",
+    "canonical_sha256": "65f1783c0b007565251d6a3a25ec117f709ced203bd17fafb2fb6f9a06b6603d",
+    "base_input_count": 10,
+    "plus_input_count": 955,
+    "assertion_count": 7,
+    "test_text": "\n\nMETADATA = {}\n\n\ndef check(candidate):\n    assert tuple(candidate([1, 2, 3])) == tuple(sort_third([1, 2, 3]))\n    assert tuple(candidate([5, 3, -5, 2, -3, 3, 9, 0, 123, 1, -10])) == tuple(sort_third([5, 3, -5, 2, -3, 3, 9, 0, 123, 1, -10]))\n    assert tuple(candidate([5, 8, -12, 4, 23, 2, 3, 11, 12, -10])) == tuple(sort_third([5, 8, -12, 4, 23, 2, 3, 11, 12, -10]))\n    assert tuple(candidate([5, 6, 3, 4, 8, 9, 2])) == tuple([2, 6, 3, 4, 8, 9, 5])\n    assert tuple(candidate([5, 8, 3, 4, 6, 9, 2])) == tuple([2, 8, 3, 4, 6, 9, 5])\n    assert tuple(candidate([5, 6, 9, 4, 8, 3, 2])) == tuple([2, 6, 9, 4, 8, 3, 5])\n    assert tuple(candidate([5, 6, 3, 4, 8, 9, 2, 1])) == tuple([2, 6, 3, 4, 8, 9, 5, 1])\n\n\ncheck(sort_third)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/33",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[1, 2, 3]]",
+          "expected_repr": "[1, 2, 3]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 2, 3]]",
+          "expected_repr": "[1, 2, 3]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[5, 3, -5, 2, -3, 3, 9, 0, 123, 1, -10]]",
+          "expected_repr": "[1, 3, -5, 2, -3, 3, 5, 0, 123, 9, -10]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/127": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 128,
+    "record_sha256": "ba111905382be470b9130fe8927776f95d16026c4e39b695f59a58ef1321927e",
+    "authority": "official_evalplus",
+    "test_sha256": "2989da699742ffd7b238aea092e2e029db4b37ea5248c7b33200786c3c2ff8d4",
+    "canonical_sha256": "3648a5868d16b992e5e7d861f6a33515721163ba107330544981ca391cff4f25",
+    "base_input_count": 8,
+    "plus_input_count": 580,
+    "assertion_count": 8,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate((1, 2), (2, 3)) == \"NO\"\n    assert candidate((-1, 1), (0, 4)) == \"NO\"\n    assert candidate((-3, -1), (-5, 5)) == \"YES\"\n    assert candidate((-2, 2), (-4, 0)) == \"YES\"\n\n    # Check some edge cases that are easy to work out by hand.\n    assert candidate((-11, 2), (-1, -1)) == \"NO\"\n    assert candidate((1, 2), (3, 5)) == \"NO\"\n    assert candidate((1, 2), (1, 2)) == \"NO\"\n    assert candidate((-2, -2), (-3, -2)) == \"NO\"\n\n\ncheck(intersection)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/127",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[1, 2], [2, 3]]",
+          "expected_repr": "'NO'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[-1, 1], [0, 4]]",
+          "expected_repr": "'NO'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[-3, -1], [-5, 5]]",
+          "expected_repr": "'YES'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/55": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 56,
+    "record_sha256": "a7cb11efab3d32bf1801105ac49d92765d3337f47bb0493128ab6ee5334612d2",
+    "authority": "official_evalplus",
+    "test_sha256": "f0ee45b4c7822fc1b1719d6e636c483eace226dcb0693a646a31512565dd8be5",
+    "canonical_sha256": "6fd3ffcb783a07ca1924a52b95971b515291e9dd69d17c082dc443cc5cea2b11",
+    "base_input_count": 5,
+    "plus_input_count": 45,
+    "assertion_count": 5,
+    "test_text": "\n\nMETADATA = {}\n\n\ndef check(candidate):\n    assert candidate(10) == 55\n    assert candidate(1) == 1\n    assert candidate(8) == 21\n    assert candidate(11) == 89\n    assert candidate(12) == 144\n\n\ncheck(fib)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/55",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[10]",
+          "expected_repr": "55",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[1]",
+          "expected_repr": "1",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[8]",
+          "expected_repr": "21",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/137": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 138,
+    "record_sha256": "7edeb13de13cdeacb2ac92f41cab37b7cf7b54813041d81bc00112168a758dbd",
+    "authority": "official_evalplus",
+    "test_sha256": "411231b2db9a40be0a1eb382f2cde493ff259d2f793f6bc723271a0ce4bc155e",
+    "canonical_sha256": "e2b10aa839033660b32175130ded5466b21d38da1b29baaae275e58091848fb1",
+    "base_input_count": 8,
+    "plus_input_count": 1000,
+    "assertion_count": 9,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate(1, 2) == 2\n    assert candidate(1, 2.5) == 2.5\n    assert candidate(2, 3) == 3\n    assert candidate(5, 6) == 6\n    assert candidate(1, \"2,3\") == \"2,3\"\n    assert candidate(\"5,1\", \"6\") == \"6\"\n    assert candidate(\"1\", \"2\") == \"2\"\n    assert candidate(\"1\", 1) == None\n\n    # Check some edge cases that are easy to work out by hand.\n    assert True\n\n\ncheck(compare_one)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/137",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[1, 2]",
+          "expected_repr": "2",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[1, 2.5]",
+          "expected_repr": "2.5",
+          "expected_type": "float",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[2, 3]",
+          "expected_repr": "3",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/149": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 150,
+    "record_sha256": "ab98298f0cf09edd0b7623d570e0c55f61733109f23ebd58f6b3ee2bf1fb4440",
+    "authority": "official_evalplus",
+    "test_sha256": "ee54c6bed803337b5540607f0e97223e1233c4d64baaabb168d00a5b1d114595",
+    "canonical_sha256": "1799b9cbd94d371c082150880908f6b51c0b68c970d1242c3136ccc9801148db",
+    "base_input_count": 7,
+    "plus_input_count": 979,
+    "assertion_count": 7,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate([\"aa\", \"a\", \"aaa\"]) == [\"aa\"]\n    assert candidate([\"school\", \"AI\", \"asdf\", \"b\"]) == [\"AI\", \"asdf\", \"school\"]\n    assert candidate([\"d\", \"b\", \"c\", \"a\"]) == []\n    assert candidate([\"d\", \"dcba\", \"abcd\", \"a\"]) == [\"abcd\", \"dcba\"]\n\n    # Check some edge cases that are easy to work out by hand.\n    assert candidate([\"AI\", \"ai\", \"au\"]) == [\"AI\", \"ai\", \"au\"]\n    assert candidate([\"a\", \"b\", \"b\", \"c\", \"c\", \"a\"]) == []\n    assert candidate(['aaaa', 'bbbb', 'dd', 'cc']) == [\"cc\", \"dd\", \"aaaa\", \"bbbb\"]\n\n\ncheck(sorted_list_sum)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/149",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[['aa', 'a', 'aaa']]",
+          "expected_repr": "['aa']",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[['d', 'dcba', 'abcd', 'a']]",
+          "expected_repr": "['abcd', 'dcba']",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[['aaaa', 'bbbb', 'dd', 'cc']]",
+          "expected_repr": "['cc', 'dd', 'aaaa', 'bbbb']",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/7": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 8,
+    "record_sha256": "ba983d8c19c48631fffb29facb6d778020d53eb9653211c58cc9347fab71fe50",
+    "authority": "official_evalplus",
+    "test_sha256": "c41d7f508eeab6e941917f13ed105bfdf6aee26be439fda8d6203a93d76ab745",
+    "canonical_sha256": "7a02859cca30b46d2847877c7efe906cdc849a48a79218903639531e99549a25",
+    "base_input_count": 4,
+    "plus_input_count": 178,
+    "assertion_count": 4,
+    "test_text": "\n\nMETADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate([], 'john') == []\n    assert candidate(['xxx', 'asd', 'xxy', 'john doe', 'xxxAAA', 'xxx'], 'xxx') == ['xxx', 'xxxAAA', 'xxx']\n    assert candidate(['xxx', 'asd', 'aaaxxy', 'john doe', 'xxxAAA', 'xxx'], 'xx') == ['xxx', 'aaaxxy', 'xxxAAA', 'xxx']\n    assert candidate(['grunt', 'trumpet', 'prune', 'gruesome'], 'run') == ['grunt', 'prune']\n\ncheck(filter_by_substring)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/7",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[], 'john']",
+          "expected_repr": "[]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[['Washington', 'DC', 'New York City', 'Boston', 'Los Angeles', 'San Francisco', 'Miami'], 'an']",
+          "expected_repr": "['San Francisco']",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/162": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 163,
+    "record_sha256": "28dc9347ff5b9ae50a1ccc022cf14d69d2bde82e135af6512acc8a7d14e1ec36",
+    "authority": "official_evalplus",
+    "test_sha256": "4aa510e7f42fee880aef73623348acf3fdba22c5b544ee90be7b3ac4222b9584",
+    "canonical_sha256": "3dbf03808472f7afd0bae76148c320a5e54e96ea6464ef23ffbc4538012d6ff6",
+    "base_input_count": 4,
+    "plus_input_count": 1000,
+    "assertion_count": 5,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate('Hello world') == '3e25960a79dbc69b674cd4ec67a72c62'\n    assert candidate('') == None\n    assert candidate('A B C') == '0ef78513b0cb8cef12743f5aeb35f888'\n    assert candidate('password') == '5f4dcc3b5aa765d61d8327deb882cf99'\n\n    # Check some edge cases that are easy to work out by hand.\n    assert True\n\n\ncheck(string_to_md5)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/162",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['Hello world']",
+          "expected_repr": "'3e25960a79dbc69b674cd4ec67a72c62'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['']",
+          "expected_repr": "None",
+          "expected_type": "NoneType",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['A B C']",
+          "expected_repr": "'0ef78513b0cb8cef12743f5aeb35f888'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/47": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 48,
+    "record_sha256": "74fc348e8c0bfb7266a3674280d31ed64b253bd43b8559ae62ccd444465cf441",
+    "authority": "official_evalplus",
+    "test_sha256": "104234ea04f1990f7a47df63e157b5e6a3ea81053a9a559f19e32322702d6b54",
+    "canonical_sha256": "7b99227061641d5c5313878fb41d46d6fa3615a498c5164f8f8aba426bd8630e",
+    "base_input_count": 5,
+    "plus_input_count": 995,
+    "assertion_count": 5,
+    "test_text": "\n\nMETADATA = {}\n\n\ndef check(candidate):\n    assert candidate([3, 1, 2, 4, 5]) == 3\n    assert candidate([-10, 4, 6, 1000, 10, 20]) == 8.0\n    assert candidate([5]) == 5\n    assert candidate([6, 5]) == 5.5\n    assert candidate([8, 1, 3, 9, 9, 2, 7]) == 7 \n\n\ncheck(median)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/47",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[3, 1, 2, 4, 5]]",
+          "expected_repr": "3",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[-10, 4, 6, 1000, 10, 20]]",
+          "expected_repr": "8.0",
+          "expected_type": "float",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[5]]",
+          "expected_repr": "5",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/54": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 55,
+    "record_sha256": "01aaed546b4aa0cf4eadd5bdfe9f315b48f080dc841dfa58f60f9d1438e57167",
+    "authority": "official_evalplus",
+    "test_sha256": "36bc9a67450ed7f37b2f5c69aed6c525adfc406edd62dcbba974211baf384cec",
+    "canonical_sha256": "af0d6c41f0095553cfebcc9bdb5dd1a74d4b40d792375ed764ccf3771281e3bd",
+    "base_input_count": 7,
+    "plus_input_count": 999,
+    "assertion_count": 7,
+    "test_text": "\n\nMETADATA = {}\n\n\ndef check(candidate):\n    assert candidate('eabcdzzzz', 'dddzzzzzzzddeddabc') == True\n    assert candidate('abcd', 'dddddddabc') == True\n    assert candidate('dddddddabc', 'abcd') == True\n    assert candidate('eabcd', 'dddddddabc') == False\n    assert candidate('abcd', 'dddddddabcf') == False\n    assert candidate('eabcdzzzz', 'dddzzzzzzzddddabc') == False\n    assert candidate('aabb', 'aaccc') == False\n\n\ncheck(same_chars)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/54",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['eabcdzzzz', 'dddzzzzzzzddeddabc']",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['abcd', 'dddddddabc']",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['dddddddabc', 'abcd']",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/62": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 63,
+    "record_sha256": "89996960560797dd844e9c1b00a6f531769c9abb8af49c2fcab1d46a7c2fe2d8",
+    "authority": "official_evalplus",
+    "test_sha256": "d26d34af8e147579dbd458c0f9c5e54df6dc6299efa2be429325bd4d70bbab5f",
+    "canonical_sha256": "a23c336a77f51266f5409b53c837df975726112a15a452f1b36946ea89b29391",
+    "base_input_count": 5,
+    "plus_input_count": 948,
+    "assertion_count": 5,
+    "test_text": "\n\nMETADATA = {}\n\n\ndef check(candidate):\n    assert candidate([3, 1, 2, 4, 5]) == [1, 4, 12, 20]\n    assert candidate([1, 2, 3]) == [2, 6]\n    assert candidate([3, 2, 1]) == [2, 2]\n    assert candidate([3, 2, 1, 0, 4]) == [2, 2, 0, 16]\n    assert candidate([1]) == []\n\n\ncheck(derivative)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/62",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[3, 1, 2, 4, 5]]",
+          "expected_repr": "[1, 4, 12, 20]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 2, 3]]",
+          "expected_repr": "[2, 6]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[3, 2, 1]]",
+          "expected_repr": "[2, 2]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/123": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 124,
+    "record_sha256": "82a6172f43462a78ac371df2df5a929dd07903ceff3a5308a45b69acd5504cdd",
+    "authority": "official_evalplus",
+    "test_sha256": "ca6327b7b28a72c5aff555dab0a61f90f183f9c474148ea639980ba1bf471756",
+    "canonical_sha256": "a4f594ce3294963a16aaf9a6cb503ef71bae827d6cd25a47caada68b4ef2178c",
+    "base_input_count": 4,
+    "plus_input_count": 139,
+    "assertion_count": 4,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate(14) == [1, 5, 7, 11, 13, 17]\n    assert candidate(5) == [1, 5]\n    assert candidate(12) == [1, 3, 5], \"This prints if this assert fails 1 (good for debugging!)\"\n\n    # Check some edge cases that are easy to work out by hand.\n    assert candidate(1) == [1], \"This prints if this assert fails 2 (also good for debugging!)\"\n\n\ncheck(get_odd_collatz)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/123",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[14]",
+          "expected_repr": "[1, 5, 7, 11, 13, 17]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[5]",
+          "expected_repr": "[1, 5]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[12]",
+          "expected_repr": "[1, 3, 5]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/59": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 60,
+    "record_sha256": "ab963c933d45ae8c6931258594c4c83e2ab0888b534ede8461f92e1dcd3cc66b",
+    "authority": "official_evalplus",
+    "test_sha256": "33a14d8bb42e687a511b900df5b981517e39aa236113a43437ef7326b6e5d053",
+    "canonical_sha256": "21c6bc9c19f8fb43f5116fcb962fcc02f220cd8184596dbf7553612d359e4d1d",
+    "base_input_count": 5,
+    "plus_input_count": 174,
+    "assertion_count": 5,
+    "test_text": "\n\nMETADATA = {}\n\n\ndef check(candidate):\n    assert candidate(15) == 5\n    assert candidate(27) == 3\n    assert candidate(63) == 7\n    assert candidate(330) == 11\n    assert candidate(13195) == 29\n\n\ncheck(largest_prime_factor)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/59",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[15]",
+          "expected_repr": "5",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[27]",
+          "expected_repr": "3",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[63]",
+          "expected_repr": "7",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/88": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 89,
+    "record_sha256": "b42047f2d88bbed58dd01349177c12f7b22e0e349f9a2b9cad28548ddfcf9901",
+    "authority": "official_evalplus",
+    "test_sha256": "b78e93cc2f775bff15ddddc357ec07b9fd56a09e0c05dd30a3ea2d1c5a172d31",
+    "canonical_sha256": "16844439019e1a559b7847639599ddb435dc25d0f41b9cf78e5db39c5660c965",
+    "base_input_count": 7,
+    "plus_input_count": 1000,
+    "assertion_count": 9,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert True, \"This prints if this assert fails 1 (good for debugging!)\"\n    assert candidate([]) == [], \"Error\"\n    assert candidate([5]) == [5], \"Error\"\n    assert candidate([2, 4, 3, 0, 1, 5]) == [0, 1, 2, 3, 4, 5], \"Error\"\n    assert candidate([2, 4, 3, 0, 1, 5, 6]) == [6, 5, 4, 3, 2, 1, 0], \"Error\"\n\n    # Check some edge cases that are easy to work out by hand.\n    assert True, \"This prints if this assert fails 2 (also good for debugging!)\"\n    assert candidate([2, 1]) == [1, 2], \"Error\"\n    assert candidate([15, 42, 87, 32 ,11, 0]) == [0, 11, 15, 32, 42, 87], \"Error\"\n    assert candidate([21, 14, 23, 11]) == [23, 21, 14, 11], \"Error\"\n\n\ncheck(sort_array)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/88",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[]]",
+          "expected_repr": "[]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[5]]",
+          "expected_repr": "[5]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[2, 4, 3, 0, 1, 5]]",
+          "expected_repr": "[0, 1, 2, 3, 4, 5]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/0": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 1,
+    "record_sha256": "48301fdf165591d98537dba7f67e2df80bec18346e0610d01f810895f2ab0d5d",
+    "authority": "official_evalplus",
+    "test_sha256": "1f98750a5ebb4ef94684b02df31e4ca922e125db1f0309dfe16368a0ca8f6d50",
+    "canonical_sha256": "ecdad7aa9b7c4f8ee14f522004312bdd17ab6fb5e224f294cee4f67aec95d5b9",
+    "base_input_count": 7,
+    "plus_input_count": 999,
+    "assertion_count": 7,
+    "test_text": "\n\nMETADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.3) == True\n    assert candidate([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.05) == False\n    assert candidate([1.0, 2.0, 5.9, 4.0, 5.0], 0.95) == True\n    assert candidate([1.0, 2.0, 5.9, 4.0, 5.0], 0.8) == False\n    assert candidate([1.0, 2.0, 3.0, 4.0, 5.0, 2.0], 0.1) == True\n    assert candidate([1.1, 2.2, 3.1, 4.1, 5.1], 1.0) == True\n    assert candidate([1.1, 2.2, 3.1, 4.1, 5.1], 0.5) == False\n\n\ncheck(has_close_elements)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/0",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.3]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.05]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1.0, 2.0, 5.9, 4.0, 5.0], 0.95]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/28": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 29,
+    "record_sha256": "99969c63168a9b53a39a7892b86fad1f45145b166ee489452beb82a83977fc8e",
+    "authority": "official_evalplus",
+    "test_sha256": "8956b38fcc0941a6367b4dd27b1c9a0ad51693ae4e5cc1f4efaec8970bd3035d",
+    "canonical_sha256": "23e3ab513a4b224e7d583ebdb4ab9bd595df329d9904c07dc005ec11ce518016",
+    "base_input_count": 3,
+    "plus_input_count": 861,
+    "assertion_count": 3,
+    "test_text": "\n\nMETADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate([]) == ''\n    assert candidate(['x', 'y', 'z']) == 'xyz'\n    assert candidate(['x', 'y', 'z', 'w', 'k']) == 'xyzwk'\n\ncheck(concatenate)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/28",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[]]",
+          "expected_repr": "''",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[['x', 'y', 'z']]",
+          "expected_repr": "'xyz'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[['x', 'y', 'z', 'w', 'k']]",
+          "expected_repr": "'xyzwk'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/11": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 12,
+    "record_sha256": "c59513606de53cc10160838dfda21b0794892083592a1e6f37e8b924d0e06fc0",
+    "authority": "official_evalplus",
+    "test_sha256": "c65da1a0ece3e13772b6e991bfc1876f7de8906826d49c61c5b6dd09bcf1d975",
+    "canonical_sha256": "b0258503b3678fbb7b340b04940fdfb3b2254e92c7c39fed680752d1ee7e0bbb",
+    "base_input_count": 3,
+    "plus_input_count": 405,
+    "assertion_count": 3,
+    "test_text": "\n\nMETADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate('111000', '101010') == '010010'\n    assert candidate('1', '1') == '0'\n    assert candidate('0101', '0000') == '0101'\n\ncheck(string_xor)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/11",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['111000', '101010']",
+          "expected_repr": "'010010'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['1', '1']",
+          "expected_repr": "'0'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['0101', '0000']",
+          "expected_repr": "'0101'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/75": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 76,
+    "record_sha256": "24ce6762c7440cc0072deaaee60cb0bee31c5b2674dab62d510702ef58a3199c",
+    "authority": "official_evalplus",
+    "test_sha256": "d77dca29ad637ade3b4787d26af20747ab5d5f4436940de306f5c4fdbfa7b53e",
+    "canonical_sha256": "ee3624edcde5256fd2d8dcdd129a4cac16badeb794a9dbd00b6445e0b9bd0cb9",
+    "base_input_count": 4,
+    "plus_input_count": 93,
+    "assertion_count": 10,
+    "test_text": "def check(candidate):\n\n    assert candidate(5) == False\n    assert candidate(30) == True\n    assert candidate(8) == True\n    assert candidate(10) == False\n    assert candidate(125) == True\n    assert candidate(3 * 5 * 7) == True\n    assert candidate(3 * 6 * 7) == False\n    assert candidate(9 * 9 * 9) == False\n    assert candidate(11 * 9 * 9) == False\n    assert candidate(11 * 13 * 7) == True\n\n\ncheck(is_multiply_prime)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/75",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[5]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[30]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[8]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/14": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 15,
+    "record_sha256": "b0f457538bb47a5209bbe1c81758ec43fe2898d1f9bf2869d5de2b3b9a37904a",
+    "authority": "official_evalplus",
+    "test_sha256": "7baaf4500ade1db9d8b57b52ebe87c72d543154baadc10491f46e8b76bd72b2a",
+    "canonical_sha256": "569fd53842909ca96942675162588f2afe4450279a6e6cc8eb07334dc5414acd",
+    "base_input_count": 3,
+    "plus_input_count": 903,
+    "assertion_count": 3,
+    "test_text": "\n\nMETADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate('') == []\n    assert candidate('asdfgh') == ['a', 'as', 'asd', 'asdf', 'asdfg', 'asdfgh']\n    assert candidate('WWW') == ['W', 'WW', 'WWW']\n\ncheck(all_prefixes)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/14",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['']",
+          "expected_repr": "[]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['asdfgh']",
+          "expected_repr": "['a', 'as', 'asd', 'asdf', 'asdfg', 'asdfgh']",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['WWW']",
+          "expected_repr": "['W', 'WW', 'WWW']",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "HumanEval/95": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+    "line": 96,
+    "record_sha256": "afdeec191c7420a102fa5b315cf8f0e5c2cd122ba98db6441193e30bd11f180c",
+    "authority": "official_evalplus",
+    "test_sha256": "00d17da3a510576c9625be499d191fd930ec65e0ca6fcbc546bc0855c97dfe16",
+    "canonical_sha256": "fa5df56dbe395bbaf33fb8ccc01e78e82ff0378013959a706143371433d30dcf",
+    "base_input_count": 14,
+    "plus_input_count": 510,
+    "assertion_count": 7,
+    "test_text": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate({\"p\":\"pineapple\", \"b\":\"banana\"}) == True, \"First test error: \" + str(candidate({\"p\":\"pineapple\", \"b\":\"banana\"}))\n    assert candidate({\"p\":\"pineapple\", \"A\":\"banana\", \"B\":\"banana\"}) == False, \"Second test error: \" + str(candidate({\"p\":\"pineapple\", \"A\":\"banana\", \"B\":\"banana\"}))\n    assert candidate({\"p\":\"pineapple\", 5:\"banana\", \"a\":\"apple\"}) == False, \"Third test error: \" + str(candidate({\"p\":\"pineapple\", 5:\"banana\", \"a\":\"apple\"}))\n    assert candidate({\"Name\":\"John\", \"Age\":\"36\", \"City\":\"Houston\"}) == False, \"Fourth test error: \" + str(candidate({\"Name\":\"John\", \"Age\":\"36\", \"City\":\"Houston\"}))\n    assert candidate({\"STATE\":\"NC\", \"ZIP\":\"12345\" }) == True, \"Fifth test error: \" + str(candidate({\"STATE\":\"NC\", \"ZIP\":\"12345\" }))      \n    assert candidate({\"fruit\":\"Orange\", \"taste\":\"Sweet\" }) == True, \"Fourth test error: \" + str(candidate({\"fruit\":\"Orange\", \"taste\":\"Sweet\" }))      \n\n\n    # Check some edge cases that are easy to work out by hand.\n    assert candidate({}) == False, \"1st edge test error: \" + str(candidate({}))\n\n\ncheck(check_dict_case)\n",
+    "reference_verification": {
+      "task_id": "HumanEval/95",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[{}]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[{'p': 'pineapple', 'b': 'banana'}]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/762": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 339,
+    "record_sha256": "aed990ce6f61483a56b13751551988f9c3c8edf1d937ba90c546c7c06cf282ef",
+    "authority": "official_evalplus",
+    "test_sha256": "8ba22d32a50fff9083725578cc7cb3a1c0b85e570a07b586f15e4ea943c00609",
+    "canonical_sha256": "7a226c6859c63f6d96ed2a1f76b2789e56e633157e240f2fb0a91cb2e577f54e",
+    "base_input_count": 3,
+    "plus_input_count": 13,
+    "assertion_count": 3,
+    "test_text": "\nassert check_monthnumber_number(6)==True\nassert check_monthnumber_number(2)==False\nassert check_monthnumber_number(12)==False\n",
+    "reference_verification": {
+      "task_id": "Mbpp/762",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[6]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[2]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[12]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/306": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 160,
+    "record_sha256": "68641348a8cc57ea4739ea69492899f75cc39f056a0b377b0069eff4ff7be3cb",
+    "authority": "official_evalplus",
+    "test_sha256": "2d7c0ec0a95721a693557be34824700d0b0496c7cdf141c173770aaed4675b7b",
+    "canonical_sha256": "301676e2ccd45964923b7835d82bd2a7cbce9061151631e939ab422b6eb983d1",
+    "base_input_count": 3,
+    "plus_input_count": 101,
+    "assertion_count": 3,
+    "test_text": "\nassert max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5 ], 7, 4, 6) == 11\nassert max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5 ], 7, 2, 5) == 7\nassert max_sum_increasing_subseq([11, 15, 19, 21, 26, 28, 31], 7, 2, 4) == 71\n",
+    "reference_verification": {
+      "task_id": "Mbpp/306",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[1, 101, 2, 3, 100, 4, 5], 7, 4, 6]",
+          "expected_repr": "11",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 101, 2, 3, 100, 4, 5], 7, 2, 5]",
+          "expected_repr": "7",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[11, 15, 19, 21, 26, 28, 31], 7, 2, 4]",
+          "expected_repr": "71",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/253": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 119,
+    "record_sha256": "455941a1b3731b5f30bd52166fbffc3eb7249d6e9ad457c3b49585b26cd2b6e8",
+    "authority": "official_evalplus",
+    "test_sha256": "20bfa03f720f6a340dd7aff275c4426fb3574d243dd340ddea7a40c49a55d59c",
+    "canonical_sha256": "5fbf53615765f945ced8fdf9a3a8becdfab52c8ca2b189e14ce5c6e80ee7265d",
+    "base_input_count": 3,
+    "plus_input_count": 114,
+    "assertion_count": 3,
+    "test_text": "\nassert count_integer([1,2,'abc',1.2]) == 2\nassert count_integer([1,2,3]) == 3\nassert count_integer([1,1.2,4,5.1]) == 2\n",
+    "reference_verification": {
+      "task_id": "Mbpp/253",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[1, 2, 'abc', 1.2]]",
+          "expected_repr": "2",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 2, 3]]",
+          "expected_repr": "3",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 1.2, 4, 5.1]]",
+          "expected_repr": "2",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/763": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 340,
+    "record_sha256": "54243752e9c953f0d1aa7ebb2406d8662bac70c5ea3d421d66a80d6fa7340c56",
+    "authority": "official_evalplus",
+    "test_sha256": "a770bd315d624afa27cc67bea24295ddc8076dee108172ace0ce09808639e734",
+    "canonical_sha256": "23d35727f1978426510b7260d2a9d17eb1df05a6573c22e511d8f2125037006b",
+    "base_input_count": 3,
+    "plus_input_count": 101,
+    "assertion_count": 3,
+    "test_text": "\nassert find_min_diff((1,5,3,19,18,25),6) == 1\nassert find_min_diff((4,3,2,6),4) == 1\nassert find_min_diff((30,5,20,9),4) == 4\n",
+    "reference_verification": {
+      "task_id": "Mbpp/763",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[(1, 5, 3, 19, 18, 25), 6]",
+          "expected_repr": "1",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[(4, 3, 2, 6), 4]",
+          "expected_repr": "1",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[(30, 5, 20, 9), 4]",
+          "expected_repr": "4",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/18": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 13,
+    "record_sha256": "d021c7ccd00374609239092d6c2c23559b8c50edaf9badf938b79446ffa99b59",
+    "authority": "official_evalplus",
+    "test_sha256": "ff35e4953954897f815a0dec2673bb54d551c5ad51de91be71cad7872b0e8262",
+    "canonical_sha256": "3fcf1eda45f79aa4d46ee3060da6deebec7f9a280328d55c5d0d6e53859c5ad8",
+    "base_input_count": 3,
+    "plus_input_count": 104,
+    "assertion_count": 3,
+    "test_text": "\nassert remove_dirty_chars(\"probasscurve\", \"pros\") == 'bacuve'\nassert remove_dirty_chars(\"digitalindia\", \"talent\") == 'digiidi'\nassert remove_dirty_chars(\"exoticmiles\", \"toxic\") == 'emles'\n",
+    "reference_verification": {
+      "task_id": "Mbpp/18",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['probasscurve', 'pros']",
+          "expected_repr": "'bacuve'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['digitalindia', 'talent']",
+          "expected_repr": "'digiidi'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['exoticmiles', 'toxic']",
+          "expected_repr": "'emles'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/227": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 102,
+    "record_sha256": "90b948f1eb20f16c4211dde00059a43e86f6369512d7548e0b796e5966a358e9",
+    "authority": "official_evalplus",
+    "test_sha256": "1a1900a2cfe7185ae9ac3e2aeee5f7125a188381fd7c00869bc4d3a3478214a9",
+    "canonical_sha256": "62eb7949bc74213ed5eee0609c48d3caeb62529b394df6873798601c276359b8",
+    "base_input_count": 3,
+    "plus_input_count": 105,
+    "assertion_count": 3,
+    "test_text": "\nassert min_of_three(10,20,0)==0\nassert min_of_three(19,15,18)==15\nassert min_of_three(-10,-20,-30)==-30\n",
+    "reference_verification": {
+      "task_id": "Mbpp/227",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[10, 20, 0]",
+          "expected_repr": "0",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[19, 15, 18]",
+          "expected_repr": "15",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[-10, -20, -30]",
+          "expected_repr": "-30",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/641": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 301,
+    "record_sha256": "7711c9f22915511a143cdc77841718823356c2fe41f4772b1f217ba302cb337f",
+    "authority": "official_evalplus",
+    "test_sha256": "61a1890a938ee7d56b6c57852dea3b9b61c81ddf6cb9b18832992382d51ede43",
+    "canonical_sha256": "927cc85bac63090e64ba61655dbc3925fc7cce20bd8b3341c0154e0ed03adca1",
+    "base_input_count": 3,
+    "plus_input_count": 102,
+    "assertion_count": 3,
+    "test_text": "\nassert is_nonagonal(10) == 325\nassert is_nonagonal(15) == 750\nassert is_nonagonal(18) == 1089\n",
+    "reference_verification": {
+      "task_id": "Mbpp/641",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[10]",
+          "expected_repr": "325",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[15]",
+          "expected_repr": "750",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[18]",
+          "expected_repr": "1089",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/414": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 182,
+    "record_sha256": "566d30db71c03a80a370d27e0eadfdb070f5f805e172b1c9da1f35c2f001678f",
+    "authority": "official_evalplus",
+    "test_sha256": "d034f879e0a97f7a877b3eb39b1fac0bfe3145c645d44cef788ae5cbbb68b455",
+    "canonical_sha256": "2bc6aa86963c10b56e232d2ca83e9f420ec13742e1fe283a6f9e5b812dc7e6d4",
+    "base_input_count": 3,
+    "plus_input_count": 104,
+    "assertion_count": 3,
+    "test_text": "\nassert overlapping([1,2,3,4,5],[6,7,8,9]) == False\nassert overlapping([1,2,3],[4,5,6]) == False\nassert overlapping([1,4,5],[1,4,5]) == True\n",
+    "reference_verification": {
+      "task_id": "Mbpp/414",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[1, 2, 3, 4, 5], [6, 7, 8, 9]]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 2, 3], [4, 5, 6]]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 4, 5], [1, 4, 5]]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/166": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 92,
+    "record_sha256": "c274a9f3e88822aacff45331153c94b992af025103645720f7f828e9355ac87d",
+    "authority": "official_evalplus",
+    "test_sha256": "53950c25d237a04275d1ff29ff24084b9f7ca4e53033c2325e816a28475d8db3",
+    "canonical_sha256": "8c6781724f3e6a6bd16c538b8ff24f8141e977b7f176079132677ab72e6df3fd",
+    "base_input_count": 3,
+    "plus_input_count": 106,
+    "assertion_count": 3,
+    "test_text": "\nassert find_even_pair([5, 4, 7, 2, 1]) == 4\nassert find_even_pair([7, 2, 8, 1, 0, 5, 11]) == 9\nassert find_even_pair([1, 2, 3]) == 1\n",
+    "reference_verification": {
+      "task_id": "Mbpp/166",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[5, 4, 7, 2, 1]]",
+          "expected_repr": "4",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[7, 2, 8, 1, 0, 5, 11]]",
+          "expected_repr": "9",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 2, 3]]",
+          "expected_repr": "1",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/70": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 29,
+    "record_sha256": "967e69b942bd7124bb84a9f51ce7b7e7132653c0fa1f754e5e48bbaae3efe08b",
+    "authority": "official_evalplus",
+    "test_sha256": "7de92c4d77800ddbe5c7acf5efc39968d17d785456f9bd40b251e1dbde1b0c8a",
+    "canonical_sha256": "7f84a51b5cc18c01e13046f74e34a2cba7ea90de7e0ef75ee9aef7152baf9c14",
+    "base_input_count": 3,
+    "plus_input_count": 118,
+    "assertion_count": 3,
+    "test_text": "\nassert get_equal([(11, 22, 33), (44, 55, 66)]) == True\nassert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False\nassert get_equal([(1, 2), (3, 4)]) == True\n",
+    "reference_verification": {
+      "task_id": "Mbpp/70",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[(11, 22, 33), (44, 55, 66)]]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[(1, 2, 3), (4, 5, 6, 7)]]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[(1, 2), (3, 4)]]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/589": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 260,
+    "record_sha256": "b188a94d85c40e40e4d73ffb7a101170d0eefb46e28af5618c8e81c5442c3496",
+    "authority": "official_evalplus",
+    "test_sha256": "39994120d627a3e188470d54ca6149207188c35e99d143c0a49e59fa9ed56076",
+    "canonical_sha256": "27ef541248a63be0721334b32028984a37c65293819f46b8d4c99781c2aeab68",
+    "base_input_count": 3,
+    "plus_input_count": 103,
+    "assertion_count": 3,
+    "test_text": "\nassert perfect_squares(1,30)==[1, 4, 9, 16, 25]\nassert perfect_squares(50,100)==[64, 81, 100]\nassert perfect_squares(100,200)==[100, 121, 144, 169, 196]\n",
+    "reference_verification": {
+      "task_id": "Mbpp/589",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[1, 30]",
+          "expected_repr": "[1, 4, 9, 16, 25]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[50, 100]",
+          "expected_repr": "[64, 81, 100]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[100, 200]",
+          "expected_repr": "[100, 121, 144, 169, 196]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/7": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 5,
+    "record_sha256": "eac6a8615ab532fdf8b9ca8c033e757e91d0262ef7105035499a2c65d884e485",
+    "authority": "official_evalplus",
+    "test_sha256": "64ed4c6fd94b614daa08b5f7d24929a582a815a57afc8f7cdcdd2ff338bc2112",
+    "canonical_sha256": "3a1e7a1e2d642870855734f5a85f85bbb571309d028ff1ed1bb4852c672968e6",
+    "base_input_count": 3,
+    "plus_input_count": 102,
+    "assertion_count": 3,
+    "test_text": "\nassert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])\nassert set(find_char_long('Jing Eco and Tech')) == set(['Jing', 'Tech'])\nassert set(find_char_long('Jhingai wulu road Zone 3')) == set(['Jhingai', 'wulu', 'road', 'Zone'])\n",
+    "reference_verification": {
+      "task_id": "Mbpp/7",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['Please move back to stream']",
+          "expected_repr": "['Please', 'move', 'back', 'stream']",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['Jing Eco and Tech']",
+          "expected_repr": "['Jing', 'Tech']",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['Jhingai wulu road Zone 3']",
+          "expected_repr": "['Jhingai', 'wulu', 'road', 'Zone']",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/772": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 348,
+    "record_sha256": "d7942e447ec259c740ad407e37dd0cb07c15b731877e25f0f453c839d1c93861",
+    "authority": "official_evalplus",
+    "test_sha256": "acff6f60835392626ee5d1385192424201ff4296c34058a42ac3c9551c0901ab",
+    "canonical_sha256": "e58be6945ad9819a7cef23474aea1f78bf3f9003ba05441206d34220f39d1d62",
+    "base_input_count": 3,
+    "plus_input_count": 106,
+    "assertion_count": 3,
+    "test_text": "\nassert remove_length('The person is most value tet', 3) == 'person is most value'\nassert remove_length('If you told me about this ok', 4) == 'If you me about ok'\nassert remove_length('Forces of darkeness is come into the play', 4) == 'Forces of darkeness is the'\n",
+    "reference_verification": {
+      "task_id": "Mbpp/772",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['The person is most value tet', 3]",
+          "expected_repr": "'person is most value'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['If you told me about this ok', 4]",
+          "expected_repr": "'If you me about ok'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['Forces of darkeness is come into the play', 4]",
+          "expected_repr": "'Forces of darkeness is the'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/135": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 80,
+    "record_sha256": "f6e4d70de4faf0bfc309d2c1ad081e58476406cec5b5e33a34bab4837b48a464",
+    "authority": "official_evalplus",
+    "test_sha256": "bf84bc03e328d89d8b09def63be0bca10cb91e15874ea013487adec0a2811228",
+    "canonical_sha256": "5804f9c8b4d68fc54f01f035afd9ff0c77692bc6649847ef320f00777aead860",
+    "base_input_count": 3,
+    "plus_input_count": 103,
+    "assertion_count": 3,
+    "test_text": "\nassert hexagonal_num(10) == 190\nassert hexagonal_num(5) == 45\nassert hexagonal_num(7) == 91\n",
+    "reference_verification": {
+      "task_id": "Mbpp/135",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[10]",
+          "expected_repr": "190",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[5]",
+          "expected_repr": "45",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[7]",
+          "expected_repr": "91",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/268": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 131,
+    "record_sha256": "86e6077518c6ce64f5ea1ffc1143b0bd760608453e31dc752400b46cbc08eef5",
+    "authority": "official_evalplus",
+    "test_sha256": "e95bf00f302eefb04d6bd4f996102a5db9615435555c118c7ab4d55304cb12fa",
+    "canonical_sha256": "cdde1309998d923f92f58c0b273d6f15598a1914db70804796f39c76a748af29",
+    "base_input_count": 3,
+    "plus_input_count": 103,
+    "assertion_count": 3,
+    "test_text": "\nassert find_star_num(3) == 37\nassert find_star_num(4) == 73\nassert find_star_num(5) == 121\n",
+    "reference_verification": {
+      "task_id": "Mbpp/268",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[3]",
+          "expected_repr": "37",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[4]",
+          "expected_repr": "73",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[5]",
+          "expected_repr": "121",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/409": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 178,
+    "record_sha256": "affe3109fc6f81594d2bcf77d925b105159fe1d4c28df1b5f9ffc41e7f473a01",
+    "authority": "official_evalplus",
+    "test_sha256": "fc37f78927e0efaadc32c98ebe17fa055edbaa0ef14ffc66f33f1c1f219d4a29",
+    "canonical_sha256": "904917f8ae4d94206b1127efa8c714f21fa1b960e00253be5998e3677cd742c6",
+    "base_input_count": 3,
+    "plus_input_count": 111,
+    "assertion_count": 3,
+    "test_text": "\nassert min_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==8\nassert min_product_tuple([(10,20), (15,2), (5,10)] )==30\nassert min_product_tuple([(11,44), (10,15), (20,5), (12, 9)] )==100\n",
+    "reference_verification": {
+      "task_id": "Mbpp/409",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[(2, 7), (2, 6), (1, 8), (4, 9)]]",
+          "expected_repr": "8",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[(10, 20), (15, 2), (5, 10)]]",
+          "expected_repr": "30",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[(11, 44), (10, 15), (20, 5), (12, 9)]]",
+          "expected_repr": "100",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/222": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 98,
+    "record_sha256": "f29a01a3093feb32cc6a05d2f998b94ac249bc9cff21a2d0c03d30251dc6899d",
+    "authority": "official_evalplus",
+    "test_sha256": "cf4fc01d059406fdedac08793e4c214189444b37866d9780ab41b66b380fcbb7",
+    "canonical_sha256": "439ea0b0a660dc8ae4891e6f9bcc0d2948441c4ff3e310a86b4e05cbb1229b40",
+    "base_input_count": 3,
+    "plus_input_count": 128,
+    "assertion_count": 3,
+    "test_text": "\nassert check_type((5, 6, 7, 3, 5, 6) ) == True\nassert check_type((1, 2, \"4\") ) == False\nassert check_type((3, 2, 1, 4, 5) ) == True\n",
+    "reference_verification": {
+      "task_id": "Mbpp/222",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[(5, 6, 7, 3, 5, 6)]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[(1, 2, '4')]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[(3, 2, 1, 4, 5)]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/600": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 270,
+    "record_sha256": "5a906c7137d425b6f73f79e4c16c9aa572a1f6f2b3bcf0da54a376e030721ceb",
+    "authority": "official_evalplus",
+    "test_sha256": "9fbe5a3afb901d23a59f4df88110e736a89f49af1e5712727efabbc22dffed29",
+    "canonical_sha256": "63710d07a88bef178a14e2127aa0890bc47b95fe83bc3197c681e612379713e3",
+    "base_input_count": 3,
+    "plus_input_count": 104,
+    "assertion_count": 3,
+    "test_text": "\nassert is_Even(1) == False\nassert is_Even(2) == True\nassert is_Even(3) == False\n",
+    "reference_verification": {
+      "task_id": "Mbpp/600",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[1]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[2]",
+          "expected_repr": "True",
+          "expected_type": "bool",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[3]",
+          "expected_repr": "False",
+          "expected_type": "bool",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/90": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 44,
+    "record_sha256": "c9ab9cdceb2ef1cddc2fd7b94969b73b035ddc5151fe9cf49feba5c3c3f94bf9",
+    "authority": "official_evalplus",
+    "test_sha256": "80fafbd20a83a45b22a8c016ac961c1adabf34b0a15408040e2591767a697106",
+    "canonical_sha256": "3ca8af129c3d88fb8ab51a2b27dbd06e46439a683f56b2f272555a738957050d",
+    "base_input_count": 3,
+    "plus_input_count": 103,
+    "assertion_count": 3,
+    "test_text": "\nassert len_log([\"python\",\"PHP\",\"bigdata\"]) == 7\nassert len_log([\"a\",\"ab\",\"abc\"]) == 3\nassert len_log([\"small\",\"big\",\"tall\"]) == 5\n",
+    "reference_verification": {
+      "task_id": "Mbpp/90",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[['python', 'PHP', 'bigdata']]",
+          "expected_repr": "7",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[['a', 'ab', 'abc']]",
+          "expected_repr": "3",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[['small', 'big', 'tall']]",
+          "expected_repr": "5",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/577": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 250,
+    "record_sha256": "6d87d511ecdd4b5be79c231d11729a024757af2796eef7545f83ab9380d53d04",
+    "authority": "official_evalplus",
+    "test_sha256": "d6cce0b28ce1a0f7aafdbe379a0679ddeb2a3d1dbdd76991c0c873652aa41a90",
+    "canonical_sha256": "a72e346463c3071218b2d3512a1eee7f8b3de6db34878f018f0e75a6749152af",
+    "base_input_count": 3,
+    "plus_input_count": 105,
+    "assertion_count": 3,
+    "test_text": "\nassert last_Digit_Factorial(4) == 4\nassert last_Digit_Factorial(21) == 0\nassert last_Digit_Factorial(30) == 0\n",
+    "reference_verification": {
+      "task_id": "Mbpp/577",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[4]",
+          "expected_repr": "4",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[2.5]",
+          "expected_repr": "0",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[1.5869584267664152]",
+          "expected_repr": "1.5869584267664152",
+          "expected_type": "float",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/165": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 91,
+    "record_sha256": "121b84ff2ab882920f735619ac55d83b1a7effba896d2d4dc6897b085c4f0f51",
+    "authority": "official_evalplus",
+    "test_sha256": "440a075eb81f92d5b2d7b19c3a5737bdc0b45ea95835223c1e18a4db50369d61",
+    "canonical_sha256": "5d92838841111b1a26a607fcab77e7b52f195083731f59315849444c869726c6",
+    "base_input_count": 3,
+    "plus_input_count": 107,
+    "assertion_count": 3,
+    "test_text": "\nassert count_char_position(\"xbcefg\") == 2\nassert count_char_position(\"ABcED\") == 3\nassert count_char_position(\"AbgdeF\") == 5\n",
+    "reference_verification": {
+      "task_id": "Mbpp/165",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['xbcefg']",
+          "expected_repr": "2",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['ABcED']",
+          "expected_repr": "3",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['AbgdeF']",
+          "expected_repr": "5",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/84": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 38,
+    "record_sha256": "3f813ae27010c4ca04c89aec3b08d61911834182ca7371563de80446958921e0",
+    "authority": "official_evalplus",
+    "test_sha256": "da94de666dbc1b2cad370a2a867986861a447e341136d4aaf8b5c016de27098f",
+    "canonical_sha256": "287bbacf6d86194b7cb438abc4ac813054fb24f41698314d9ff2e8a0583e5fc5",
+    "base_input_count": 3,
+    "plus_input_count": 108,
+    "assertion_count": 3,
+    "test_text": "\nassert sequence(10) == 6\nassert sequence(2) == 1\nassert sequence(3) == 2\n",
+    "reference_verification": {
+      "task_id": "Mbpp/84",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[10]",
+          "expected_repr": "6",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[2]",
+          "expected_repr": "1",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[3]",
+          "expected_repr": "2",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/232": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 104,
+    "record_sha256": "510f37bf6e5ba48e8c86b20a49798289b3f80fd0ff433883efe8e1f5630b8226",
+    "authority": "official_evalplus",
+    "test_sha256": "0e8a61e626d10bd8b5be2e4386f7cde2395427ae8d4d37c7549240c6151a236f",
+    "canonical_sha256": "83a822fefada498e7465d1688a98c9e07ec099344326132efa53d6d0f052f8df",
+    "base_input_count": 3,
+    "plus_input_count": 103,
+    "assertion_count": 3,
+    "test_text": "\nassert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],2))==set([100,90])\nassert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],5))==set([100,90,80,70,60])\nassert set(larg_nnum([10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100],3))==set([100,90,80])\n",
+    "reference_verification": {
+      "task_id": "Mbpp/232",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100], 2]",
+          "expected_repr": "[100, 90]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100], 5]",
+          "expected_repr": "[100, 90, 80, 70, 60]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[10, 20, 50, 70, 90, 20, 50, 40, 60, 80, 100], 3]",
+          "expected_repr": "[100, 90, 80]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/311": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 164,
+    "record_sha256": "f1b9d7e52e8340c56e186b19b81c36113448f0025bfd02685d517923e9f94672",
+    "authority": "official_evalplus",
+    "test_sha256": "63e646deb5f1c3783714b95ab2057b8d0cf59a019ec378c7d4ffef057ea23713",
+    "canonical_sha256": "117e4cbde3a55207dedad5f04914ad3fde6dc345f407a93e9eb6523c7c981291",
+    "base_input_count": 3,
+    "plus_input_count": 109,
+    "assertion_count": 3,
+    "test_text": "\nassert set_left_most_unset_bit(10) == 14\nassert set_left_most_unset_bit(12) == 14\nassert set_left_most_unset_bit(15) == 15\n",
+    "reference_verification": {
+      "task_id": "Mbpp/311",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[10]",
+          "expected_repr": "14",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[12]",
+          "expected_repr": "14",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[0]",
+          "expected_repr": "0",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/611": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 279,
+    "record_sha256": "ed0b6bc62f2c5ffa9d47db1db22e0b4f852a5ffb4b74ee05e949e791ddfd7323",
+    "authority": "official_evalplus",
+    "test_sha256": "d4b03fe4d4bd3ea4c0671034a2571ddd1b199285f63cecd6708c47462edded4a",
+    "canonical_sha256": "fb351b552443f6d4392ca28fee85265ffbd2b22f2a5c08a2fd6e2f07294616b6",
+    "base_input_count": 3,
+    "plus_input_count": 101,
+    "assertion_count": 3,
+    "test_text": "\nassert max_of_nth([[5, 6, 7], [1, 3, 5], [8, 9, 19]], 2) == 19\nassert max_of_nth([[6, 7, 8], [2, 4, 6], [9, 10, 20]], 1) == 10\nassert max_of_nth([[7, 8, 9], [3, 5, 7], [10, 11, 21]], 1) == 11\n",
+    "reference_verification": {
+      "task_id": "Mbpp/611",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[[5, 6, 7], [1, 3, 5], [8, 9, 19]], 2]",
+          "expected_repr": "19",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[[6, 7, 8], [2, 4, 6], [9, 10, 20]], 1]",
+          "expected_repr": "10",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[[7, 8, 9], [3, 5, 7], [10, 11, 21]], 1]",
+          "expected_repr": "11",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/723": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 307,
+    "record_sha256": "29a1083e2d27fc625ac96a7a495fbdfbcf9b3ed777af01fa98613f7011e09602",
+    "authority": "official_evalplus",
+    "test_sha256": "0e2b8e048391d8ce06329f519c79cab68d22579f3f5b8c621ab009fe15c61c72",
+    "canonical_sha256": "655e3be3c94787d5e9a7b1c804a5bc52d753964c9ff79351ffe7964f78ff20a4",
+    "base_input_count": 4,
+    "plus_input_count": 109,
+    "assertion_count": 4,
+    "test_text": "\nassert count_same_pair([1, 2, 3, 4, 5, 6, 7, 8],[2, 2, 3, 1, 2, 6, 7, 9])==4\nassert count_same_pair([0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8],[2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8])==11\nassert count_same_pair([2, 4, -6, -9, 11, -12, 14, -5, 17],[2, 1, 2, -1, -5, 6, 4, -3, -2])==1\nassert count_same_pair([0, 1, 1, 2],[0, 1, 2, 2])==3\n",
+    "reference_verification": {
+      "task_id": "Mbpp/723",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[1, 2, 3, 4, 5, 6, 7, 8], [2, 2, 3, 1, 2, 6, 7, 9]]",
+          "expected_repr": "4",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[0, 1, 2, -1, -5, 6, 0, -3, -2, 3, 4, 6, 8], [2, 1, 2, -1, -5, 6, 4, -3, -2, 3, 4, 6, 8]]",
+          "expected_repr": "11",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[2, 4, -6, -9, 11, -12, 14, -5, 17], [2, 1, 2, -1, -5, 6, 4, -3, -2]]",
+          "expected_repr": "1",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/378": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "a1fc357a2ff1872bdfd3bc9115007ce6409469765b9feda97d4af88bd4954f82",
+    "test_text": "assert move_first([1,2,3,4]) == [4,1,2,3]\nassert move_first([0,1,2,3]) == [3,0,1,2]\nassert move_first([9,8,7,1]) == [1,9,8,7]",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert move_first([1,2,3,4]) == [4,1,2,3]",
+      "assert move_first([0,1,2,3]) == [3,0,1,2]",
+      "assert move_first([9,8,7,1]) == [1,9,8,7]"
+    ]
+  },
+  "Mbpp/328": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "2ae56f8dc0e6bb1f59ed29c4d34b7a5a891352d7aa7fdec440faea035bec41ac",
+    "test_text": "assert rotate_left([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],3,4)==[4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4]\nassert rotate_left([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2,2)==[3, 4, 5, 6, 7, 8, 9, 10, 1, 2]\nassert rotate_left([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],5,2)==[6, 7, 8, 9, 10, 1, 2]",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert rotate_left([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],3,4)==[4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4]",
+      "assert rotate_left([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],2,2)==[3, 4, 5, 6, 7, 8, 9, 10, 1, 2]",
+      "assert rotate_left([1, 2, 3, 4, 5, 6, 7, 8, 9, 10],5,2)==[6, 7, 8, 9, 10, 1, 2]"
+    ]
+  },
+  "Mbpp/874": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "ec7fef691b4de98ccc269a7197cce109f1ff398b1c77b4a6836f71a1d481df09",
+    "test_text": "assert check_Concat(\"abcabcabc\",\"abc\") == True\nassert check_Concat(\"abcab\",\"abc\") == False\nassert check_Concat(\"aba\",\"ab\") == False",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert check_Concat(\"abcabcabc\",\"abc\") == True",
+      "assert check_Concat(\"abcab\",\"abc\") == False",
+      "assert check_Concat(\"aba\",\"ab\") == False"
+    ]
+  },
+  "Mbpp/423": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "41ad67a35cfd9f7c0fbc6ace3bac113ddf33497964b178e8a17a9a751120b839",
+    "test_text": "assert get_maxgold([[1, 3, 1, 5],[2, 2, 4, 1],[5, 0, 2, 3],[0, 6, 1, 2]],4,4)==16\nassert get_maxgold([[10,20],[30,40]],2,2)==70\nassert get_maxgold([[4,9],[3,7]],2,2)==13",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert get_maxgold([[1, 3, 1, 5],[2, 2, 4, 1],[5, 0, 2, 3],[0, 6, 1, 2]],4,4)==16",
+      "assert get_maxgold([[10,20],[30,40]],2,2)==70",
+      "assert get_maxgold([[4,9],[3,7]],2,2)==13"
+    ]
+  },
+  "Mbpp/199": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "8e04b7be21a995d41e462f4eb341f8cb68d5794066872d4b21cf2f4370b512fe",
+    "test_text": "assert highest_Power_of_2(10) == 8\nassert highest_Power_of_2(19) == 16\nassert highest_Power_of_2(32) == 32",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert highest_Power_of_2(10) == 8",
+      "assert highest_Power_of_2(19) == 16",
+      "assert highest_Power_of_2(32) == 32"
+    ]
+  },
+  "Mbpp/958": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "96e1c55b50b34a11ed504acd208d3e3f5c2ffbb35416acb8a2d30aceebe4036a",
+    "test_text": "assert int_to_roman(1)==(\"I\")\nassert int_to_roman(50)==(\"L\")\nassert int_to_roman(4)==(\"IV\")",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert int_to_roman(1)==(\"I\")",
+      "assert int_to_roman(50)==(\"L\")",
+      "assert int_to_roman(4)==(\"IV\")"
+    ]
+  },
+  "Mbpp/382": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "6fa2da5b329b3b0f9e5400f05a2efa9191384f2ab466fa6da8f0264a1a7b7e1c",
+    "test_text": "assert find_rotation_count([8, 9, 10, 1, 2, 3, 4, 5, 6, 7]) == 3\nassert find_rotation_count([8, 9, 10,2, 5, 6]) == 3\nassert find_rotation_count([2, 5, 6, 8, 9, 10]) == 0",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert find_rotation_count([8, 9, 10, 1, 2, 3, 4, 5, 6, 7]) == 3",
+      "assert find_rotation_count([8, 9, 10,2, 5, 6]) == 3",
+      "assert find_rotation_count([2, 5, 6, 8, 9, 10]) == 0"
+    ]
+  },
+  "Mbpp/698": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "19b12013e67af0432783af2c40e0598c7f6c9866fcdd99de6eddf0741d8274b7",
+    "test_text": "assert sort_dict_item({(5, 6) : 3, (2, 3) : 9, (8, 4): 10, (6, 4): 12} ) == {(2, 3): 9, (6, 4): 12, (5, 6): 3, (8, 4): 10}\nassert sort_dict_item({(6, 7) : 4, (3, 4) : 10, (9, 5): 11, (7, 5): 13} ) == {(3, 4): 10, (7, 5): 13, (6, 7): 4, (9, 5): 11}\nassert sort_dict_item({(7, 8) : 5, (4, 5) : 11, (10, 6): 12, (8, 6): 14} ) == {(4, 5): 11, (8, 6): 14, (7, 8): 5, (10, 6): 12}",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert sort_dict_item({(5, 6) : 3, (2, 3) : 9, (8, 4): 10, (6, 4): 12} ) == {(2, 3): 9, (6, 4): 12, (5, 6): 3, (8, 4): 10}",
+      "assert sort_dict_item({(6, 7) : 4, (3, 4) : 10, (9, 5): 11, (7, 5): 13} ) == {(3, 4): 10, (7, 5): 13, (6, 7): 4, (9, 5): 11}",
+      "assert sort_dict_item({(7, 8) : 5, (4, 5) : 11, (10, 6): 12, (8, 6): 14} ) == {(4, 5): 11, (8, 6): 14, (7, 8): 5, (10, 6): 12}"
+    ]
+  },
+  "Mbpp/361": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "eabd7876d9cc2b9ce0498ebb6f6ae8d28022b6381b133ff8fb91e3ada2365e23",
+    "test_text": "assert remove_empty([[], [], [], 'Red', 'Green', [1,2], 'Blue', [], []])==['Red', 'Green', [1, 2], 'Blue']\nassert remove_empty([[], [], [],[],[], 'Green', [1,2], 'Blue', [], []])==[ 'Green', [1, 2], 'Blue']\nassert remove_empty([[], [], [], 'Python',[],[], 'programming', 'language',[],[],[], [], []])==['Python', 'programming', 'language']",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert remove_empty([[], [], [], 'Red', 'Green', [1,2], 'Blue', [], []])==['Red', 'Green', [1, 2], 'Blue']",
+      "assert remove_empty([[], [], [],[],[], 'Green', [1,2], 'Blue', [], []])==[ 'Green', [1, 2], 'Blue']",
+      "assert remove_empty([[], [], [], 'Python',[],[], 'programming', 'language',[],[],[], [], []])==['Python', 'programming', 'language']"
+    ]
+  },
+  "Mbpp/941": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "94c93d4e20b2a85f687a68f0ef83c1a60979bf447a82d4ded651d92b3d70191f",
+    "test_text": "assert count_elim([10,20,30,(10,20),40])==3\nassert count_elim([10,(20,30),(10,20),40])==1\nassert count_elim([(10,(20,30,(10,20),40))])==0",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert count_elim([10,20,30,(10,20),40])==3",
+      "assert count_elim([10,(20,30),(10,20),40])==1",
+      "assert count_elim([(10,(20,30,(10,20),40))])==0"
+    ]
+  },
+  "Mbpp/627": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "e84ed15899ca4a1c5d03faca5f2ff16783ecbd520afa2ed428225582f0181b10",
+    "test_text": "assert find_First_Missing([0,1,2,3],0,3) == 4\nassert find_First_Missing([0,1,2,6,9],0,4) == 3\nassert find_First_Missing([2,3,5,8,9],0,4) == 0",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert find_First_Missing([0,1,2,3],0,3) == 4",
+      "assert find_First_Missing([0,1,2,6,9],0,4) == 3",
+      "assert find_First_Missing([2,3,5,8,9],0,4) == 0"
+    ]
+  },
+  "Mbpp/38": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "4ffa89cf86ae3b8cbf6e0a5eb610a8090d09472f9e4e5b3580ca1bcfb397751d",
+    "test_text": "assert div_even_odd([1,3,5,7,4,1,6,8])==4\nassert div_even_odd([1,2,3,4,5,6,7,8,9,10])==2\nassert div_even_odd([1,5,7,9,10])==10",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert div_even_odd([1,3,5,7,4,1,6,8])==4",
+      "assert div_even_odd([1,2,3,4,5,6,7,8,9,10])==2",
+      "assert div_even_odd([1,5,7,9,10])==10"
+    ]
+  },
+  "Mbpp/308": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 161,
+    "record_sha256": "b815ba8dfab7ba77d0cfa7c97fe0378e191430782929b54f200d2ffd14744260",
+    "authority": "official_evalplus",
+    "test_sha256": "64f538c4fc518edc57e02f4c59438cdfa56e00ea98935ac472fab16600fc72ca",
+    "canonical_sha256": "71ed75158c6f48bb01eea229894651ce00b70d62d64bc22e63af7f12839cbae7",
+    "base_input_count": 3,
+    "plus_input_count": 101,
+    "assertion_count": 3,
+    "test_text": "\nassert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],3)==[60, 54, 50]\nassert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],4)==[60, 54, 50, 48]\nassert large_product([1, 2, 3, 4, 5, 6],[3, 6, 8, 9, 10, 6],5)==[60, 54, 50, 48, 45]\n",
+    "reference_verification": {
+      "task_id": "Mbpp/308",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[1, 2, 3, 4, 5, 6], [3, 6, 8, 9, 10, 6], 3]",
+          "expected_repr": "[60, 54, 50]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 2, 3, 4, 5, 6], [3, 6, 8, 9, 10, 6], 4]",
+          "expected_repr": "[60, 54, 50, 48]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 2, 3, 4, 5, 6], [3, 6, 8, 9, 10, 6], 5]",
+          "expected_repr": "[60, 54, 50, 48, 45]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/628": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 291,
+    "record_sha256": "4aac8e7574c27ee42923203cb8662dc25cddb938c5b20a28c25fbaff15f8fb4c",
+    "authority": "official_evalplus",
+    "test_sha256": "872279b4e5eb96f60678f22ba2d916a8ab99b2086ac7d13ddf5d781be192c69b",
+    "canonical_sha256": "6ed1c90a4bbbf0e75896ea60f54da73c819650d0a3fe9157c54d13a63849479f",
+    "base_input_count": 3,
+    "plus_input_count": 117,
+    "assertion_count": 3,
+    "test_text": "\nassert replace_spaces(\"My Name is Dawood\") == 'My%20Name%20is%20Dawood'\nassert replace_spaces(\"I am a Programmer\") == 'I%20am%20a%20Programmer'\nassert replace_spaces(\"I love Coding\") == 'I%20love%20Coding'\n",
+    "reference_verification": {
+      "task_id": "Mbpp/628",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['My Name is Dawood']",
+          "expected_repr": "'My%20Name%20is%20Dawood'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['I am a Programmer']",
+          "expected_repr": "'I%20am%20a%20Programmer'",
+          "expected_type": "str",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['I love Coding']",
+          "expected_repr": "'I%20love%20Coding'",
+          "expected_type": "str",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/645": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "928398a06575ac814fbdbbd68eeadec182025a70d7f1c215a0f22687804a4ec6",
+    "test_text": "assert find_k_product([(5, 6, 7), (1, 3, 5), (8, 9, 19)], 2) == 665\nassert find_k_product([(6, 7, 8), (2, 4, 6), (9, 10, 20)], 1) == 280\nassert find_k_product([(7, 8, 9), (3, 5, 7), (10, 11, 21)], 0) == 210",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert find_k_product([(5, 6, 7), (1, 3, 5), (8, 9, 19)], 2) == 665",
+      "assert find_k_product([(6, 7, 8), (2, 4, 6), (9, 10, 20)], 1) == 280",
+      "assert find_k_product([(7, 8, 9), (3, 5, 7), (10, 11, 21)], 0) == 210"
+    ]
+  },
+  "Mbpp/144": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "dd72e0db1d6b0c91ef1cc3d80270361486b1be5e65294e3d444db71e27620fd8",
+    "test_text": "assert sum_Pairs([1,8,9,15,16],5) == 74\nassert sum_Pairs([1,2,3,4],4) == 10\nassert sum_Pairs([1,2,3,4,5,7,9,11,14],9) == 188",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert sum_Pairs([1,8,9,15,16],5) == 74",
+      "assert sum_Pairs([1,2,3,4],4) == 10",
+      "assert sum_Pairs([1,2,3,4,5,7,9,11,14],9) == 188"
+    ]
+  },
+  "Mbpp/373": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "2bb54d00992cb21836f53dfb4314cd7ac6f8979de5a4d03848da8990d617801d",
+    "test_text": "assert volume_cuboid(1,2,3)==6\nassert volume_cuboid(5,7,9)==315\nassert volume_cuboid(10,15,21)==3150",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert volume_cuboid(1,2,3)==6",
+      "assert volume_cuboid(5,7,9)==315",
+      "assert volume_cuboid(10,15,21)==3150"
+    ]
+  },
+  "Mbpp/461": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "3abf222d910c4631d5e80adbab62f3a99c43cf6fe1e848ed0dda362e95884754",
+    "test_text": "assert upper_ctr('PYthon') == 1\nassert upper_ctr('BigData') == 1\nassert upper_ctr('program') == 0",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert upper_ctr('PYthon') == 1",
+      "assert upper_ctr('BigData') == 1",
+      "assert upper_ctr('program') == 0"
+    ]
+  },
+  "Mbpp/770": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 346,
+    "record_sha256": "585992492cdafa4134359eb313987244b8f0b86241c559a5103cd4fa821e8d85",
+    "authority": "official_evalplus",
+    "test_sha256": "db04822ea584293e54117ca6dd94dea4f9ea966512e502763d1d815da3b9b3c7",
+    "canonical_sha256": "7f9d5ba14739dcecfb94188c32b0117df1c231ca6a28f3009092123d5b86db60",
+    "base_input_count": 3,
+    "plus_input_count": 101,
+    "assertion_count": 3,
+    "test_text": "\nassert odd_num_sum(2) == 82\nassert odd_num_sum(3) == 707\nassert odd_num_sum(4) == 3108\n",
+    "reference_verification": {
+      "task_id": "Mbpp/770",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[2]",
+          "expected_repr": "82",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[3]",
+          "expected_repr": "707",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[4]",
+          "expected_repr": "3108",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/936": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "a0a2ada5dd7f0151f4889ff050210d514ba866c5423973b16885b42c95ec7490",
+    "test_text": "assert re_arrange_tuples([(4, 3), (1, 9), (2, 10), (3, 2)],  [1, 4, 2, 3]) == [(1, 9), (4, 3), (2, 10), (3, 2)]\nassert re_arrange_tuples([(5, 4), (2, 10), (3, 11), (4, 3)],  [3, 4, 2, 3]) == [(3, 11), (4, 3), (2, 10), (3, 11)]\nassert re_arrange_tuples([(6, 3), (3, 8), (5, 7), (2, 4)],  [2, 5, 3, 6]) == [(2, 4), (5, 7), (3, 8), (6, 3)]",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert re_arrange_tuples([(4, 3), (1, 9), (2, 10), (3, 2)],  [1, 4, 2, 3]) == [(1, 9), (4, 3), (2, 10), (3, 2)]",
+      "assert re_arrange_tuples([(5, 4), (2, 10), (3, 11), (4, 3)],  [3, 4, 2, 3]) == [(3, 11), (4, 3), (2, 10), (3, 11)]",
+      "assert re_arrange_tuples([(6, 3), (3, 8), (5, 7), (2, 4)],  [2, 5, 3, 6]) == [(2, 4), (5, 7), (3, 8), (6, 3)]"
+    ]
+  },
+  "Mbpp/247": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 115,
+    "record_sha256": "a535eae6d15eb4c946d2103c9bcf7b3c5c27ed641fdc8573e77bb74d3b1c7325",
+    "authority": "official_evalplus",
+    "test_sha256": "f3261b039195b1e0e5aefc38a4d66fb546b21a590c25cf10532bc1fc6793ee9c",
+    "canonical_sha256": "6695b7d5cf1257c2652cf5cc18b666c44339cbe2d4756ee5298fa8e872aad05c",
+    "base_input_count": 3,
+    "plus_input_count": 104,
+    "assertion_count": 3,
+    "test_text": "\nassert lps(\"TENS FOR TENS\") == 5\nassert lps(\"CARDIO FOR CARDS\") == 7\nassert lps(\"PART OF THE JOURNEY IS PART\") == 9\n",
+    "reference_verification": {
+      "task_id": "Mbpp/247",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "['TENS FOR TENS']",
+          "expected_repr": "5",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['CARDIO FOR CARDS']",
+          "expected_repr": "7",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "['PART OF THE JOURNEY IS PART']",
+          "expected_repr": "9",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/753": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 332,
+    "record_sha256": "0b184e322b0ad16a442b7608226d7f86a7b3d6ec8c75957ea1c2b510584815e9",
+    "authority": "official_evalplus",
+    "test_sha256": "96b39329cabd8206531d5b431491d80f1426dee6a53c909ff9a62257e589911e",
+    "canonical_sha256": "0ede5e6792c5c283cf00f23bf7b67357733c90563d2978ce6ba3b4ff1e0de439",
+    "base_input_count": 3,
+    "plus_input_count": 103,
+    "assertion_count": 3,
+    "test_text": "\nassert min_k([('Manjeet', 10), ('Akshat', 4), ('Akash', 2), ('Nikhil', 8)], 2) == [('Akash', 2), ('Akshat', 4)]\nassert min_k([('Sanjeev', 11), ('Angat', 5), ('Akash', 3), ('Nepin', 9)], 3) == [('Akash', 3), ('Angat', 5), ('Nepin', 9)]\nassert min_k([('tanmay', 14), ('Amer', 11), ('Ayesha', 9), ('SKD', 16)], 1) == [('Ayesha', 9)]\n",
+    "reference_verification": {
+      "task_id": "Mbpp/753",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[('Manjeet', 10), ('Akshat', 4), ('Akash', 2), ('Nikhil', 8)], 2]",
+          "expected_repr": "[('Akash', 2), ('Akshat', 4)]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[('Sanjeev', 11), ('Angat', 5), ('Akash', 3), ('Nepin', 9)], 3]",
+          "expected_repr": "[('Akash', 3), ('Angat', 5), ('Nepin', 9)]",
+          "expected_type": "list",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[('tanmay', 14), ('Amer', 11), ('Ayesha', 9), ('SKD', 16)], 1]",
+          "expected_repr": "[('Ayesha', 9)]",
+          "expected_type": "list",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/736": {
+    "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+    "line": 318,
+    "record_sha256": "e9a3fdf79495f123cd8602e2bc2962ed98e70f76184c26aef06ee14402067d19",
+    "authority": "official_evalplus",
+    "test_sha256": "425f290729aa850c8b537b3109bf0aa1195148d1ddcefe02c7df91904144485d",
+    "canonical_sha256": "258a8213844635137809eb7255a684f81716134dbd86ee68dc123c78b76e537d",
+    "base_input_count": 3,
+    "plus_input_count": 104,
+    "assertion_count": 3,
+    "test_text": "\nassert left_insertion([1,2,4,5],6)==4\nassert left_insertion([1,2,4,5],3)==2\nassert left_insertion([1,2,4,5],7)==4\n",
+    "reference_verification": {
+      "task_id": "Mbpp/736",
+      "base_assertions_passed": true,
+      "representative_targets": [
+        {
+          "input_repr": "[[1, 2, 4, 5], 6]",
+          "expected_repr": "4",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 2, 4, 5], 3]",
+          "expected_repr": "2",
+          "expected_type": "int",
+          "repr_truncated": false
+        },
+        {
+          "input_repr": "[[1, 2, 4, 5], 7]",
+          "expected_repr": "4",
+          "expected_type": "int",
+          "repr_truncated": false
+        }
+      ]
+    }
+  },
+  "Mbpp/183": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/data/mbpp/mbpp_larbi_contradictory.jsonl",
+    "authority": "dataset_fallback_test_cases",
+    "test_sha256": "d1c49f711ead24510bf5f2cb81c9eeb07b7545265327401f94e0b507c0fbcce5",
+    "test_text": "assert count_pairs([1, 5, 3, 4, 2], 5, 3) == 2\nassert count_pairs([8, 12, 16, 4, 0, 20], 6, 4) == 5\nassert count_pairs([2, 4, 1, 3, 4], 5, 2) == 3",
+    "assertion_count": 3,
+    "base_input_count": null,
+    "plus_input_count": 0,
+    "reference_execution": "not_applicable_no_canonical",
+    "representative_assertions": [
+      "assert count_pairs([1, 5, 3, 4, 2], 5, 3) == 2",
+      "assert count_pairs([8, 12, 16, 4, 0, 20], 6, 4) == 5",
+      "assert count_pairs([2, 4, 1, 3, 4], 5, 2) == 3"
+    ]
+  }
+}

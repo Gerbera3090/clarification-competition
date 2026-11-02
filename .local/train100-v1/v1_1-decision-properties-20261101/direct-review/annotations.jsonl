@@ -1,0 +1,100 @@
+{"id": "HumanEval/107", "kind": "notation_ambiguity", "focus": "범위의 상한 n 포함 여부", "evidence": "range(1,n)은 Python에서 끝값을 제외하지만 inclusive라고 쓰였고 n=3 예시는 3을 포함한다.", "question": "예시가 n 포함을 뒷받침하므로 대체로 질문 없이 포함으로 구현할 수 있다."}
+{"id": "HumanEval/87", "kind": "clear", "focus": "행 오름차순·행 내 열 내림차순", "evidence": "세 예시가 정렬 지시와 양립한다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/33", "kind": "conflict", "focus": "ascending=True일 때 리스트인가 정수인가", "evidence": "조건 설명은 리스트 반환, 기본 호출 예시는 정수 반환이다.", "question": "ascending=True에서 정렬한 리스트와 정수 중 무엇을 반환하나요?"}
+{"id": "HumanEval/62", "kind": "conflict", "focus": "기본 format에서 반환 타입과 예시의 불일치", "evidence": "기본 format이 string인데 기본 호출 예시는 리스트이고 본문에는 문자열과 정수 반환이 함께 있다.", "question": "format을 생략하면 리스트와 문자열 중 무엇을 반환하나요?"}
+{"id": "HumanEval/75", "kind": "ambiguity", "focus": "불리언과 소인수 목록의 반환 구조", "evidence": "둘 다 반환하라는 문장만으로 튜플 등 반환 형식과 거짓일 때 목록을 정할 수 없다. 둘의 반환은 튜플로 양립 가능하다.", "question": "판정 결과와 소인수 목록을 어떤 반환 구조로 제공하나요?"}
+{"id": "HumanEval/55", "kind": "conflict", "focus": "입력 인자 개수와 반환 타입", "evidence": "서명에는 두 인자가 있으나 예시는 하나만 전달하고, 항상 문자열이라는 설명과 정수 반환 예시가 다르다.", "question": "함수는 예시처럼 인자 하나를 받나요?"}
+{"id": "HumanEval/156", "kind": "conflict", "focus": "정수 입력에서 로마 숫자 문자열인가 원래 정수인가", "evidence": "로마 숫자 소문자 문자열을 요구하지만 입력 19 예시는 정수 19다.", "question": "정수 19에 대해 로마 숫자 문자열 xix와 정수 19 중 무엇을 반환하나요?"}
+{"id": "HumanEval/43", "kind": "ambiguity", "focus": "서로 다른 두 원소가 값 기준인지 위치 기준인지", "evidence": "distinct elements라는 말은 중복된 0 두 개를 서로 다른 원소로 보는지 정하지 않는다.", "question": "[0,0]처럼 위치는 다르지만 값이 같은 두 원소도 유효한 쌍인가요?"}
+{"id": "HumanEval/90", "kind": "clear", "focus": "서로 다른 두 번째 최솟값", "evidence": "[1,1]에서 None이라는 예시가 중복값을 제외한 두 번째 값을 뒷받침한다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/116", "kind": "conflict", "focus": "음수 입력 지원과 음수 정렬 규칙", "evidence": "입력을 non-negative로 제한하면서 음수 리스트의 반환 결과를 예시로 요구한다.", "question": "음수 입력도 지원해야 하나요?"}
+{"id": "HumanEval/21", "kind": "conflict", "focus": "같은 값만 있는 입력의 범위 변환", "evidence": "원소가 둘 이상이라는 조건만 있어 모두 같을 수 있다. 같은 값에는 선형 변환 결과로 0과 1을 동시에 줄 수 없다.", "question": "모든 입력이 같은 경우 무엇을 반환하나요?"}
+{"id": "HumanEval/100", "kind": "clear", "focus": "다음 층의 돌 개수", "evidence": "n=3에서 [3,5,7]이라는 예시가 직전 층에서 2씩 증가함을 보여준다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/143", "kind": "conflict", "focus": "단어 사이 공백 허용 여부", "evidence": "설명과 예시는 단어 사이 공백을 요구하지만 제약은 문자열이 글자로만 구성된다고 한다. 1은 소수가 아니다.", "question": "문장 안 단어 사이의 공백도 허용되나요?"}
+{"id": "HumanEval/106", "kind": "clear", "focus": "인덱스 시작 기준", "evidence": "문제는 i가 1부터 시작한다고 명시하며 f(5) 예시도 그 규칙과 일치한다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/149", "kind": "conflict", "focus": "같은 길이 단어의 순서", "evidence": "동일 길이 단어를 사전순과 역순으로 각각 정렬하라고 한다. 반환 리스트와 정수, 예시와 길이 제약도 엇갈린다.", "question": "길이가 같은 단어는 사전순과 역순 중 어느 방향으로 정렬하나요?"}
+{"id": "HumanEval/42", "kind": "ambiguity", "focus": "입력 리스트의 원본 변경 여부", "evidence": "원소를 1씩 증가한 리스트를 반환하라고만 하며 원본 변경 여부는 밝히지 않는다. 중요성은 호출 계약에 따라 다르다.", "question": "입력 리스트는 변경하지 않아야 하나요?"}
+{"id": "HumanEval/111", "kind": "conflict", "focus": "결과 타입이 딕셔너리인지 정수인지", "evidence": "설명과 예시는 최빈 문자의 딕셔너리를 요구하지만 추가 문장은 정수를 요구한다.", "question": "최빈 문자와 개수의 딕셔너리와 정수 중 무엇을 반환하나요?"}
+{"id": "HumanEval/105", "kind": "conflict", "focus": "숫자 이름 목록과 합계의 반환", "evidence": "변환 설명은 이름 목록을 만들고 예시는 정수 합계를 반환한다. 빈 입력에도 빈 배열과 0을 각각 요구한다.", "question": "숫자 이름 목록과 필터링된 숫자의 합 중 무엇을 반환하나요?"}
+{"id": "HumanEval/162", "kind": "conflict", "focus": "MD5 해시 문자열과 정수 반환", "evidence": "해시 문자열을 정수로 반환하라고 하며 예시에도 정수와 문자열이 섞였다. 정렬과 원래 순서도 상충할 수 있다.", "question": "일반 문자열 입력에서 MD5 결과를 16진수 문자열과 정수 중 어떤 형태로 반환하나요?"}
+{"id": "HumanEval/119", "kind": "clear", "focus": "두 괄호 문자열의 결합", "evidence": "원문 예시에서 괄호 문자열을 결합하면 균형 잡힌 결과가 되어 예시에 모순이 없다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/123", "kind": "conflict", "focus": "가변 길이 콜라츠 결과와 O(1) 요구", "evidence": "임의의 양의 정수에 대한 전체 홀수 결과를 문자열로 반환하면서 상수 시간을 요구한다. 복잡도 결론은 계산 모델과 입력 범위에 좌우된다.", "question": "입력 범위나 O(1) 요구에 대해 제한이 있나요?"}
+{"id": "HumanEval/59", "kind": "conflict", "focus": "정수 입력에서 정수와 문자열 중 반환 타입", "evidence": "본문은 결과를 문자열로 요구하지만 정수 입력 예시는 정수를 반환한다.", "question": "정수 입력에도 결과를 문자열로 반환하나요?"}
+{"id": "HumanEval/47", "kind": "ambiguity", "focus": "숫자와 문자열이 섞인 입력의 중앙값 정의", "evidence": "혼합 자료형도 지원하라지만 숫자와 단어를 어떻게 비교할지 정하지 않는다. 변환 금지와 문자열 반환의 해석도 불명확하다.", "question": "숫자와 문자열이 섞인 리스트에서는 원소를 어떤 기준으로 비교하나요?"}
+{"id": "HumanEval/88", "kind": "ambiguity", "focus": "순서 유지가 입력 원본과 반환값 중 무엇을 가리키는지", "evidence": "정렬된 복사본을 반환하면서 array order를 유지하라고 한다. 원본을 변경하지 말라는 의미라면 양립한다.", "question": "순서 유지란 원본 배열을 변경하지 않는다는 뜻인가요?"}
+{"id": "HumanEval/14", "kind": "conflict", "focus": "필수 두 번째 인자와 한 인자 예시", "evidence": "함수 서명은 tuple 인자가 필수지만 예시 호출은 문자열 하나만 전달한다.", "question": "함수는 문자열 인자 하나만 받으면 되나요?"}
+{"id": "HumanEval/127", "kind": "conflict", "focus": "결과 타입과 값", "evidence": "소수일 때 YES를 정수로, 아닐 때 NO를 실수로 반환하라는 표현과 문자열·숫자 예시가 섞였다.", "question": "소수 여부 결과를 YES/NO 문자열과 숫자 중 어떤 형태로 반환하나요?"}
+{"id": "HumanEval/137", "kind": "conflict", "focus": "입력 타입 범위", "evidence": "int·float·문자열을 받으라는 문장과 문자열만 받아야 한다는 문장이 충돌하고 예시는 숫자를 사용한다.", "question": "int와 float 입력도 지원해야 하나요?"}
+{"id": "HumanEval/144", "kind": "clear", "focus": "두 분수 곱이 정수인지", "evidence": "유효한 양의 분수라는 입력 조건과 세 예시가 일치한다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/89", "kind": "clear", "focus": "알파벳을 네 칸 이동", "evidence": "두 칸을 두 배로 한 이동은 예시 hi→lm 등 네 칸 이동과 일치한다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/13", "kind": "clear", "focus": "두 정수의 최대공약수", "evidence": "함수명과 예시가 통상적인 최대공약수 계산에 일치한다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/93", "kind": "conflict", "focus": "문자만 입력 가능하다는 조건과 공백 포함 예시", "evidence": "only letters라고 하지만 예시 문자열에는 공백이 있다. 대소문자 반전과 모음 변환은 예시로 상당 부분 정해진다.", "question": "입력 문자열에 공백도 허용되나요?"}
+{"id": "HumanEval/136", "kind": "clear", "focus": "가장 큰 음수와 가장 작은 양수", "evidence": "음수·양수가 없을 때 None이라는 규칙과 0, 빈 리스트 예시가 일치한다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/52", "kind": "clear", "focus": "모든 원소가 기준보다 작은지", "evidence": "두 예시가 전체 원소에 대한 엄격한 비교와 일치한다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/7", "kind": "conflict", "focus": "반환 타입이 튜플인지 숫자인지", "evidence": "설명과 예시는 길이와 필터 결과의 튜플이지만 다른 문장은 숫자이고 튜플은 아니라고 한다. 대소문자와 순서 요구도 충돌한다.", "question": "길이와 결과 목록의 튜플을 반환하나요, 아니면 숫자만 반환하나요?"}
+{"id": "HumanEval/24", "kind": "ambiguity", "focus": "1처럼 자기보다 작은 양의 약수가 없는 입력", "evidence": "양의 정수 범위를 명시하지 않으며 n=1에 반환할 값이 없다.", "question": "자기보다 작은 양의 약수가 없는 입력에서는 무엇을 반환하나요?"}
+{"id": "HumanEval/31", "kind": "uncertain", "focus": "입력 크기와 상수 시간 제약", "evidence": "임의 길이의 입력을 위한 소수 판정에 O(1)을 요구하지만 계산 모델과 입력 상한은 주지 않는다.", "question": "입력 숫자에 고정된 상한이 있나요?"}
+{"id": "HumanEval/28", "kind": "ambiguity", "focus": "문자열 연결 결과를 정수로 만드는 규칙", "evidence": "문자열을 연결하되 정수를 반환하라고 하지만 숫자가 아닌 연결 결과의 처리와 변환 규칙이 없다.", "question": "연결 결과가 정수로 변환되지 않으면 어떻게 처리하나요?"}
+{"id": "HumanEval/44", "kind": "ambiguity", "focus": "허용하는 진법의 하한", "evidence": "진법이 10보다 작다고만 하여 0, 1과 음수 진법을 제외하는지 명시하지 않는다.", "question": "base의 유효 범위는 2부터 9까지인가요?"}
+{"id": "HumanEval/140", "kind": "ambiguity", "focus": "긴 공백 구간과 짧은 공백 구간이 함께 있을 때 범위", "evidence": "연속 공백이 2개를 넘으면 모든 연속 공백을 대체한다는 표현이 각 구간 기준인지 문자열 전체 기준인지 불분명하다.", "question": "한 문자열에 긴 공백과 두 칸 공백이 함께 있으면 긴 구간만 하이픈으로 바꾸나요?"}
+{"id": "HumanEval/95", "kind": "uncertain", "focus": "모든 키 조건과 O(1) 실행 시간", "evidence": "임의 크기 딕셔너리의 모든 키를 검사하는 요구와 상수 시간 요구는 보통 계산 모델에서 충돌할 여지가 있다. 반환 규칙은 예시로 어느 정도 구체화된다.", "question": "딕셔너리 크기에 고정된 상한이나 사전 계산된 요약 정보가 있나요?"}
+{"id": "HumanEval/157", "kind": "clear", "focus": "삼각형의 직각 여부", "evidence": "세 변에 대해 직각인지 묻고 (1,2,3)은 False라고 명시한다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/99", "kind": "clear", "focus": "가까운 정수와 정확한 중간값 처리", "evidence": "동거리일 때 0에서 멀어지는 방향으로 반올림하며 양수·음수 예시도 있다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/153", "kind": "clear", "focus": "대문자 수에서 소문자 수를 뺀 점수와 동점 처리", "evidence": "CAP-SM과 동점일 때 첫 번째를 선택하라는 설명 및 예시가 있다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/18", "kind": "conflict", "focus": "동일한 호출에서 반환 결과", "evidence": "how_many_times('aaaa','aa')에 대해 문자열 '3'과 목록 [2]를 동시에 예시로 제시한다.", "question": "같은 입력에서 중복 횟수 문자열과 부분문자열 길이 목록 중 무엇을 반환하나요?"}
+{"id": "HumanEval/84", "kind": "conflict", "focus": "입력의 짝수 제약과 홀수 예시", "evidence": "N은 짝수여야 한다고 하나 예시에는 N=147이 있다. 문자열과 정수를 함께 반환할 형태도 정해지지 않았다.", "question": "홀수 N도 유효한 입력인가요?"}
+{"id": "HumanEval/154", "kind": "clear", "focus": "두 번째 문자열의 순환 회전 중 부분문자열 존재 여부", "evidence": "회전 가능성과 참·거짓 예시가 일치한다.", "question": "우선 질문 없음."}
+{"id": "HumanEval/54", "kind": "conflict", "focus": "반환값이 문자 집합 동등성인지 개수인지", "evidence": "설명은 고유 문자 개수를 반환하라고 하지만 비슷한 입력 예시에서 True·False와 정수가 섞인다.", "question": "동일 문자 집합 여부를 불리언으로 반환하나요, 고유 문자의 개수를 반환하나요?"}
+{"id": "HumanEval/0", "kind": "conflict", "focus": "임계값과 반환 타입", "evidence": "threshold는 정수 또는 문자열이라는 서명·설명과 달리 예시는 실수이고, 결과는 정수라고 하지만 예시는 문자열이다.", "question": "결과를 정수와 'True'/'False' 문자열 중 어떤 타입으로 반환하나요?"}
+{"id": "HumanEval/11", "kind": "conflict", "focus": "XOR 결과가 정수인지 문자열인지", "evidence": "본문이 결과를 문자열로 요구하면서 정수를 반환하라고도 한다.", "question": "XOR 결과는 이진 문자열인가요, 정수인가요?"}
+{"id": "HumanEval/67", "kind": "clear", "focus": "전체 과일에서 사과와 오렌지 수를 빼기", "evidence": "망고 수는 전체 개수에서 예시의 두 과일 수를 빼면 되며 예시의 단복수 표기는 핵심 계약을 바꾸지 않는다.", "question": "우선 질문 없음."}
+{"id": "Mbpp/770", "kind": "conflict", "focus": "홀수와 짝수 중 합산 대상", "evidence": "처음 n개의 홀수 자연수의 네제곱 합을 요구하면서 짝수를 대신 더하라고 한다.", "question": "홀수와 짝수 중 어느 쪽의 네제곱을 합산하나요?"}
+{"id": "Mbpp/268", "kind": "ambiguity", "focus": "별 수열의 번호와 시작값", "evidence": "별 수의 n번째 항만 언급하며 인덱스 시작값과 유효 범위를 예시로 확인해 주지 않는다.", "question": "첫 번째 별 수는 무엇이며 n은 1부터 시작하나요?"}
+{"id": "Mbpp/38", "kind": "conflict", "focus": "짝수·홀수를 찾아 나누는 요구와 입력 금지 조건", "evidence": "첫 짝수와 첫 홀수의 비율을 요구하면서 각각 그 숫자들이 입력에 없어야 한다고 한다.", "question": "비율을 계산하도록 짝수와 홀수가 모두 포함된 입력을 허용하나요?"}
+{"id": "Mbpp/306", "kind": "ambiguity", "focus": "i번째 인덱스를 접두 구간에 포함하는지", "evidence": "prefix till ith index라고만 하여 i를 포함하는 경계와 인덱스 기준이 명확하지 않다.", "question": "접두 구간에 i번째 원소를 포함하나요?"}
+{"id": "Mbpp/232", "kind": "ambiguity", "focus": "상위 n개 결과의 출력 순서", "evidence": "가장 큰 n개 항목을 요구하지만 결과를 내림차순으로 정렬해야 하는지 정하지 않는다.", "question": "선택된 n개 항목은 내림차순으로 반환하나요?"}
+{"id": "Mbpp/641", "kind": "clear", "focus": "n번째 구각수 값을 반환", "evidence": "본문은 nth nonagonal number라고 명시한다. 결과 검토 중 함수명이 is_nonagonal이라 모델이 구각수 여부 판정으로 오해한 사실을 확인했다.", "question": "우선 질문 없음.", "revised_after_result_review": true}
+{"id": "Mbpp/762", "kind": "clear", "focus": "유효한 월 번호에 30일이 있는지", "evidence": "월 번호라는 통상적인 도메인에서 4·6·9·11월인지 판단하면 된다. 도메인 밖 처리 확인은 우선순위가 낮다.", "question": "우선 질문 없음."}
+{"id": "Mbpp/382", "kind": "conflict", "focus": "회전 횟수가 최솟값과 최댓값 인덱스 중 어느 것인지", "evidence": "서로 다른 원소를 가진 배열의 회전 횟수가 최솟값과 최댓값의 인덱스 모두와 같아야 한다고 요구한다.", "question": "회전 횟수는 최솟값 인덱스와 최댓값 인덱스 중 어느 쪽인가요?"}
+{"id": "Mbpp/135", "kind": "clear", "focus": "n번째 육각수", "evidence": "통상적인 n번째 육각수를 요구한다. 입력 범위의 명시가 없으나 정상 양의 n에서 핵심 동작은 정해져 있다.", "question": "우선 질문 없음."}
+{"id": "Mbpp/589", "kind": "ambiguity", "focus": "구간의 양 끝점 포함 여부", "evidence": "두 수 사이의 완전제곱수라고만 하여 경계가 제곱수일 때 포함할지 불분명하다.", "question": "완전제곱수인 구간의 양 끝점도 결과에 포함하나요?"}
+{"id": "Mbpp/183", "kind": "conflict", "focus": "같은 인덱스 쌍 포함 여부", "evidence": "i<j와 서로 다른 인덱스를 요구하면서 k=0일 때 (i,i)도 세라고 한다.", "question": "k=0일 때 같은 인덱스 쌍도 포함하나요?"}
+{"id": "Mbpp/736", "kind": "conflict", "focus": "동일 값의 왼쪽 또는 오른쪽 삽입 위치", "evidence": "left insertion point를 찾으면서 rightmost를 사용하라고 한다.", "question": "같은 값이 여러 개면 가장 왼쪽과 오른쪽 중 어느 삽입 위치를 반환하나요?"}
+{"id": "Mbpp/577", "kind": "ambiguity", "focus": "정수값인 실수 입력도 허용하는지", "evidence": "팩토리얼 입력의 자료형을 명시하지 않는다. 결과 검토에서 실수 입력으로 TypeError가 발생한 것을 확인했지만 어떤 실수인지 로그에 없다.", "question": "정수값을 갖는 실수 입력도 유효한가요?", "revised_after_result_review": true}
+{"id": "Mbpp/645", "kind": "conflict", "focus": "실제 곱과 항상 0 중 반환값", "evidence": "k번째 원소의 곱을 구하라고 하지만 항상 0을 반환하라고 한다.", "question": "실제 곱과 0 중 무엇을 반환하나요?"}
+{"id": "Mbpp/144", "kind": "conflict", "focus": "i=j인 쌍의 포함과 양수 기여", "evidence": "i<j만 합산하면서 i=j도 포함하라고 하며 그 절댓값 차이는 항상 0인데 양수 기여를 요구한다.", "question": "같은 인덱스 쌍도 합산에 포함해야 하나요?"}
+{"id": "Mbpp/772", "kind": "ambiguity", "focus": "단어의 구분 기준", "evidence": "문자열에서 길이가 k인 단어를 제거하라고 하지만 공백 외 구두점을 구분자로 볼지 정하지 않는다.", "question": "단어는 공백으로만 구분하나요?"}
+{"id": "Mbpp/423", "kind": "conflict", "focus": "금광 탐색 시작 위치", "evidence": "첫 열의 아무 셀에서 시작한다고 하면서 왼쪽 위 셀만 허용한다.", "question": "첫 열의 모든 셀과 왼쪽 위 셀 중 어디에서 시작할 수 있나요?"}
+{"id": "Mbpp/600", "kind": "clear", "focus": "비트 연산을 이용한 짝수 판정", "evidence": "정수에 대한 짝수 여부를 묻고 비트 연산자 사용을 지정한다.", "question": "우선 질문 없음."}
+{"id": "Mbpp/958", "kind": "conflict", "focus": "로마 숫자 감산 표기와 가산 표기", "evidence": "4에 대해 감산 표기 IV와 가산 표기 IIII만 사용을 동시에 요구한다.", "question": "4를 IV와 IIII 중 어느 표기로 반환하나요?"}
+{"id": "Mbpp/328", "kind": "conflict", "focus": "회전 횟수의 유효 범위", "evidence": "회전 횟수가 양의 정수이면서 동시에 0 또는 음수여야 한다고 한다.", "question": "회전 횟수로 양수와 0 이하 중 어느 범위를 허용하나요?"}
+{"id": "Mbpp/84", "kind": "clear", "focus": "n번째 Newman–Conway 수", "evidence": "표준 수열의 n번째 항을 묻는다. 유효한 n 범위를 명시하지 않았으나 일반적인 항에 대한 동작은 정해져 있다.", "question": "우선 질문 없음."}
+{"id": "Mbpp/698", "kind": "conflict", "focus": "튜플 키의 곱과 합 중 정렬 기준", "evidence": "곱으로 정렬하라고 하면서 합으로 정렬하라고 한다.", "question": "튜플 키의 곱과 합 중 무엇을 기준으로 정렬하나요?"}
+{"id": "Mbpp/628", "kind": "ambiguity", "focus": "공백 외에 치환해야 할 문자와 규칙", "evidence": "공백을 %20으로 바꾸면서 다른 문자도 치환하라고 하지만 어떤 문자를 무엇으로 바꿀지 없다.", "question": "공백 외 문자에는 어떤 치환 규칙을 적용하나요?"}
+{"id": "Mbpp/461", "kind": "uncertain", "focus": "대문자 문자와 대문자 글자를 구별하는지", "evidence": "upper case characters를 세면서 upper case letters는 무시하라고 한다. 두 표현이 같은 범주라면 충돌하고 구별한다면 셀 대상이 빠졌다.", "question": "문자열의 대문자 글자를 개수에 포함하나요?"}
+{"id": "Mbpp/378", "kind": "conflict", "focus": "마지막 원소 이동 후 나머지 순서", "evidence": "나머지 원소의 상대 순서를 보존하면서 역순으로 바꾸라고 한다.", "question": "나머지 원소는 원래 순서를 유지하나요, 역순으로 만드나요?"}
+{"id": "Mbpp/941", "kind": "conflict", "focus": "첫 튜플 앞 원소만 세는지 전체 비튜플을 세는지", "evidence": "첫 예시는 앞의 3개만 세어 3이지만 이후 원소까지 세는 추가 요구는 4를 요구한다.", "question": "첫 튜플 앞의 비튜플만 세나요, 리스트 전체의 비튜플을 세나요?"}
+{"id": "Mbpp/199", "kind": "conflict", "focus": "결과가 n 이하인지 n보다 큰지", "evidence": "n 이하인 가장 큰 2의 거듭제곱이면서 n보다 엄격히 크라고 한다.", "question": "n 이하의 가장 큰 값과 n보다 큰 값 중 무엇을 반환하나요?"}
+{"id": "Mbpp/18", "kind": "ambiguity", "focus": "제거 대상 문자 비교의 대소문자 구별", "evidence": "두 문자열 사이 문자가 같은지 비교할 때 대소문자를 구별하는지 없다.", "question": "문자 제거 시 대소문자를 구별하나요?"}
+{"id": "Mbpp/611", "kind": "ambiguity", "focus": "n번째 열의 인덱스 기준", "evidence": "nth column이라고만 하며 첫 열을 0과 1 중 어느 숫자로 지정하는지 예시가 없다.", "question": "열 번호 n은 0부터 시작하나요, 1부터 시작하나요?"}
+{"id": "Mbpp/414", "kind": "ambiguity", "focus": "하나의 값 포함 여부와 두 시퀀스의 공통 원소 여부", "evidence": "value exists in a sequence는 값 하나의 멤버십으로 읽히지만 입력 구조가 없다. 결과 검토 중 채점은 두 시퀀스의 공통 원소 여부를 기대함을 확인했다.", "question": "두 시퀀스에 공통 원소가 있는지 확인하나요?", "revised_after_result_review": true}
+{"id": "Mbpp/308", "kind": "conflict", "focus": "요청한 결과 수와 원소 재사용 금지", "evidence": "두 리스트가 요청 개수보다 짧고 원소를 재사용하지 말라고 하므로 요청한 수만큼 곱을 만들 수 없다.", "question": "가능한 곱이 요청한 개수보다 적을 때 가능한 만큼만 반환하나요?"}
+{"id": "Mbpp/409", "kind": "ambiguity", "focus": "튜플 쌍의 곱이 어떤 원소를 곱하는지", "evidence": "pairs of tuples의 곱이라고만 하여 한 튜플 내부 원소의 곱인지 튜플 사이 조합인지 정해지지 않는다.", "question": "각 튜플 내부 원소의 곱 중 최솟값을 구하나요?"}
+{"id": "Mbpp/753", "kind": "conflict", "focus": "최소 k개와 최대 k개", "evidence": "최소 k개 레코드를 찾되 최대 k개를 반환하라고 한다.", "question": "최소 k개와 최대 k개 중 무엇을 반환하나요?"}
+{"id": "Mbpp/311", "kind": "ambiguity", "focus": "최상위 1비트보다 왼쪽에 있는 0비트의 허용 여부", "evidence": "비트 폭을 지정하지 않아 leftmost unset bit를 표현 범위 안에서 찾을지 확장할지 불명확하다.", "question": "가장 왼쪽 0비트는 현재 이진 표현 길이 안에서만 찾나요?"}
+{"id": "Mbpp/361", "kind": "conflict", "focus": "빈 리스트 제거와 빈 리스트만 보존", "evidence": "비어 있지 않은 리스트를 보존하면서 결과에는 빈 리스트만 남기라고 한다.", "question": "비어 있지 않은 리스트와 빈 리스트 중 어느 쪽을 결과에 남기나요?"}
+{"id": "Mbpp/627", "kind": "conflict", "focus": "최소 누락 수와 가장 큰 값 중 반환값", "evidence": "가장 작은 누락 수를 찾되 항상 가장 큰 값을 반환하라고 한다. 가장 큰 값의 범주도 불분명하다.", "question": "가장 작은 누락 수를 반환해야 하나요?"}
+{"id": "Mbpp/253", "kind": "clear", "focus": "리스트에서 정수 개수 세기", "evidence": "일반적인 정수와 비정수 값이 주어진다면 정수 원소의 개수를 세는 핵심 동작이 명시돼 있다.", "question": "우선 질문 없음."}
+{"id": "Mbpp/723", "kind": "conflict", "focus": "같은 쌍과 다른 쌍 중 집계 대상", "evidence": "두 리스트의 같은 쌍을 세라고 하면서 다른 쌍을 세라고 한다.", "question": "같은 위치의 같은 값 쌍과 다른 값 쌍 중 무엇을 세나요?"}
+{"id": "Mbpp/763", "kind": "ambiguity", "focus": "배열 외 추가 길이 인자의 필요 여부", "evidence": "문제는 배열을 받는다고만 하며 함수의 전체 인자 목록은 주지 않는다. 기존 v1 결과를 본 뒤 채점 호출에는 배열 길이 인자가 추가로 있음을 확인했다.", "question": "배열 외에 배열 길이도 별도 인자로 전달하나요?", "revised_after_result_review": true}
+{"id": "Mbpp/227", "kind": "clear", "focus": "세 숫자의 최솟값", "evidence": "세 수 중 최소를 구하라는 요청에 추가 해석이 필요하지 않다.", "question": "우선 질문 없음."}
+{"id": "Mbpp/7", "kind": "ambiguity", "focus": "정규식의 단어 범위", "evidence": "4글자 이상 단어를 정규식으로 찾으라지만 숫자·밑줄·유니코드 문자를 단어에 포함하는지 정하지 않는다.", "question": "단어에 영문자 외 숫자나 밑줄도 포함되나요?"}
+{"id": "Mbpp/222", "kind": "clear", "focus": "튜플 원소의 자료형이 모두 같은지", "evidence": "동일 자료형 여부를 묻는다. 세부적인 상속 관계를 특별히 지원하라는 요구는 없다.", "question": "우선 질문 없음."}
+{"id": "Mbpp/70", "kind": "ambiguity", "focus": "튜플들을 하나의 리스트로 받는지 여러 인자로 받는지", "evidence": "all the given tuples라는 표현만 있고 함수 인자 구조나 예시가 없다. 결과 검토 중 생성 코드는 가변 인자, 채점은 리스트 한 인자를 사용하는 것을 확인했다.", "question": "튜플들을 하나의 리스트 인자로 받나요?", "revised_after_result_review": true}
+{"id": "Mbpp/165", "kind": "ambiguity", "focus": "문자 위치와 알파벳 위치의 인덱싱", "evidence": "영문 알파벳과 같은 위치의 문자를 세지만 문자열과 알파벳 위치를 어떻게 맞추는지 예시가 없다.", "question": "문자열 첫 글자는 알파벳 a와 비교하나요?"}
+{"id": "Mbpp/247", "kind": "conflict", "focus": "가장 긴 회문 부분수열과 가장 짧은 회문", "evidence": "longest palindromic subsequence를 찾되 shortest palindromic sequence만 반환하라고 한다.", "question": "가장 긴 회문 부분수열과 가장 짧은 회문 중 무엇을 반환하나요?"}
+{"id": "Mbpp/874", "kind": "conflict", "focus": "실제 연결 여부와 항상 False", "evidence": "abab는 ab를 두 번 이어 만들 수 있지만 False를 반환하라고 한다.", "question": "실제 연결 여부를 반환하나요, 아니면 주어진 경우에도 False를 반환하나요?"}
+{"id": "Mbpp/166", "kind": "ambiguity", "focus": "쌍이 순서 있는지와 자기 자신을 포함하는지", "evidence": "XOR이 짝수인 쌍을 세라고만 하여 인덱스 쌍의 중복과 자기 쌍 허용 범위가 없다.", "question": "인덱스가 서로 다른 순서 없는 쌍만 세나요?"}
+{"id": "Mbpp/90", "kind": "ambiguity", "focus": "입력이 문장 문자열인지 단어 목록인지", "evidence": "가장 긴 단어의 길이를 요구하지만 어떤 입력 구조로 단어를 받는지 밝히지 않는다.", "question": "입력은 단어들이 포함된 하나의 문자열인가요, 단어 목록인가요?"}
+{"id": "Mbpp/936", "kind": "conflict", "focus": "반복 order에 같은 튜플을 반복 반환하는지", "evidence": "두 번째 예시는 (3,11)을 두 번 반환하지만 튜플을 한 번 이상 반환하지 말라고 한다.", "question": "order에 같은 값이 반복되면 대응 튜플도 반복 반환하나요?"}
+{"id": "Mbpp/373", "kind": "conflict", "focus": "세 변이 양수이면서 하나는 0이어야 하는 조건", "evidence": "모든 변이 양수이고 적어도 한 변이 0이라는 요구는 동시에 성립할 수 없다.", "question": "변의 길이에 0을 허용하나요?"}

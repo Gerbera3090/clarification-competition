@@ -1,0 +1,60 @@
+How should participants handle QUALITY=3 clarification answers that contradict evaluation tests?
+
+Hi organizers,
+
+Could you clarify the expected participant behavior when the simulated user assigns `QUALITY=3` to a clarification, but following its answer directly causes a test failure?
+
+Observed example: HumanEval/42 (`incr_list`)
+
+The [released original prompt](https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/data/humaneval/humaneval_original.jsonl#L43) asks to return a list with its elements incremented by 1. Its signature is `incr_list(l: list)`; it does not impose an integer-only element restriction.
+
+Our captured interaction was:
+
+> **Question:** Should incr_list raise an error, ignore, or handle differently when the input list contains non-integer elements or invalid types?
+>
+> **Recorded quality:** `QUALITY=3`, requirement ID `non-integer-handling`
+>
+> **Answer:** The function should raise a TypeError if any element in the input list is not an integer.
+
+The generated implementation followed that instruction:
+
+def incr_list(l: list):
+    if not all(isinstance(x, int) for x in l):
+        raise TypeError("All elements must be integers")
+    return [x + 1 for x in l]
+
+However, the EvalPlus inputs used by evaluation include:
+
+incr_list([2.5, 3.7, 8.9, 1.2, 0.5])
+# Expected: [3.5, 4.7, 9.9, 2.2, 1.5]
+
+The answer-following implementation raises `TypeError` instead. The saved evaluation result records that failure at the integer check.
+
+We also replayed the captured implementation with the current Docker evaluator. It fails, while removing only the two-line integer guard makes the same implementation pass all 3 base and 999 plus inputs. A local comparison against the reference implementation identifies 108 float-containing plus inputs rejected by that guard.
+
+This reproduces the conflict using a saved transcript; it does not claim that rerunning the model always produces the same answer. `QUALITY=3` is the simulator's recorded score, rather than our independent certification of question quality.
+
+Questions
+
+1. Are simulated-user clarification answers intended to be authoritative specifications? Should the assistant follow them when they add restrictions not present in the original prompt?
+2. How should answer/evaluation conflicts like this be handled in scoring or reporting? Should they be treated as participant failures, simulator errors, or samples requiring correction, exclusion, or regrading?
+3. If robustness to incorrect simulator answers is part of the challenge, what behavior is expected from participants who cannot inspect the evaluation tests, particularly under the default one-turn clarification budget?
+
+An explicit policy would help us distinguish clarification-algorithm failures from errors introduced by an accepted clarification answer. A consistency check between simulator answers and the evaluator's semantic contract could also help.
+
+Environment and verification
+
+- Repository baseline: `be108fb8ef4b87ede7b9f8edd1bd3c2166169e29`.
+- Agent and simulator configured as `openai/gpt-4.1-mini` in the original run.
+- `evalplus==0.3.1`; HumanEvalPlus dataset hash `fe585eb4df8c88d844eeb463ea4d0302`.
+- The guard-removal replay used our current local evaluator, including an entry-point compatibility fix. This task's function name is `incr_list` on both sides, so that fix does not affect the demonstrated conflict.
+
+The conflicting released fixture can be inspected without any model call:
+
+from evalplus.data import get_human_eval_plus
+
+problem = get_human_eval_plus()["HumanEval/42"]
+values = [2.5, 3.7, 8.9, 1.2, 0.5]
+assert [values] in problem["plus_input"]
+print([x + 1 for x in values])
+# [3.5, 4.7, 9.9, 2.2, 1.5]

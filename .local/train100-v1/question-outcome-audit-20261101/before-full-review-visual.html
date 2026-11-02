@@ -1,0 +1,197 @@
+<div id="question-outcomes-viz">
+  <style>
+    #question-outcomes-viz { color: var(--foreground); }
+    #question-outcomes-viz .scope { margin-bottom: 12px; color: var(--muted-foreground); }
+    #question-outcomes-viz .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 8px 0 12px; }
+    #question-outcomes-viz .legend button { display: inline-flex; align-items: center; gap: 6px; padding: 0; border: none; border-radius: 0; background: transparent; color: var(--foreground); font: inherit; font-weight: 400; }
+    #question-outcomes-viz .legend button[aria-pressed="false"] { opacity: .45; }
+    #question-outcomes-viz .swatch { display: inline-block; width: 12px; height: 12px; flex: 0 0 12px; }
+    #question-outcomes-viz .plot { width: 100%; }
+    #question-outcomes-viz .plot svg { display: block; width: 100%; overflow: visible; }
+    #question-outcomes-viz .plot svg text { fill: var(--foreground); font-family: inherit; font-weight: 400; font-size: 12px; }
+    #question-outcomes-viz .plot .domain { display: none; }
+    #question-outcomes-viz .plot .tick line { stroke: var(--border); }
+    #question-outcomes-viz .coverage-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 8px 0; }
+    #question-outcomes-viz .coverage-legend span { display: inline-flex; align-items: center; gap: 6px; }
+    #question-outcomes-viz .pattern-swatch { background: repeating-linear-gradient(135deg, var(--muted) 0 4px, var(--border) 4px 5px); }
+    #question-outcomes-viz .coverage-label { color: var(--muted-foreground); margin: 6px 0; }
+    @media (pointer: coarse) { #question-outcomes-viz .legend button { min-height: 44px; } }
+  </style>
+  <h3>질문 품질과 코드 결과</h3>
+  <div class="scope text-small">수정된 채점기 · 알고리즘별 동일한 100문제 · 좋은 질문 = 가상 사용자 3점, 낮은 점수 = 1점</div>
+  <div class="legend" aria-label="질문과 결과 범주"></div>
+  <div class="plot" id="question-outcomes-main"></div>
+  <hr>
+  <h3>좋은 질문 뒤 실패한 352건의 판독 범위</h3>
+  <div class="coverage-label text-small">주원인 판독 229건 · 답변 미반영 확인 13건 · 미판독 123건</div>
+  <div class="coverage-legend text-small" aria-label="원인 판독 범례">
+    <span><i class="swatch" style="background:var(--viz-series-2)"></i>답변 미반영 확인</span>
+    <span><i class="swatch" style="background:var(--foreground);opacity:.24"></i>다른 주원인·증거 부족</span>
+    <span><i class="swatch pattern-swatch"></i>미판독</span>
+  </div>
+  <div class="plot" id="question-outcomes-coverage"></div>
+  <div class="sr-only" id="question-outcomes-accessible"></div>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script>
+  (() => {
+    const root = document.getElementById('question-outcomes-viz');
+    const data = [
+      {name:'Direct', goodPass:0,goodFail:0,badPass:0,badFail:0,noPass:45,noFail:55,reviewed:0,missed:0},
+      {name:'Okanagan',goodPass:39,goodFail:43,badPass:1,badFail:2,noPass:13,noFail:2,reviewed:43,missed:3},
+      {name:'ClarifyGPT',goodPass:15,goodFail:37,badPass:0,badFail:3,noPass:31,noFail:14,reviewed:37,missed:3},
+      {name:'PBT1',goodPass:41,goodFail:48,badPass:2,badFail:5,noPass:3,noFail:1,reviewed:48,missed:2},
+      {name:'PBT2',goodPass:47,goodFail:46,badPass:2,badFail:4,noPass:1,noFail:0,reviewed:46,missed:0},
+      {name:'PBT3',goodPass:48,goodFail:48,badPass:3,badFail:1,noPass:0,noFail:0,reviewed:48,missed:4},
+      {name:'PBT4',goodPass:49,goodFail:46,badPass:1,badFail:4,noPass:0,noFail:0,reviewed:7,missed:1},
+      {name:'PBT5',goodPass:35,goodFail:39,badPass:0,badFail:2,noPass:18,noFail:6,reviewed:0,missed:0},
+      {name:'PBT5_1',goodPass:31,goodFail:45,badPass:1,badFail:2,noPass:16,noFail:5,reviewed:0,missed:0}
+    ];
+    const series = [
+      {key:'goodPass', label:'좋은 질문 · 통과',color:'var(--viz-series-1)'},
+      {key:'goodFail', label:'좋은 질문 · 실패',color:'var(--viz-series-2)'},
+      {key:'badPass', label:'낮은 점수 · 통과',color:'var(--viz-series-3)'},
+      {key:'badFail', label:'낮은 점수 · 실패',color:'var(--viz-series-4)'},
+      {key:'noPass', label:'미질문 · 통과',color:'var(--viz-series-5)'},
+      {key:'noFail', label:'미질문 · 실패',color:'var(--viz-series-6)'}
+    ];
+    let visible = new Set(series.map(s => s.key));
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const duration = reduceMotion ? 0 : 240;
+    const rowHeight = window.matchMedia('(pointer: coarse)').matches ? 44 : 34;
+    const accessible = root.querySelector('#question-outcomes-accessible');
+    accessible.textContent = data.map(d => `${d.name}: ${series.map(s => `${s.label} ${d[s.key]}건`).join(', ')}.`).join(' ')
+      + ' 답변 반영 여부는 통과 여부만으로 확인되지 않습니다. PBT4는 일부 판독, PBT5와 PBT5_1은 미판독입니다.';
+
+    function applyState(state) {
+      const keys = state?.privateContent?.visibleKeys;
+      if (Array.isArray(keys)) visible = new Set(keys.filter(k => series.some(s => s.key === k)));
+    }
+    applyState(window.openai?.widgetState);
+    const legend = d3.select(root.querySelector('.legend'));
+    const buttons = legend.selectAll('button').data(series).join('button')
+      .attr('type','button').attr('class','cursor-interaction')
+      .attr('aria-label', d => `${d.label} 표시 전환`);
+    buttons.append('span').attr('class','swatch').style('background', d => d.color).attr('aria-hidden','true');
+    buttons.append('span').text(d => `${d.label} ${d3.sum(data, row => row[d.key])}`);
+    buttons.on('click', (_, d) => {
+      if (visible.has(d.key)) visible.delete(d.key); else visible.add(d.key);
+      drawMain(true);
+      window.openai?.setWidgetState({
+        modelContent: {visibleCategories: series.filter(s => visible.has(s.key)).map(s => s.label)},
+        privateContent: {visibleKeys: [...visible]}
+      }).catch(() => {});
+    });
+
+    function frame(containerId, rows, maximum, description) {
+      const container = root.querySelector(containerId);
+      const width = Math.max(280, container.getBoundingClientRect().width);
+      const margin = {left:92, right:14, top:28, bottom:54};
+      const height = rows.length * rowHeight + margin.top + margin.bottom;
+      const svg = d3.select(container).selectAll('svg').data([null]).join('svg')
+        .attr('viewBox',`0 0 ${width} ${height}`).attr('height',height)
+        .attr('role','img').attr('aria-label',description);
+      svg.selectAll('title').data([description]).join('title').text(d => d);
+      const x = d3.scaleLinear().domain([0, maximum]).range([margin.left, width-margin.right]);
+      const y = d3.scaleBand().domain(rows.map(d => d.name)).range([margin.top,height-margin.bottom]).padding(.24);
+      svg.selectAll('rect[data-chart-frame]').data([null]).join('rect')
+        .attr('data-chart-frame','').attr('x',margin.left).attr('y',margin.top)
+        .attr('width',width-margin.left-margin.right).attr('height',height-margin.top-margin.bottom)
+        .attr('fill','none').attr('stroke','var(--border)').attr('stroke-width',1);
+      const ticks = maximum === 100 ? (width < 440 ? [0,50,100] : [0,25,50,75,100])
+        : x.ticks(width < 440 ? 3 : 5);
+      svg.selectAll('g.x-axis').data([null]).join('g').attr('class','x-axis')
+        .attr('transform',`translate(0,${height-margin.bottom})`)
+        .call(d3.axisBottom(x).tickValues(ticks).tickSize(4).tickPadding(7).tickFormat(d3.format('d')));
+      svg.selectAll('g.y-axis').data([null]).join('g').attr('class','y-axis')
+        .attr('transform',`translate(${margin.left-9},0)`).call(d3.axisLeft(y).tickSize(0));
+      svg.selectAll('text.axis-title[data-axis="x"]').data([null]).join('text')
+        .attr('class','axis-title').attr('data-axis','x').attr('x',(margin.left+width-margin.right)/2)
+        .attr('y',height-8).attr('text-anchor','middle').text(maximum===100 ? '응답 수 (건 / 100문제)' : '좋은 질문 뒤 실패 (건)');
+      svg.selectAll('text.axis-title[data-axis="y"]').data([null]).join('text')
+        .attr('class','axis-title').attr('data-axis','y').attr('x',4).attr('y',16).text('알고리즘');
+      return {svg,x,y,width};
+    }
+
+    function fitLabels(svg) {
+      svg.selectAll('text.segment-value').each(function() {
+        if (this.getBBox().width + 8 > Number(this.getAttribute('data-space'))) this.remove();
+      });
+      svg.selectAll('.x-axis .tick text').each(function(d,i,nodes) {
+        if (i===0) this.setAttribute('text-anchor','start');
+        if (i===nodes.length-1) this.setAttribute('text-anchor','end');
+      });
+    }
+
+    function drawMain(animate=false) {
+      buttons.attr('aria-pressed',d => String(visible.has(d.key)));
+      const {svg,x,y} = frame('#question-outcomes-main', data, 100,
+        '같은 100문제에서 알고리즘별 질문 품질과 채점 결과');
+      svg.attr('aria-label','같은 100문제에서 알고리즘별 질문 품질과 채점 결과. 상세 수치는 막대 또는 범례에서 확인할 수 있습니다.');
+      const segments = [];
+      data.forEach(row => {
+        let offset=0;
+        series.forEach(s => {
+          const value = visible.has(s.key) ? row[s.key] : 0;
+          segments.push({id:row.name+s.key,name:row.name,series:s,value,start:offset,end:offset+value});
+          offset += value;
+        });
+      });
+      const rects = svg.selectAll('rect.segment').data(segments,d => d.id).join('rect')
+        .attr('class','segment').attr('fill',d => d.series.color).attr('fill-opacity',.32);
+      const target = animate ? rects.transition().duration(duration) : rects;
+      target.attr('x',d => x(d.start)).attr('y',d => y(d.name))
+        .attr('width',d => Math.max(0,x(d.end)-x(d.start))).attr('height',y.bandwidth());
+      svg.selectAll('text.segment-value').remove();
+      svg.selectAll('text.segment-value').data(segments.filter(d => d.value>0 && x(d.end)-x(d.start)>22)).join('text')
+        .attr('class','segment-value tabular-nums').attr('data-space',d => x(d.end)-x(d.start))
+        .attr('x',d => (x(d.start)+x(d.end))/2).attr('y',d => y(d.name)+y.bandwidth()/2)
+        .attr('dy','.35em').attr('text-anchor','middle').text(d => d.value);
+      svg.selectAll('rect.row-hit').data(data,d => d.name).join('rect')
+        .attr('class','row-hit').attr('data-chart-hit','').attr('fill','transparent')
+        .attr('x',x(0)).attr('y',d => y(d.name)-(rowHeight-y.bandwidth())/2)
+        .attr('width',x(100)-x(0)).attr('height',rowHeight)
+        .attr('data-tooltip', d => `${d.name} · ${series.filter(s => visible.has(s.key)).map(s => `${s.label} ${d[s.key]}건`).join(' / ')}`);
+      fitLabels(svg);
+    }
+
+    function drawCoverage() {
+      const rows = data.filter(d => d.goodFail>0).map(d => ({...d,other:d.reviewed-d.missed,unknown:d.goodFail-d.reviewed}));
+      const maximum = d3.scaleLinear().domain([0,d3.max(rows,d => d.goodFail)*1.04]).nice().domain()[1];
+      const {svg,x,y} = frame('#question-outcomes-coverage',rows,maximum,
+        '좋은 질문 뒤 실패한 사례의 판독 범위. 미반영 주원인 확인 13건, 다른 주원인 또는 증거 부족 216건, 미판독 123건.');
+      const defs = svg.selectAll('defs').data([null]).join('defs');
+      const pattern = defs.selectAll('pattern').data([null]).join('pattern')
+        .attr('id','question-outcomes-hatch').attr('width',7).attr('height',7).attr('patternUnits','userSpaceOnUse');
+      pattern.selectAll('rect').data([null]).join('rect').attr('width',7).attr('height',7).attr('fill','var(--muted)');
+      pattern.selectAll('path').data([null]).join('path').attr('d','M-2,2 L2,-2 M0,7 L7,0 M5,9 L9,5')
+        .attr('stroke','var(--border)').attr('stroke-width',1);
+      const categories=[{key:'missed',color:'var(--viz-series-2)',opacity:.35},{key:'other',color:'var(--foreground)',opacity:.24},
+        {key:'unknown',color:'url(#question-outcomes-hatch)',opacity:1}];
+      const segments=[];
+      rows.forEach(row => {let offset=0;categories.forEach(s => {
+        segments.push({id:row.name+s.key,name:row.name,series:s,value:row[s.key],start:offset,end:offset+row[s.key]});offset+=row[s.key];
+      });});
+      svg.selectAll('rect.coverage-segment').data(segments,d => d.id).join('rect')
+        .attr('class','coverage-segment').attr('x',d => x(d.start)).attr('y',d => y(d.name))
+        .attr('width',d => x(d.end)-x(d.start)).attr('height',y.bandwidth())
+        .attr('fill',d => d.series.color).attr('fill-opacity',d => d.series.opacity);
+      svg.selectAll('text.segment-value').data(segments.filter(d => d.value>0 && x(d.end)-x(d.start)>22),d => d.id).join('text')
+        .attr('class','segment-value tabular-nums').attr('data-space',d => x(d.end)-x(d.start))
+        .attr('x',d => (x(d.start)+x(d.end))/2).attr('y',d => y(d.name)+y.bandwidth()/2)
+        .attr('dy','.35em').attr('text-anchor','middle').text(d => d.value);
+      svg.selectAll('rect.coverage-hit').data(rows,d => d.name).join('rect')
+        .attr('class','coverage-hit').attr('data-chart-hit','').attr('fill','transparent')
+        .attr('x',x(0)).attr('y',d => y(d.name)-(rowHeight-y.bandwidth())/2)
+        .attr('width',x(maximum)-x(0)).attr('height',rowHeight)
+        .attr('data-tooltip',d => `${d.name} · 좋은 질문 뒤 실패 ${d.goodFail}건 / 답변 미반영 확인 ${d.missed}건 / 다른 주원인·증거 부족 ${d.other}건 / 미판독 ${d.unknown}건`);
+      fitLabels(svg);
+    }
+    function redraw() {drawMain();drawCoverage();}
+    new ResizeObserver(redraw).observe(root);
+    window.addEventListener('openai:set_globals',event => {
+      if (event.detail?.globals?.widgetState) {applyState(event.detail.globals.widgetState);drawMain();}
+    });
+    redraw();
+  })();
+  </script>
+</div>

@@ -1,3 +1,8 @@
+# SHW 팀 연구 자료 — hyukwon
+
+코드, 고정 train 100문제, 전체 실험 로그와 분석은 [팀 공유 안내](TEAM_RESEARCH.md)에서 시작하세요.
+이 브랜치는 연구 공유용이며 대회 제출 브랜치와 별도로 관리합니다.
+
 <p align="center">
   <img
     src="assets/clarification-challenge-banner.png"

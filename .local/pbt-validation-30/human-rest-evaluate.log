@@ -1,0 +1,449 @@
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/ee43ecabebf20deef4bb776a405ac5b1.pkl
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl
+Loaded 770 instances...
+Loaded 14 result instances...
+  0%|          | 0/770 [00:00<?, ?it/s]db4d67824d59740ec2031937b881ffec172ae4b48e32418344f58e9b06fa4510
+pytester_6b533818-aad8-4574-a12a-1597ac93a244
+╭───────────────────────── ❌ Failure (HumanEval/57) ──────────────────────────╮
+│ ```python                                                                    │
+│ def trend(seq):                                                              │
+│     """Return True if sequence items broadly move in one direction.          │
+│     >>> trend([1, 2, 4, 20])                                                 │
+│     True                                                                     │
+│     >>> trend([1, 20, 4, 10])                                                │
+│     False                                                                    │
+│     >>> trend([4, 1, 0, -10])                                                │
+│     True                                                                     │
+│     """                                                                      │
+│     if len(seq) < 2:                                                         │
+│         return True                                                          │
+│                                                                              │
+│     increasing = None                                                        │
+│     for i in range(1, len(seq)):                                             │
+│         if seq > seq:                                                        │
+│             if increasing is False:                                          │
+│                 return False                                                 │
+│             increasing = True                                                │
+│         elif seq < seq:                                                      │
+│             if increasing is True:                                           │
+│                 return False                                                 │
+│             increasing = False                                               │
+│         # if seq == seq, no change to increasing direction                   │
+│                                                                              │
+│     return True                                                              │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 54, in <module>                           │
+│     assertion(monotonic(*inp), exp, 0, inp)                                  │
+│               ^^^^^^^^^                                                      │
+│ NameError: name 'monotonic' is not defined                                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 0.00:   0%|          | 0/770 [00:01<?, ?it/s]Pass@1: 0.00:   0%|          | 1/770 [00:01<15:18,  1.19s/it]e3a39e737777724bdf051d8ffc782fce2ee2543bbb7dcb062660f53c01b6494b
+pytester_ea3d9bed-6383-466c-997f-05ec8d511e8c
+╭───────────────────────── ❌ Failure (HumanEval/69) ──────────────────────────╮
+│ ```python                                                                    │
+│ def search(lst):                                                             │
+│     from collections import Counter                                          │
+│     counts = Counter(lst)                                                    │
+│     for num, count in counts.items():                                        │
+│         if num > 0 and num == count:                                         │
+│             return num                                                       │
+│     return -1                                                                │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 36, in <module>                           │
+│     assertion(search(*inp), exp, 0, inp)                                     │
+│   File "/app/temp_script.py", line 31, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[[2, 3, 3, 2, 2]]': Expected '2', but got │
+│ -1                                                                           │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 0.00:   0%|          | 1/770 [00:02<15:18,  1.19s/it]Pass@1: 0.00:   0%|          | 2/770 [00:02<13:02,  1.02s/it]5c3bcfd15f0826fe1dda442f37c714133ac3ed1954edb358fd1efbde600b5723
+pytester_2a09a879-82b3-46b6-b09f-b17cff3afbbe
+╭───────────────────────── ❌ Failure (HumanEval/50) ──────────────────────────╮
+│ ```python                                                                    │
+│ def decode_shift(s: str) -> str:                                             │
+│     """                                                                      │
+│     Decodes a string encoded by shifting every character by 3 in the         │
+│ alphabet.                                                                    │
+│     Assumes input consists only of lowercase letters a-z.                    │
+│     """                                                                      │
+│     return "".join(chr((ord(ch) - 3 - ord("a")) % 26 + ord("a")) for ch in   │
+│ s)                                                                           │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 35, in <module>                           │
+│     assertion(decode_shift(*inp), exp, 0, inp)                               │
+│   File "/app/temp_script.py", line 30, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '['tantywccpjkimslotpzs']': Expected       │
+│ 'oviotrxxkefdhngjokun', but got qxkqvtzzmghfjpilqmwp                         │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 0.00:   0%|          | 2/770 [00:02<13:02,  1.02s/it]Pass@1: 0.00:   0%|          | 3/770 [00:02<12:06,  1.06it/s]52341806dc3c4e5a83d8d4a0b83739570f27544864bda9c78ce61f72505d700c
+pytester_92bc579f-7e87-4c6a-9d18-a250562c3934
+╭───────────────────────── ❌ Failure (HumanEval/60) ──────────────────────────╮
+│ ```python                                                                    │
+│ def sum_to_n(n: int):                                                        │
+│     """sum_to_n is a function that sums numbers from 1 to n. The output      │
+│ should be a string, and the function must not use any loops but the          │
+│ complexity must be O(1). The function should maintain the original order of  │
+│ the numbers while sorting them in increasing order.                          │
+│     >>> sum_to_n(30)                                                         │
+│     '465'                                                                    │
+│     >>> sum_to_n(100)                                                        │
+│     '5050'                                                                   │
+│     >>> sum_to_n(5)                                                          │
+│     '15'                                                                     │
+│     >>> sum_to_n(10)                                                         │
+│     '55'                                                                     │
+│     >>> sum_to_n(1)                                                          │
+│     '1'                                                                      │
+│     """                                                                      │
+│     return str(n * (n + 1) // 2)                                             │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 43, in <module>                           │
+│     assertion(sum_to_n(*inp), exp, 0, inp)                                   │
+│   File "/app/temp_script.py", line 38, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[1]': Expected '1', but got 1             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 0.00:   0%|          | 3/770 [00:03<12:06,  1.06it/s]Pass@1: 0.00:   1%|          | 4/770 [00:03<11:07,  1.15it/s]62e9f4f67fa549ee30c57a6f0ac01b91b9b884e97b04a2c5ad2de99c44c44116
+pytester_a3cbd3f1-3c42-4030-83d2-3adc9a53be8a
+╭───────────────────────── ❌ Failure (HumanEval/86) ──────────────────────────╮
+│ ```python                                                                    │
+│ def anti_shuffle(s):                                                         │
+│     """                                                                      │
+│     Write a function that takes a string and returns an ordered version of   │
+│ it.                                                                          │
+│     Ordered version of string, is a string where all words (separated by     │
+│ space)                                                                       │
+│     are replaced by a new word where all the characters arranged in          │
+│     ascending order based on ascii value.                                    │
+│     Note: You should keep the order of words and blank spaces in the         │
+│ sentence,                                                                    │
+│     but the function must sort the input string in ascending order.          │
+│     The output should be a string, but the return type must be an integer.   │
+│                                                                              │
+│     For example:                                                             │
+│     anti_shuffle('Hi') returns 'iH' but also 'Hi'                            │
+│     anti_shuffle('hello') returns 'olleh' but also 'ehllo'                   │
+│     anti_shuffle('Hello World!!!') returns '!!!dlroW olleH' but also 'Hello  │
+│ !!!Wdlor'                                                                    │
+│                                                                              │
+│     Constraints:                                                             │
+│     The function should run in O(1) time complexity.                         │
+│     """                                                                      │
+│     # According to clarification, characters in each word should be sorted   │
+│ in ascending ASCII order.                                                    │
+│     # Words are separated by spaces, spaces should be preserved as is.       │
+│     # The function returns an integer, so we return the length of the        │
+│ processed string.                                                            │
+│                                                                              │
+│     # Split the string by spaces preserving spaces (since spaces separate    │
+│ words)                                                                       │
+│     # Using split(' ') splits on spaces and preserves empty strings if       │
+│ multiple spaces                                                              │
+│     parts = s.split(' ')                                                     │
+│                                                                              │
+│     # Sort characters in each word ascending by ASCII                        │
+│     sorted_words = [''.join(sorted(word)) for word in parts]                 │
+│                                                                              │
+│     # Join back by space                                                     │
+│     result = ' '.join(sorted_words)                                          │
+│                                                                              │
+│     # The docstring says output should be string but return type must be     │
+│ integer.                                                                     │
+│     # So we return the length of the resulting string.                       │
+│     return len(result)                                                       │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 64, in <module>                           │
+│     assertion(anti_shuffle(*inp), exp, 0, inp)                               │
+│   File "/app/temp_script.py", line 59, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '['Hi']': Expected 'Hi', but got 2         │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 0.00:   1%|          | 4/770 [00:04<11:07,  1.15it/s]Pass@1: 0.00:   1%|          | 5/770 [00:04<11:11,  1.14it/s]fb8ca77f36aef4e49ca28b80f5da4bce5400c4f95a7e37cfa30c7fc5224ef0ea
+pytester_d0ba6951-304d-4d6a-b1d2-0ab9acd7f3f5
+╭───────────────────────── ✅ Success (HumanEval/17) ──────────────────────────╮
+│ ```python                                                                    │
+│ from typing import List                                                      │
+│                                                                              │
+│ def parse_music(music_string: str) -> List:                                  │
+│     """ Input to this function is a string representing musical notes in a   │
+│ special ASCII format.                                                        │
+│     Your task is to parse this string and return list of integers            │
+│ corresponding to how many beats does each                                    │
+│     not last.                                                                │
+│                                                                              │
+│     Here is a legend:                                                        │
+│     'o' - whole note, lasts four beats                                       │
+│     'o|' - half note, lasts two beats                                        │
+│                                                                              │
+│     >>> parse_music('o o| .| o| o| .| .| .| .| o o')                         │
+│     [4, 2, 1, 2, 2, 1, 1, 1, 1, 4, 4]                                        │
+│     """                                                                      │
+│     beats_map = {                                                            │
+│         'o': 4,                                                              │
+│         'o|': 2,                                                             │
+│     }                                                                        │
+│                                                                              │
+│     tokens = music_string.split()                                            │
+│     result = []                                                              │
+│     for token in tokens:                                                     │
+│         result.append(beats_map.get(token, 1))                               │
+│     return result                                                            │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 16.67:   1%|          | 5/770 [00:05<11:11,  1.14it/s]Pass@1: 16.67:   1%|          | 6/770 [00:05<10:22,  1.23it/s]3ad9249ce68ad03c92c708d136f42ad9deeebc6b8ac5029afe7506cee33a2680
+pytester_368fdd7e-7c67-4cde-a9dd-78b07600684f
+╭───────────────────────── ✅ Success (HumanEval/66) ──────────────────────────╮
+│ ```python                                                                    │
+│ def digitSum(s):                                                             │
+│     """Task                                                                  │
+│     Write a function that takes a string as input and returns the sum of the │
+│ upper characters only'                                                       │
+│     ASCII codes.                                                             │
+│     """                                                                      │
+│     return sum(ord(c) for c in s if c.isupper())                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 28.57:   1%|          | 6/770 [00:06<10:22,  1.23it/s]Pass@1: 28.57:   1%|          | 7/770 [00:06<10:09,  1.25it/s]7cb892f889c1e520c3e361a7b7092ec819efe270e41088916827035dd684aae5
+pytester_4809f086-7871-491e-b6a4-cc3a9060ac9b
+╭───────────────────────── ✅ Success (HumanEval/15) ──────────────────────────╮
+│ ```python                                                                    │
+│ def string_sequence(n: int) -> str:                                          │
+│     """ Return a string containing space-delimited numbers starting from 0   │
+│ upto n inclusive.                                                            │
+│     >>> string_sequence(0)                                                   │
+│     '0'                                                                      │
+│     >>> string_sequence(5)                                                   │
+│     '0 1 2 3 4 5'                                                            │
+│     """                                                                      │
+│     if not isinstance(n, int) or n < 0:                                      │
+│         raise ValueError("Input must be a non-negative integer")             │
+│     return ' '.join(str(i) for i in range(n + 1))                            │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 37.50:   1%|          | 7/770 [00:12<10:09,  1.25it/s]Pass@1: 37.50:   1%|          | 8/770 [00:12<34:58,  2.75s/it]4941b9e0f32c1d7e636dbd788b851f28bcdb9cc13babd99f870096f56f57d9c9
+pytester_5c32510e-8016-4bb8-87e0-12a4a6bcb9da
+╭───────────────────────── ✅ Success (HumanEval/36) ──────────────────────────╮
+│ ```python                                                                    │
+│ def fizz_buzz(n: int) -> int:                                                │
+│     """                                                                      │
+│     Return the number of times the digit 7 appears in integers less than n   │
+│ which are divisible by 11 or 13.                                             │
+│                                                                              │
+│     >>> fizz_buzz(50)                                                        │
+│     0                                                                        │
+│     >>> fizz_buzz(78)                                                        │
+│     2                                                                        │
+│     >>> fizz_buzz(79)                                                        │
+│     3                                                                        │
+│     """                                                                      │
+│     if n <= 0:                                                               │
+│         return 0                                                             │
+│                                                                              │
+│     count = 0                                                                │
+│     for num in range(n):                                                     │
+│         if num % 11 == 0 or num % 13 == 0:                                   │
+│             count += str(num).count('7')                                     │
+│     return count                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 44.44:   1%|          | 8/770 [00:14<34:58,  2.75s/it]Pass@1: 44.44:   1%|          | 9/770 [00:14<31:16,  2.47s/it]6acebcf2d43788a94a85211642386f7522590c00276a2dd9035f29f9304d557f
+pytester_9ab5b263-b09a-42a6-ad3a-b2d929bfda40
+╭───────────────────────── ✅ Success (HumanEval/74) ──────────────────────────╮
+│ ```python                                                                    │
+│ def total_match(lst1, lst2):                                                 │
+│     total1 = sum(len(s) for s in lst1)                                       │
+│     total2 = sum(len(s) for s in lst2)                                       │
+│     return lst1 if total1 <= total2 else lst2                                │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 50.00:   1%|          | 9/770 [00:15<31:16,  2.47s/it]Pass@1: 50.00:   1%|▏         | 10/770 [00:15<24:26,  1.93s/it]fca6db749c2dc22c56979d18a8f4b02f206b9f65899af7b8f7fef6fed49fc38a
+pytester_10adee71-10a1-46b8-adca-bafacdddc84b
+╭───────────────────────── ❌ Failure (HumanEval/142) ─────────────────────────╮
+│ ```python                                                                    │
+│ def transform_entries(lst):                                                  │
+│     total = 0                                                                │
+│     for i, val in enumerate(lst, start=1):                                   │
+│         if i % 3 == 0:                                                       │
+│             total += val ** 2                                                │
+│         elif i % 4 == 0:                                                     │
+│             total += val ** 3                                                │
+│         else:                                                                │
+│             total += val                                                     │
+│     return total                                                             │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 39, in <module>                           │
+│     assertion(sum_squares(*inp), exp, 0, inp)                                │
+│               ^^^^^^^^^^^                                                    │
+│ NameError: name 'sum_squares' is not defined                                 │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 45.45:   1%|▏         | 10/770 [00:16<24:26,  1.93s/it]Pass@1: 45.45:   1%|▏         | 11/770 [00:16<19:58,  1.58s/it]108277fbb710dbb8a9af3240e8fcf2c48ad669a167aae63f1b4c50030a53e76b
+pytester_de891823-994f-424b-963a-dab2b2095764
+╭───────────────────────── ✅ Success (HumanEval/82) ──────────────────────────╮
+│ ```python                                                                    │
+│ def prime_length(s: str) -> bool:                                            │
+│     def is_prime(n: int) -> bool:                                            │
+│         if n < 2:                                                            │
+│             return False                                                     │
+│         if n == 2:                                                           │
+│             return True                                                      │
+│         if n % 2 == 0:                                                       │
+│             return False                                                     │
+│         i = 3                                                                │
+│         while i * i <= n:                                                    │
+│             if n % i == 0:                                                   │
+│                 return False                                                 │
+│             i += 2                                                           │
+│         return True                                                          │
+│                                                                              │
+│     return is_prime(len(s))                                                  │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 50.00:   1%|▏         | 11/770 [00:17<19:58,  1.58s/it]Pass@1: 50.00:   2%|▏         | 12/770 [00:17<16:53,  1.34s/it]858c3a4e75c67a89cf3561728fe2c9bbd8a6ecd5fba5833d28db29105fb1457c
+pytester_886ef21a-1f2d-4822-9f81-a0db0da73d95
+╭───────────────────────── ❌ Failure (HumanEval/65) ──────────────────────────╮
+│ ```python                                                                    │
+│ def circular_shift(x, shift):                                                │
+│     """Circular shift the digits of the integer x, shift the digits left or  │
+│ right by shift                                                               │
+│     and return the result as a string.                                       │
+│     If shift > number of digits, return digits reversed.                     │
+│     >>> circular_shift(12, 1)                                                │
+│     "12"                                                                     │
+│     >>> circular_shift(12, 2)                                                │
+│     "21"                                                                     │
+│     """                                                                      │
+│     s = str(x)                                                               │
+│     n = len(s)                                                               │
+│     if shift <= 0:                                                           │
+│         return s                                                             │
+│     if shift > n:                                                            │
+│         return s[::-1]                                                       │
+│     # shift > 0 and shift <= n                                               │
+│     # According to examples, shift=1 returns original number (no shift),     │
+│     # shift=2 reverses digits (full reversal).                               │
+│     # So shifts 1..n-1: no change, shift == n: reversed                      │
+│     # But example only shows shifts 1 and 2 for length=2.                    │
+│     # Since only shifts > number of digits cause reversal, shift==n is not > │
+│ n.                                                                           │
+│     # So for shift <= n, no change except shift == n which is not > n.       │
+│     # The examples suggest shift=1 returns original,                         │
+│     # shift=2 (which is == n) returns reversed.                              │
+│     # To reconcile with the task, "If shift > number of digits, return       │
+│ digits reversed."                                                            │
+│     # So shift == n returns original (not reversed), but example says        │
+│ reversed.                                                                    │
+│     # So example conflicts with task description.                            │
+│     # Following example: for shift == n return reversed.                     │
+│     if shift == n:                                                           │
+│         return s[::-1]                                                       │
+│     return s                                                                 │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 60, in <module>                           │
+│     assertion(circular_shift(*inp), exp, 0, inp)                             │
+│   File "/app/temp_script.py", line 55, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[100, 2]': Expected '001', but got 100    │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 46.15:   2%|▏         | 12/770 [00:17<16:53,  1.34s/it]Pass@1: 46.15:   2%|▏         | 13/770 [00:17<14:46,  1.17s/it]feac711d6c07308296cd903ab28a94a3c98548488e47731ce84fbdcebfc46ca0
+pytester_31065075-a7f8-40fb-91c3-3a5ca5ec226b
+╭───────────────────────── ✅ Success (HumanEval/131) ─────────────────────────╮
+│ ```python                                                                    │
+│ def digits(n):                                                               │
+│     odd_digits =                                                             │
+│     if not odd_digits:                                                       │
+│         return 0                                                             │
+│     product = 1                                                              │
+│     for d in odd_digits:                                                     │
+│         product *= d                                                         │
+│     return product                                                           │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 50.00:   2%|▏         | 13/770 [00:18<14:46,  1.17s/it]Pass@1: 50.00:   2%|▏         | 14/770 [00:18<12:58,  1.03s/it]Pass@1: 50.00:   2%|▏         | 14/770 [00:18<16:45,  1.33s/it]
+                          Test Results (PBTClarifier)                           
+┏━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Task ID    ┃ Status ┃ Clarify? ┃ Output                                      ┃
+┡━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ✅   │    ❌    │ The provided implementation passed all t... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+└────────────┴────────┴──────────┴─────────────────────────────────────────────┘
+              Run Statistics              
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Metric                       ┃ Results ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━┩
+│ Total                        │ 14      │
+│ Turn Discounted Success      │ 0.4830  │
+│ nDCG                         │ 0.8571  │
+│ Pass@1                       │ 50.00   │
+│ Clarification rate           │ 85.71%  │
+│ Overasking rate              │ 83.33%  │
+│ High quality clarification   │ 100.00% │
+│ Average clarification length │ 99.00   │
+└──────────────────────────────┴─────────┘
+real 27.00
+user 7.04
+sys 3.51

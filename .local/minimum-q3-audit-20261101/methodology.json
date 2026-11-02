@@ -1,0 +1,340 @@
+{
+  "title": "Operational estimate of minimum ECC QUALITY=3 clarification count",
+  "assessment_kind": "independent_high_end_semantic_judgment_not_simulator_scoring",
+  "scope": {
+    "population": "frozen train100-v1, all 100 records; no full-corpus rerun",
+    "date": "2026-11-01",
+    "source_audit": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/single-question-audit-20261030/audit100.jsonl",
+    "source_sha256": "5b869b6af620ca086ae9d4d575081339892ecd2694d4b2471a4686d1ac70f7af",
+    "unit": "independent source-backed test-relevant behavioral fact remaining after strong public inference"
+  },
+  "sources": [
+    {
+      "path": "clarify/env.py",
+      "lines": [
+        24,
+        64,
+        65,
+        66,
+        67,
+        68,
+        71,
+        156,
+        168,
+        243,
+        248
+      ],
+      "role": "one-turn default, Q3 five criteria, simulated human evidence selection and score handling"
+    },
+    {
+      "path": "generate_responses.py",
+      "lines": [
+        186,
+        189,
+        278,
+        291
+      ],
+      "role": "public participant fields and exact clarification-overlay matching"
+    },
+    {
+      "path": "clarify/runtime.py",
+      "lines": [
+        38,
+        70,
+        142,
+        178
+      ],
+      "role": "authoritative test source; test behavior must not be silently treated as hidden user knowledge"
+    },
+    {
+      "path": ".local/single-question-audit-20261030/audit100.jsonl",
+      "role": "prior offline evidence, not inherited question-count verdicts"
+    }
+  ],
+  "operational_question": "Under our best judgment, how many legitimate one-fact clarifications would a strong reasoner still need after using the public problem, examples, ordinary mathematical definitions and programming conventions?",
+  "not_measured": [
+    "Actual simulator QUALITY scores",
+    "Pass rate after asking these questions",
+    "A formal information-theoretic lower bound",
+    "Existential minimum under lucky guessing or benchmark memorization"
+  ],
+  "rules": [
+    {
+      "id": "public_inference_first",
+      "rule": "Take the logical and ordinary semantic closure of public text before counting. Do not ask about a fact reliably inferable from clear examples, type declarations, named mathematical objects, or strong domain convention."
+    },
+    {
+      "id": "math_is_free",
+      "rule": "Arithmetic identities and definitions cost zero questions: abs(x-x)=0, i<j excludes self-pairs, ordinary median averages the central sorted values, and a standard numeral/digest preserves its defined encoding."
+    },
+    {
+      "id": "coherent_intent_default",
+      "rule": "A strong reasoner may discard a plainly impossible or nonsensical injected clause when a single coherent conventional target remains. Record this as an inference choice with confidence; do not automatically count every textual contradiction."
+    },
+    {
+      "id": "no_automatic_priority",
+      "rule": "A genuinely viable alternative return policy, duplicate rule or boundary is not removed merely because one clause looks more original. If both choices remain plausible and tests distinguish them, count the relevant fact unless other public evidence resolves it."
+    },
+    {
+      "id": "one_fact",
+      "rule": "Each question must elicit one behavioral fact. A single sentence asking to ignore all corrupted additions, provide a full specification or reproduce reference code is not atomic."
+    },
+    {
+      "id": "inference_after_each_answer",
+      "rule": "Recompute inference closure after each answer. One answer may make later questions redundant, e.g. a returned Roman numeral implies standard symbol order, and a digest string implies unsorted digest order. Such consequences are not extra questions."
+    },
+    {
+      "id": "source_backing",
+      "rule": "Check whether the effective simulator context actually supports the expected answer: explicit prose/QA, logical consequence, convention, or unsupported. Tests and canonical code are analyst evidence about the target, not facts available to the simulator by default."
+    },
+    {
+      "id": "quality_separate",
+      "rule": "A proposed Q3 is an estimated qualification under all five rubric conditions, never a claim of an observed QUALITY=3. Previous recorded QUALITY=3 is not proof of correctness, atomicity or necessity."
+    },
+    {
+      "id": "test_relevance",
+      "rule": "Do not count untested cosmetic, implementation-style or domain-extension details solely because prose mentions them. Count only facts that plausibly affect required outputs or valid invocation."
+    },
+    {
+      "id": "implementation_errors",
+      "rule": "Precision bugs, wrong Fibonacci formulas, code extraction, function spelling, and ordinary algorithm repair are not hidden behavioral facts unless a genuine external contract choice is required."
+    },
+    {
+      "id": "compatible_interface_adapter",
+      "rule": "Do not count a missing redundant API detail when an ordinary optional argument or unambiguous arity adapter supports all plausible calls with the same behavior (e.g. arr with optional n=len(arr)). Do count genuinely different parameter meanings that alter outputs."
+    },
+    {
+      "id": "finite_point_estimate",
+      "rule": "When semantic evidence permits a reasoned choice, give the requested finite best-estimate point count and confidence even if reviewers disagree; do not use unknown merely to avoid judgment."
+    },
+    {
+      "id": "null_limit",
+      "rule": "Use null only when the route from admissible questions and available simulator knowledge to required test behavior is not established, or the relevant oracle is unavailable. Null means not identifiable from evidence, not mathematically impossible or infinite."
+    },
+    {
+      "id": "no_test_overfit",
+      "rule": "Do not invent a rule from a few inconsistent assertions and label it the intended hidden requirement. A finite test-fitting implementation does not establish a legitimate Q3 clarification route."
+    }
+  ],
+  "recommended_two_axis_schema": {
+    "minimum_q3_estimate": "integer>=0 or null; best estimate for obtaining enough source-supported information to implement the current target",
+    "intended_contract_estimate": "integer>=0 where a clear conventional intended contract exists, even if tests are inconsistent",
+    "test_reachability": "supported | convention_supported | oracle_mismatch | source_cannot_identify | unavailable",
+    "source_support": "explicit | logical_consequence | ordinary_convention | implicit_ambiguous | absent",
+    "confidence": "high | medium | low",
+    "count_kind": "best_judgment_point_estimate_not_proved_minimum",
+    "questions": "ordered one-fact questions, expected answers, per-question source support and inference consequences",
+    "remaining_after_sequence": "test-distinguishing unresolved facts; must be empty before claiming a finite sufficient sequence"
+  },
+  "status_definitions": {
+    "zero_inferred": "No external fact needed under the stated high-end defaults; does not assert any generated implementation will pass.",
+    "finite_clarification_sequence": "A finite sequence of estimated admissible Q3 questions resolves the identified independent behavioral choices after inference closure.",
+    "oracle_mismatch": "Conventional intended behavior and evaluator disagree; report intended-contract count separately from an unestablished current-test clarification route.",
+    "source_cannot_identify": "A needed behavior may exist, but effective user evidence cannot distinguish it without inventing facts or leaking implementation/tests.",
+    "unavailable": "Necessary source/evaluator evidence is absent."
+  },
+  "disagreements": [
+    {
+      "task_id": "HumanEval/43",
+      "old_count": 1,
+      "recommendation": 0,
+      "confidence": "medium",
+      "basis": "For a list, two distinct elements conventionally means distinct occurrences/positions. Equal-valued zero occurrences may be paired without external knowledge. Public and reference are identical; a new Q3 fact is not clearly available."
+    },
+    {
+      "task_id": "Mbpp/144",
+      "old_count": 1,
+      "recommendation": 0,
+      "confidence": "high",
+      "basis": "Self-pair absolute difference is necessarily zero and i<j excludes it. Positive diagonal contribution is impossible under the named expression. All three actual assertions equal standard unordered sums: 74,10,188."
+    },
+    {
+      "task_id": "Mbpp/199",
+      "old_count": 1,
+      "recommendation": 0,
+      "confidence": "medium",
+      "basis": "The coherent target highest power of two<=n is explicit. The simultaneous >n clause makes the contract unsatisfiable and is plausibly discarded by a strong reasoner; asking bound direction may fail SEARCH SPACE under that default."
+    },
+    {
+      "task_id": "Mbpp/958",
+      "old_count": 1,
+      "recommendation": 0,
+      "confidence": "high",
+      "basis": "Public prompt explicitly states subtractive notation, exposes IV for4, and calls additive clause contradictory. Asking whether to use subtractive notation recovers no undisclosed fact."
+    },
+    {
+      "task_id": "HumanEval/47",
+      "recommendation": "Do not count a second question to correct median arithmetic after resolving output representation.",
+      "confidence": "high",
+      "basis": "Sorted [-10,4,6,10,20,1000] has median8. Public/ref15 is an arithmetic error, not an independent hidden requirement."
+    },
+    {
+      "task_id": "HumanEval/156",
+      "recommendation": "Roman-symbol order is inferred once actual Roman-numeral string output is established.",
+      "confidence": "high",
+      "basis": "A sorted multiset of Roman letters is not ordinarily a Roman numeral encoding; do not count order independently solely due injected instruction."
+    },
+    {
+      "task_id": "HumanEval/162",
+      "recommendation": "Digest order is inferred once output is identified as MD5 hexadecimal digest.",
+      "confidence": "high",
+      "basis": "Sorting digest characters destroys the named digest value; no extra order fact needed."
+    },
+    {
+      "task_id": "HumanEval/99",
+      "recommendation": "intended-contract estimate0; current-test route may remain null/oracle_mismatch.",
+      "confidence": "high",
+      "basis": "Half-away-from-zero is explicit. Reproducing float-conversion precision loss is implementation/oracle behavior, not a legitimate hidden fact recoverable from the same reference."
+    },
+    {
+      "task_id": "Mbpp/461",
+      "recommendation": "Do not make finite current-test Q3 count by inventing uppercase-existence or first-character exclusion rule.",
+      "confidence": "high",
+      "basis": "PYthon and BigData each contain two uppercase letters yet fallback expects1; reference only one anomalous assertion supports many rules."
+    },
+    {
+      "task_id": "Mbpp/328",
+      "recommendation": "Treat inferred slice assembly as an unvalidated explanatory hypothesis; do not ask for algorithm structure as a Q3 behavioral fact.",
+      "confidence": "high",
+      "basis": "Rotation preserves length; fallback outputs length11 and7. Third-parameter meaning is plausible but not uniquely identified by public or reference prose."
+    },
+    {
+      "task_id": "Mbpp/763",
+      "recommendation": 0,
+      "confidence": "high",
+      "basis": "find_min_diff(arr,n=None) handles the unmentioned conventional length argument without an external behavioral choice."
+    },
+    {
+      "task_id": "Mbpp/306",
+      "recommendation": 0,
+      "confidence": "medium",
+      "basis": "An arity adapter can accept (arr,i,k) and (arr,n,i,k), using the final two semantic indices. A redundant n does not necessarily require external information."
+    },
+    {
+      "task_id": "Mbpp/232",
+      "recommendation": 0,
+      "confidence": "medium",
+      "basis": "n largest items normally retains occurrences; unique values would require a distinctness qualifier."
+    },
+    {
+      "task_id": "HumanEval/18",
+      "recommendation": 1,
+      "confidence": "medium",
+      "basis": "Occurrence quantity is inferable from public name, primary count task, overlapping rule and three count examples. Discard duplicate-input substring-length side task; retain only integer-versus-string representation question."
+    }
+  ],
+  "peer_review_status": "complete_all_four_files_all100_examined_root_adjudications_recorded",
+  "peer_review_findings": [
+    {
+      "file": "minq3-humaneval-original.jsonl",
+      "sha256_at_review": "d9b5eed15e417f33f093488b05b687133abb412e2cdf9d027e9294f6e5dedbf1",
+      "rows": 25,
+      "outcome": "no_blocking_semantic_issue",
+      "notes": [
+        "HE43 zero medium is a defensible convention-based point estimate, not a formal proof.",
+        "HE116 zero medium explicitly records choosing coherent primary bitcount task over erroneous examples.",
+        "HE99 null for current-test route is justified; its ideal_requirement_minimum=1 denotes unrestricted oracle facts, not intended mathematical-contract clarifications (which are0)."
+      ]
+    },
+    {
+      "file": "minq3-humaneval-larbi_contradictory.jsonl",
+      "sha256_at_review": "15dcbb6789fa1937e331757e5da3f912f7127cfa3a7a88a4f98b95cb708a0924",
+      "rows": 25,
+      "outcome": "no_blocking_semantic_issue",
+      "notes": [
+        "HE18 count quantity inferred; only representation counted1. HE149 duplicate input assumption does not require deduplication fact; count2.",
+        "HE7 output wrapper and case handling remain2, implicit literal substring support correctly marked medium.",
+        "HE33,127,11 zeros are operational coherent-intent judgments with medium confidence, not formal uniqueness proofs.",
+        "HE0 exploits Python bool/int equality under active oracle; does not prove a strict type contract."
+      ]
+    },
+    {
+      "file": "minq3-mbpp-original.jsonl",
+      "sha256_at_review": "cd71149586daf34945b46ab62c68162619927af07898158d031992e964cc9144",
+      "rows": 25,
+      "outcome": "no_blocking_semantic_issue",
+      "notes": [
+        "All25 reviewed; optional interface adaptation and standard lexical/index conventions consistently remove redundant questions.",
+        "589 interval closure and311 eligible-bit domain are one-fact questions; implicit support and confidence are stated.",
+        "577 noninteger factorial oracle disagreement is correctly separate from intended integer-contract zero.",
+        "577 post-review schema harmonization: intended_contract_minimum0 is separate from unavailable unrestricted current-target information. ideal_requirement_minimum must not be aggregated as a clean contract-question minimum."
+      ]
+    },
+    {
+      "file": "minq3-mbpp-larbi_contradictory.jsonl",
+      "sha256_at_review": "8d41aff9b539af84971c88de59c6645887cec54f2ff1280f2db4ab152e1261af",
+      "rows": 25,
+      "outcome": "no_blocking_semantic_issue_discretionary_628_adjudicated",
+      "notes": [
+        "All25 reviewed; public disambiguating examples, evaluator observational equality and mathematical impossibility appropriately reduce counts.",
+        "328 lacks source-backed general parameter behavior;627 hidden example does not distinguish domain0 from positive;753 example does not distinguish numeric-field ordering from tuple ordering. Null means route unestablished, not infinity.",
+        "Each positive question targets one relation, filter direction, domain or payload fact.",
+        "628 adjudicated by root: retain1 with medium confidence and alternative0 sensitivity. Explicit nonspace replacement is a coherent possible extension; effective reference can resolve whether additional replacement is required. This differs from impossible numeric literal casts or a specific default branch already defined as a list."
+      ]
+    }
+  ],
+  "peer_review_totals_at_review": {
+    "records": 100,
+    "finite_zero": 66,
+    "finite_one": 24,
+    "finite_two": 4,
+    "source_oracle_unresolved": 6,
+    "sum_finite_question_estimates": 32
+  },
+  "agreed_changes": [
+    {
+      "tasks": [
+        "HumanEval/43",
+        "HumanEval/116",
+        "Mbpp/144",
+        "Mbpp/199",
+        "Mbpp/958",
+        "Mbpp/382"
+      ],
+      "change": "Remove questions answerable by strong conventional/mathematical inference or already disclosed examples."
+    },
+    {
+      "tasks": [
+        "HumanEval/18",
+        "HumanEval/156",
+        "HumanEval/162",
+        "HumanEval/149"
+      ],
+      "change": "Apply inference closure after one answer; do not count derived quantity/encoding order or input duplicate promise as independent requirements."
+    },
+    {
+      "tasks": [
+        "Mbpp/306",
+        "Mbpp/763",
+        "Mbpp/90"
+      ],
+      "change": "Use compatible conventional API adapters instead of requiring redundant shape/length facts."
+    },
+    {
+      "tasks": [
+        "HumanEval/99",
+        "Mbpp/577",
+        "Mbpp/328",
+        "Mbpp/461",
+        "Mbpp/627",
+        "Mbpp/753"
+      ],
+      "change": "Keep unavailable source-backed test routes separate from finite semantic question counts; null is not zero or infinity."
+    }
+  ],
+  "post_review_adjudications": [
+    {
+      "task_id": "Mbpp/628",
+      "decision": "retain minimum_q3_estimate1; confidence medium; record alternative_minimum0 sensitivity",
+      "basis": "Explicit nonspace replacement can be a coherent behavioral extension. Reasonable high-end inference thresholds differ; count is a point judgment, not a proven lower bound.",
+      "count_change": false
+    },
+    {
+      "task_id": "Mbpp/577",
+      "decision": "Keep current-test minimum_q3_estimate null, intended_contract_minimum0; unrestricted current-target-information count unavailable/null",
+      "basis": "Noninteger factorial oracle behavior is not identified by effective source; do not confuse ideal oracle information with intended normal-domain contract.",
+      "count_change": false
+    }
+  ],
+  "frozen_status": "methodology_complete_no_further_changes_planned"
+}

@@ -1,0 +1,524 @@
+{
+  "scope": "9 registered complete runs on the corrected evaluator; 100 identical frozen tasks per run",
+  "llm_analysis_calls": 0,
+  "sources": [
+    {
+      "algorithm": "PBTClarifier2",
+      "path": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/PBT2-20261030/results.jsonl",
+      "sha256": "77437c1c83d97185744a046f6865eabdcfe22a260891f0ef0dae3816e182541b"
+    },
+    {
+      "algorithm": "PBTClarifier3",
+      "path": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/CounterThenPBT-20261030/results.jsonl",
+      "sha256": "14cd9dd5f60957bbe6e441a8d98636e4029cd5b1fc655d62d908c6ef6aa494d5"
+    },
+    {
+      "algorithm": "LLMClarification",
+      "path": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/Direct-20261030/results.jsonl",
+      "sha256": "23643065f4de85cf095691bc87dfbb5809a1d1e34ac3a5eb8b7a207b0d9d520e"
+    },
+    {
+      "algorithm": "Okanagan",
+      "path": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/Okanagan-20261030/results.jsonl",
+      "sha256": "5a998b5ef9d69bb800e680fd75c4a80210ec6d793f269f4d87d7a6e05a4c74f1"
+    },
+    {
+      "algorithm": "PBTClarifier1",
+      "path": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/pbt1-gpt41mini/results.jsonl",
+      "sha256": "b063ee4dc511955f38605ff815f1532842afbbd05f8091509cf4ad0e79eadcd3"
+    },
+    {
+      "algorithm": "ClarifyGPT",
+      "path": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/clarifygpt-gpt41mini/results.jsonl",
+      "sha256": "25b9495b21c859143e28c3b6bab79f4d00b85c5630943ca45aef668b4a0448bb"
+    },
+    {
+      "algorithm": "PBTClarifier4",
+      "path": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/PBT4-PropertyConflictGate-v2-20261030/results.jsonl",
+      "sha256": "f22af0940f2eda651aa3a8cc96c137cc4b42ed8fcad998d3ae39140ee79c7601"
+    },
+    {
+      "algorithm": "PBTClarifier5",
+      "path": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/PBT5-DecisionProperties-20261030/results.jsonl",
+      "sha256": "c93cfe4dbc2218ca8423078edca603567ba2601448460e8289317f318556742c"
+    },
+    {
+      "algorithm": "PBTClarifier5_1",
+      "path": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/PBT5_1-NoSanitizer-20261030/results.jsonl",
+      "sha256": "cafd4d38433250b8caa08ae36b2fad268361eefa65a27c45be34212cf66e3a3a"
+    }
+  ],
+  "total_cases": 900,
+  "observed_counts": {
+    "no_question_pass": 127,
+    "high_score_pass": 305,
+    "high_score_fail": 352,
+    "low_score_pass": 10,
+    "low_score_fail": 23,
+    "no_question_fail": 83
+  },
+  "limitations": [
+    "High/low question quality remains the saved simulated-user score, not a new independent score.",
+    "All 352 high-score failures have a primary-cause review. Other 548 outcomes were not newly reviewed for semantic adherence.",
+    "A reviewed case may still have insufficient evidence; reviewed is not the same as certain.",
+    "Primary cause concerns the first recorded failure; independent answer violations are recorded separately.",
+    "Adherence describes the asked fact only. It does not certify every user requirement.",
+    "Case judgments are evidence-based annotations, not formal proofs or population-level causal estimates."
+  ],
+  "distinct_tasks_with_observed_no_question_pass": 47,
+  "low_score_pass_cases": 10,
+  "low_score_pass_also_passed_by_direct": 8,
+  "fully_matched_prior_high_score_failure_algorithms": [
+    "PBTClarifier2",
+    "PBTClarifier3",
+    "Okanagan",
+    "PBTClarifier1",
+    "ClarifyGPT"
+  ],
+  "fully_matched_prior_high_score_failure_counts": {
+    "answer_oracle_mismatch": 58,
+    "unresolved_specification": 81,
+    "implementation_error": 17,
+    "algorithm_design_error": 17,
+    "instruction_oracle_mismatch": 23,
+    "answer_not_applied": 12,
+    "insufficient_evidence": 6,
+    "evaluation_failure": 7,
+    "execution_contract_violation": 1
+  },
+  "algorithms": [
+    {
+      "algorithm": "PBTClarifier2",
+      "observed_counts": {
+        "no_question_pass": 1,
+        "high_score_pass": 47,
+        "high_score_fail": 46,
+        "low_score_pass": 2,
+        "low_score_fail": 4
+      },
+      "high_score_failures": 46,
+      "prior_analysis_matched": 46,
+      "prior_failure_categories": {
+        "answer_oracle_mismatch": 15,
+        "unresolved_specification": 19,
+        "implementation_error": 3,
+        "algorithm_design_error": 4,
+        "instruction_oracle_mismatch": 5
+      },
+      "confirmed_answer_not_applied_primary_cause": [],
+      "asked_on_task_with_some_no_question_pass": 46,
+      "reviewed_high_score_failures": 46,
+      "unreviewed_high_score_failures": 0,
+      "failure_categories": {
+        "answer_oracle_mismatch": 15,
+        "unresolved_specification": 19,
+        "implementation_error": 3,
+        "algorithm_design_error": 4,
+        "instruction_oracle_mismatch": 5
+      },
+      "confirmed_secondary_answer_violation": []
+    },
+    {
+      "algorithm": "PBTClarifier3",
+      "observed_counts": {
+        "high_score_pass": 48,
+        "high_score_fail": 48,
+        "low_score_fail": 1,
+        "low_score_pass": 3
+      },
+      "high_score_failures": 48,
+      "prior_analysis_matched": 48,
+      "prior_failure_categories": {
+        "answer_oracle_mismatch": 14,
+        "answer_not_applied": 4,
+        "algorithm_design_error": 3,
+        "unresolved_specification": 13,
+        "insufficient_evidence": 6,
+        "instruction_oracle_mismatch": 4,
+        "implementation_error": 3,
+        "evaluation_failure": 1
+      },
+      "confirmed_answer_not_applied_primary_cause": [
+        {
+          "task_id": "HumanEval/62",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/CounterThenPBT-20261030/results.jsonl",
+          "line": 4,
+          "evidence": "format 생략 시 리스트를 반환하라는 답변과 달리 기본값을 string으로 유지하여 첫 생략 호출에서 문자열을 반환한다."
+        },
+        {
+          "task_id": "HumanEval/140",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/CounterThenPBT-20261030/results.jsonl",
+          "line": 39,
+          "evidence": "3개 미만의 공백은 각각 밑줄로 바꾸라는 답변과 달리 정규식이 두 공백 전체를 밑줄 하나로 압축한다."
+        },
+        {
+          "task_id": "HumanEval/0",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/CounterThenPBT-20261030/results.jsonl",
+          "line": 48,
+          "evidence": "bool을 반환하라는 답변과 달리 최종 반환에서 bool을 str로 변환해 참인 사례도 문자열 True가 된다."
+        },
+        {
+          "task_id": "Mbpp/311",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/CounterThenPBT-20261030/results.jsonl",
+          "line": 84,
+          "evidence": "비트가 모두 1이면 그대로 반환하라는 답변과 달리 루프 후 새 상위 비트를 추가하여 15를 31로 바꾼다."
+        }
+      ],
+      "asked_on_task_with_some_no_question_pass": 47,
+      "reviewed_high_score_failures": 48,
+      "unreviewed_high_score_failures": 0,
+      "failure_categories": {
+        "answer_oracle_mismatch": 14,
+        "answer_not_applied": 4,
+        "algorithm_design_error": 3,
+        "unresolved_specification": 14,
+        "insufficient_evidence": 6,
+        "instruction_oracle_mismatch": 4,
+        "implementation_error": 3
+      },
+      "confirmed_secondary_answer_violation": []
+    },
+    {
+      "algorithm": "LLMClarification",
+      "observed_counts": {
+        "no_question_pass": 45,
+        "no_question_fail": 55
+      },
+      "high_score_failures": 0,
+      "prior_analysis_matched": 0,
+      "prior_failure_categories": {},
+      "confirmed_answer_not_applied_primary_cause": [],
+      "asked_on_task_with_some_no_question_pass": 0,
+      "reviewed_high_score_failures": 0,
+      "unreviewed_high_score_failures": 0,
+      "failure_categories": {},
+      "confirmed_secondary_answer_violation": []
+    },
+    {
+      "algorithm": "Okanagan",
+      "observed_counts": {
+        "no_question_pass": 13,
+        "high_score_pass": 39,
+        "high_score_fail": 43,
+        "low_score_fail": 2,
+        "low_score_pass": 1,
+        "no_question_fail": 2
+      },
+      "high_score_failures": 43,
+      "prior_analysis_matched": 43,
+      "prior_failure_categories": {
+        "answer_oracle_mismatch": 8,
+        "answer_not_applied": 3,
+        "unresolved_specification": 19,
+        "algorithm_design_error": 4,
+        "instruction_oracle_mismatch": 4,
+        "implementation_error": 3,
+        "evaluation_failure": 2
+      },
+      "confirmed_answer_not_applied_primary_cause": [
+        {
+          "task_id": "HumanEval/62",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/Okanagan-20261030/results.jsonl",
+          "line": 4,
+          "evidence": "답변은 인자 생략 시 계수 리스트를 반환하도록 정했으나, 코드의 기본 format='string'이 그대로여서 첫 호출을 문자열로 반환한다."
+        },
+        {
+          "task_id": "HumanEval/127",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/Okanagan-20261030/results.jsonl",
+          "line": 26,
+          "evidence": "답변은 길이 2도 NO로 처리하라고 명시했지만 코드는 교집합 [0,1]을 +1로 세어 길이 2로 만든 뒤 YES를 반환한다. 이 명시된 사례 규칙을 적용하지 않아 첫 실패가 난다."
+        },
+        {
+          "task_id": "Mbpp/641",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/Okanagan-20261030/results.jsonl",
+          "line": 56,
+          "evidence": "답변이 판별 함수 대신 n번째 비각수를 계산하라고 명시했지만, 코드는 입력값이 비각수인지 검사하여 False를 반환한다."
+        }
+      ],
+      "asked_on_task_with_some_no_question_pass": 34,
+      "reviewed_high_score_failures": 43,
+      "unreviewed_high_score_failures": 0,
+      "failure_categories": {
+        "answer_oracle_mismatch": 9,
+        "answer_not_applied": 3,
+        "unresolved_specification": 20,
+        "algorithm_design_error": 4,
+        "instruction_oracle_mismatch": 4,
+        "implementation_error": 3
+      },
+      "confirmed_secondary_answer_violation": []
+    },
+    {
+      "algorithm": "PBTClarifier1",
+      "observed_counts": {
+        "no_question_pass": 3,
+        "high_score_pass": 41,
+        "high_score_fail": 48,
+        "low_score_fail": 5,
+        "low_score_pass": 2,
+        "no_question_fail": 1
+      },
+      "high_score_failures": 48,
+      "prior_analysis_matched": 48,
+      "prior_failure_categories": {
+        "answer_not_applied": 2,
+        "execution_contract_violation": 1,
+        "algorithm_design_error": 4,
+        "implementation_error": 5,
+        "unresolved_specification": 17,
+        "instruction_oracle_mismatch": 7,
+        "answer_oracle_mismatch": 10,
+        "evaluation_failure": 2
+      },
+      "confirmed_answer_not_applied_primary_cause": [
+        {
+          "task_id": "HumanEval/62",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/pbt1-gpt41mini/results.jsonl",
+          "line": 4,
+          "evidence": "생략한 format은 리스트를 반환하라는 명확한 답변과 달리 기본값을 'string'으로 유지했다. 첫 기본 호출이 문자열을 반환하여 리스트 기대값과 다르다."
+        },
+        {
+          "task_id": "Mbpp/311",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/pbt1-gpt41mini/results.jsonl",
+          "line": 84,
+          "evidence": "모든 유효 비트가 1이면 입력을 그대로 반환하라는 명확한 답변을 위반하고 최상위에 새 비트를 추가했다. 15(1111)가 31로 바뀌어 첫 실패가 났다."
+        }
+      ],
+      "asked_on_task_with_some_no_question_pass": 44,
+      "reviewed_high_score_failures": 48,
+      "unreviewed_high_score_failures": 0,
+      "failure_categories": {
+        "answer_not_applied": 2,
+        "execution_contract_violation": 1,
+        "algorithm_design_error": 4,
+        "implementation_error": 5,
+        "unresolved_specification": 18,
+        "instruction_oracle_mismatch": 7,
+        "answer_oracle_mismatch": 11
+      },
+      "confirmed_secondary_answer_violation": []
+    },
+    {
+      "algorithm": "ClarifyGPT",
+      "observed_counts": {
+        "no_question_pass": 31,
+        "high_score_fail": 37,
+        "low_score_fail": 3,
+        "high_score_pass": 15,
+        "no_question_fail": 14
+      },
+      "high_score_failures": 37,
+      "prior_analysis_matched": 37,
+      "prior_failure_categories": {
+        "answer_oracle_mismatch": 11,
+        "answer_not_applied": 3,
+        "unresolved_specification": 13,
+        "algorithm_design_error": 2,
+        "instruction_oracle_mismatch": 3,
+        "implementation_error": 3,
+        "evaluation_failure": 2
+      },
+      "confirmed_answer_not_applied_primary_cause": [
+        {
+          "task_id": "HumanEval/62",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/clarifygpt-gpt41mini/results.jsonl",
+          "line": 4,
+          "evidence": "기본 호출은 정수 리스트를 반환하라는 답변과 달리 기본 인수를 string으로 유지하여 문자열을 반환한다. 첫 실패의 계수 값은 맞고 반환 형식이 다르다."
+        },
+        {
+          "task_id": "HumanEval/59",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/clarifygpt-gpt41mini/results.jsonl",
+          "line": 22,
+          "evidence": "임의의 큰 입력에도 항상 결과를 내라는 답변과 달리 알려진 몇 개 입력만 사전에 넣고 나머지는 거절한다. 유효한 합성수 15가 이 제한으로 실패했다."
+        },
+        {
+          "task_id": "HumanEval/28",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/clarifygpt-gpt41mini/results.jsonl",
+          "line": 37,
+          "evidence": "빈 리스트에는 빈 문자열을 반환하라는 명확한 답변과 달리 0을 반환하여 바로 그 입력에서 실패했다."
+        }
+      ],
+      "asked_on_task_with_some_no_question_pass": 15,
+      "reviewed_high_score_failures": 37,
+      "unreviewed_high_score_failures": 0,
+      "failure_categories": {
+        "answer_oracle_mismatch": 12,
+        "answer_not_applied": 3,
+        "unresolved_specification": 14,
+        "algorithm_design_error": 2,
+        "instruction_oracle_mismatch": 3,
+        "implementation_error": 3
+      },
+      "confirmed_secondary_answer_violation": []
+    },
+    {
+      "algorithm": "PBTClarifier4",
+      "observed_counts": {
+        "high_score_pass": 49,
+        "high_score_fail": 46,
+        "low_score_fail": 4,
+        "low_score_pass": 1
+      },
+      "high_score_failures": 46,
+      "prior_analysis_matched": 7,
+      "prior_failure_categories": {
+        "answer_not_applied": 1,
+        "answer_oracle_mismatch": 3,
+        "algorithm_design_error": 1,
+        "unresolved_specification": 1,
+        "implementation_error": 1
+      },
+      "confirmed_answer_not_applied_primary_cause": [
+        {
+          "task_id": "HumanEval/62",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/PBT4-PropertyConflictGate-v2-20261030/results.jsonl",
+          "line": 4,
+          "evidence": "답변은 format을 생략하면 리스트를 반환하라고 했지만 기본값을 string으로 유지해 생략 호출에서 문자열을 반환한다."
+        }
+      ],
+      "asked_on_task_with_some_no_question_pass": 47,
+      "reviewed_high_score_failures": 46,
+      "unreviewed_high_score_failures": 0,
+      "failure_categories": {
+        "answer_not_applied": 1,
+        "answer_oracle_mismatch": 12,
+        "algorithm_design_error": 2,
+        "unresolved_specification": 20,
+        "implementation_error": 7,
+        "instruction_oracle_mismatch": 4
+      },
+      "confirmed_secondary_answer_violation": []
+    },
+    {
+      "algorithm": "PBTClarifier5",
+      "observed_counts": {
+        "high_score_pass": 35,
+        "high_score_fail": 39,
+        "no_question_pass": 18,
+        "low_score_fail": 2,
+        "no_question_fail": 6
+      },
+      "high_score_failures": 39,
+      "prior_analysis_matched": 0,
+      "prior_failure_categories": {},
+      "confirmed_answer_not_applied_primary_cause": [],
+      "asked_on_task_with_some_no_question_pass": 27,
+      "reviewed_high_score_failures": 39,
+      "unreviewed_high_score_failures": 0,
+      "failure_categories": {
+        "unresolved_specification": 20,
+        "answer_oracle_mismatch": 10,
+        "algorithm_design_error": 1,
+        "instruction_oracle_mismatch": 6,
+        "implementation_error": 2
+      },
+      "confirmed_secondary_answer_violation": [
+        {
+          "task_id": "Mbpp/144",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/PBT5-DecisionProperties-20261030/results.jsonl",
+          "line": 65,
+          "evidence": "기록된 첫 실패는 공개 설명에 없는 두 번째 인수를 받지 못한 signature 문제다. 별도로 자기 쌍의 양수 기여라는 답변도 abs(a[i]-a[i])=0으로 계산해 반영하지 않았다."
+        }
+      ]
+    },
+    {
+      "algorithm": "PBTClarifier5_1",
+      "observed_counts": {
+        "high_score_pass": 31,
+        "high_score_fail": 45,
+        "no_question_pass": 16,
+        "low_score_fail": 2,
+        "no_question_fail": 5,
+        "low_score_pass": 1
+      },
+      "high_score_failures": 45,
+      "prior_analysis_matched": 0,
+      "prior_failure_categories": {},
+      "confirmed_answer_not_applied_primary_cause": [
+        {
+          "task_id": "HumanEval/162",
+          "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/PBT5_1-NoSanitizer-20261030/results.jsonl",
+          "line": 19,
+          "evidence": "답변은 원래 문자 순서의 표준 MD5 hash string을 반환하라고 했다. 코드는 올바른 hexdigest를 계산한 뒤 16진 정수로 바꿔 반환해 그 문자열 반환 사실을 위반한다."
+        }
+      ],
+      "asked_on_task_with_some_no_question_pass": 30,
+      "reviewed_high_score_failures": 45,
+      "unreviewed_high_score_failures": 0,
+      "failure_categories": {
+        "unresolved_specification": 21,
+        "algorithm_design_error": 3,
+        "implementation_error": 6,
+        "answer_oracle_mismatch": 9,
+        "answer_not_applied": 1,
+        "instruction_oracle_mismatch": 5
+      },
+      "confirmed_secondary_answer_violation": []
+    }
+  ],
+  "specific_examples": [
+    {
+      "algorithm": "PBTClarifier3",
+      "task_id": "HumanEval/62",
+      "finding": "The answer explicitly says omitted format returns a list; code retains default format=string and returns a string on omitted calls."
+    },
+    {
+      "algorithm": "PBTClarifier5_1",
+      "task_id": "HumanEval/0",
+      "finding": "The answer requires a bool and the code returns any(...), a bool; the observed failure is caused by int(threshold), not a failure to adopt the requested return type."
+    },
+    {
+      "algorithm": "PBTClarifier5_1",
+      "task_id": "HumanEval/127",
+      "finding": "The answer explicitly requests 0.0 for NO and code returns 0.0; the evaluator expects the string NO. This failure is not evidence of ignoring the answer."
+    }
+  ],
+  "analysis_date": "2026-11-02",
+  "phase": "completed_high_score_failure_cause_review",
+  "failure_review": {
+    "total": 352,
+    "reviewed": 352,
+    "unreviewed": 0,
+    "origins": {
+      "unchanged_prior_review": 222,
+      "regraded_failure_refresh": 7,
+      "new_case_review": 123
+    },
+    "categories": {
+      "answer_oracle_mismatch": 92,
+      "unresolved_specification": 146,
+      "implementation_error": 32,
+      "algorithm_design_error": 23,
+      "instruction_oracle_mismatch": 38,
+      "answer_not_applied": 14,
+      "insufficient_evidence": 6,
+      "execution_contract_violation": 1
+    },
+    "labels": {
+      "answer_not_applied": "답변 미반영",
+      "unresolved_specification": "남은 명세",
+      "answer_oracle_mismatch": "답변·채점 불일치",
+      "instruction_oracle_mismatch": "공개 지시·채점 불일치",
+      "algorithm_design_error": "알고리즘 설계 오류",
+      "implementation_error": "구현 오류",
+      "execution_contract_violation": "실행·제출 조건 위반",
+      "evaluation_failure": "평가 문제",
+      "insufficient_evidence": "근거 부족"
+    },
+    "confidence": {
+      "high": 301,
+      "medium": 51
+    },
+    "primary_answer_not_applied": 14,
+    "secondary_answer_violation_confirmed": 1,
+    "uncertain_cause": 6
+  },
+  "verification": {
+    "source_hashes_match": true,
+    "all_high_score_failures_have_causal_annotation": true,
+    "generated_code_reexecuted": false,
+    "provider_api_calls": 0,
+    "canonical_solutions_or_reference_prompts_used": false,
+    "original_results_modified": false
+  }
+}

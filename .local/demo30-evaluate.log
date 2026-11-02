@@ -1,0 +1,855 @@
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/ee43ecabebf20deef4bb776a405ac5b1.pkl
+Loaded 30 instances...
+Loaded 30 result instances...
+  0%|          | 0/30 [00:00<?, ?it/s]317ee3e59e1d3f0e19ce22ce4b5ff0ee3b2ccda13e74679bb42de70fb9efa1c0
+pytester_c3969c64-0b7d-4440-b50b-ab660c4f7636
+╭──────────────────────────── ✅ Success (Mbpp/2) ─────────────────────────────╮
+│ ```python                                                                    │
+│ def similar_elements(list1, list2):                                          │
+│     # Find the intersection of the two lists                                 │
+│     common_elements =                                                        │
+│     return common_elements                                                   │
+│                                                                              │
+│ # Example usage:                                                             │
+│ list1 = [1, 2, 3, 4, 5]                                                      │
+│ list2 = [4, 5, 6, 7, 8]                                                      │
+│ result = similar_elements(list1, list2)                                      │
+│ print(result)  # Output: [4, 5]                                              │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   0%|          | 0/30 [00:02<?, ?it/s]Pass@1: 100.00:   3%|▎         | 1/30 [00:02<01:22,  2.84s/it]96b62df118b099f39716c0783d315c26023670bee8492cbfcde9a1a2e2f69718
+pytester_c58b8622-128d-4359-8537-dd82270b005f
+╭──────────────────────────── ✅ Success (Mbpp/3) ─────────────────────────────╮
+│ ```python                                                                    │
+│ def is_not_prime(number):                                                    │
+│     """                                                                      │
+│     Check if a number is not prime.                                          │
+│                                                                              │
+│     Args:                                                                    │
+│     number (int): The number to check.                                       │
+│                                                                              │
+│     Returns:                                                                 │
+│     bool: True if the number is not prime, False otherwise.                  │
+│     """                                                                      │
+│     if number <= 1:                                                          │
+│         return True                                                          │
+│     for i in range(2, int(number**0.5) + 1):                                 │
+│         if number % i == 0:                                                  │
+│             return True                                                      │
+│     return False                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   3%|▎         | 1/30 [00:03<01:22,  2.84s/it]Pass@1: 100.00:   7%|▋         | 2/30 [00:03<00:45,  1.64s/it]6a7233ed696d56cfd6b2491e6261994c7e6c19ab493a5fbfe68bc43aeb6e4ee2
+pytester_50cf0505-4d8d-4405-bbae-129c52b2e8b6
+╭──────────────────────────── ✅ Success (Mbpp/4) ─────────────────────────────╮
+│ ```python                                                                    │
+│ import heapq                                                                 │
+│                                                                              │
+│ def heap_queue_largest(numbers, n):                                          │
+│     # Use nlargest to find the n largest numbers in the list                 │
+│     largest_numbers = heapq.nlargest(n, numbers)                             │
+│     return largest_numbers                                                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   7%|▋         | 2/30 [00:04<00:45,  1.64s/it]Pass@1: 100.00:  10%|█         | 3/30 [00:04<00:32,  1.20s/it]2b6b740cc439730feae9a07bba37efe10d505802ff5d74d5d6eb19f8e2569a1c
+pytester_aefcbedd-1ae6-41dd-ab62-a0d24b806c6f
+╭──────────────────────────── ❌ Failure (Mbpp/6) ─────────────────────────────╮
+│ ```python                                                                    │
+│ def differ_At_One_Bit_Pos(x, y):                                             │
+│     """                                                                      │
+│     Check if two numbers differ by exactly one bit.                          │
+│                                                                              │
+│     Args:                                                                    │
+│     x (int): First number.                                                   │
+│     y (int): Second number.                                                  │
+│                                                                              │
+│     Returns:                                                                 │
+│     bool: True if the numbers differ by exactly one bit, False otherwise.    │
+│     """                                                                      │
+│     xor_result = x ^ y                                                       │
+│     count = 0                                                                │
+│     while xor_result:                                                        │
+│         if xor_result & 1:                                                   │
+│             count += 1                                                       │
+│         xor_result >>= 1                                                     │
+│     return count == 1                                                        │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation ran into a timeout during the testing process.   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 75.00:  10%|█         | 3/30 [00:34<00:32,  1.20s/it] Pass@1: 75.00:  13%|█▎        | 4/30 [00:34<05:31, 12.75s/it]3e6d82ffe5399f7a3bb28323635e43a15a907b6d6c1c89bb4289bee1ffb8c576
+pytester_ffddc508-f3e0-4943-946d-e358304d481e
+╭──────────────────────────── ❌ Failure (Mbpp/7) ─────────────────────────────╮
+│ ```python                                                                    │
+│ def find_char_long(s):                                                       │
+│     # Split the string into words                                            │
+│     words = s.split()                                                        │
+│                                                                              │
+│     # Filter words longer than 5 characters                                  │
+│     long_words =                                                             │
+│                                                                              │
+│     # Return the list of long words                                          │
+│     return long_words                                                        │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 38, in <module>                           │
+│     assertion(find_char_long(*inp), exp, 0, inp)                             │
+│   File "/app/temp_script.py", line 33, in assertion                          │
+│     assert set(out) == set(exp), f"Failed for inputs '{inp}': Expected       │
+│ '{exp}', but got {out}"                                                      │
+│            ^^^^^^^^^^^^^^^^^^^^                                              │
+│ AssertionError: Failed for inputs '['Please move back to stream']': Expected │
+│ '['Please', 'move', 'back', 'stream']', but got ['Please', 'stream']         │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 60.00:  13%|█▎        | 4/30 [00:35<05:31, 12.75s/it]Pass@1: 60.00:  17%|█▋        | 5/30 [00:35<03:30,  8.43s/it]527d76541b7f9eaf11e0a9a74f6fc6ac0c797de9a72b1e41f8c473c27186105f
+pytester_8d974f37-e5dd-4857-9962-14a2c713cbf4
+╭──────────────────────────── ✅ Success (Mbpp/8) ─────────────────────────────╮
+│ ```python                                                                    │
+│ def square_nums(numbers):                                                    │
+│     return                                                                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 66.67:  17%|█▋        | 5/30 [00:36<03:30,  8.43s/it]Pass@1: 66.67:  20%|██        | 6/30 [00:36<02:19,  5.81s/it]b2b50210fd4d1e4a3def1cec306eb271fd09d004c550c90cdf7525e47109de47
+pytester_cf2f0b3e-5754-4ba2-8ad0-05642a649ff7
+╭──────────────────────────── ❌ Failure (Mbpp/9) ─────────────────────────────╮
+│ ```python                                                                    │
+│ def find_Rotations(s):                                                       │
+│     """                                                                      │
+│     Find how many times a string can be rotated.                             │
+│                                                                              │
+│     :param s: String to be rotated                                           │
+│     :return: Number of rotations                                             │
+│     """                                                                      │
+│     if not s:                                                                │
+│         return 0                                                             │
+│                                                                              │
+│     # Calculate the length of the string                                     │
+│     length = len(s)                                                          │
+│                                                                              │
+│     # If the string is empty, return 0                                       │
+│     if length == 0:                                                          │
+│         return 0                                                             │
+│                                                                              │
+│     # If the string is a single character, return 1                          │
+│     if length == 1:                                                          │
+│         return 1                                                             │
+│                                                                              │
+│     # If the string is a palindrome, return the length of the string         │
+│     if s == s[::-1]:                                                         │
+│         return length                                                        │
+│                                                                              │
+│     # Otherwise, the string can be rotated more than once                    │
+│     return length                                                            │
+│                                                                              │
+│ # Example usage                                                              │
+│ print(find_Rotations("abc"))  # Output: 3                                    │
+│ print(find_Rotations("abcd"))  # Output: 2                                   │
+│ print(find_Rotations("abba"))  # Output: 2                                   │
+│ print(find_Rotations("abcde"))  # Output: 1                                  │
+│ print(find_Rotations(""))  # Output: 0                                       │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ 3                                                                            │
+│ 4                                                                            │
+│ 4                                                                            │
+│ 5                                                                            │
+│ 0                                                                            │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 63, in <module>                           │
+│     assertion(find_Rotations(*inp), exp, 0, inp)                             │
+│   File "/app/temp_script.py", line 58, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '['aaaa']': Expected '1', but got 4        │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 57.14:  20%|██        | 6/30 [00:37<02:19,  5.81s/it]Pass@1: 57.14:  23%|██▎       | 7/30 [00:37<01:35,  4.17s/it]6f6490463d156ffe509029bec96de416cdf36b3b82459334421cbb8dd349a080
+pytester_39b9ad0a-df7d-449f-ba58-f2dabcbbc4a5
+╭──────────────────────────── ❌ Failure (Mbpp/11) ────────────────────────────╮
+│ ```python                                                                    │
+│ def remove_Occ(string, char):                                                │
+│     """                                                                      │
+│     Remove a specified character from a string.                              │
+│                                                                              │
+│     Args:                                                                    │
+│     string (str): The original string.                                       │
+│     char (str): The character to remove from the string.                     │
+│                                                                              │
+│     Returns:                                                                 │
+│     str: A new string with the specified character removed.                  │
+│     """                                                                      │
+│     return string.replace(char, '')                                          │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 41, in <module>                           │
+│     assertion(remove_Occ(*inp), exp, 0, inp)                                 │
+│   File "/app/temp_script.py", line 36, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '['aaa', 'a']': Expected 'a', but got      │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 50.00:  23%|██▎       | 7/30 [00:37<01:35,  4.17s/it]Pass@1: 50.00:  27%|██▋       | 8/30 [00:37<01:07,  3.06s/it]01779a38f172c244cbb1be90783b9fb4aadaf30dec061707ebb2a83e2a174250
+pytester_3609f511-4675-492f-9ad6-cda241fc3ab5
+╭──────────────────────────── ❌ Failure (Mbpp/12) ────────────────────────────╮
+│ ```python                                                                    │
+│ def sort_matrix(matrix):                                                     │
+│     # Your implementation goes here                                          │
+│     pass                                                                     │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 32, in <module>                           │
+│     assertion(sort_matrix(*inp), exp, 0, inp)                                │
+│   File "/app/temp_script.py", line 27, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[[[1, 2, 3], [2, 4, 5], [1, 1, 1]]]':     │
+│ Expected '[[1, 1, 1], [1, 2, 3], [2, 4, 5]]', but got None                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 44.44:  27%|██▋       | 8/30 [00:38<01:07,  3.06s/it]Pass@1: 44.44:  30%|███       | 9/30 [00:38<00:48,  2.33s/it]073036a91045a42e911350e0a29eb586824905c56ff0f659c1454fd1d410f157
+pytester_525c6911-de97-44cb-bf01-30795006ff3f
+╭──────────────────────────── ❌ Failure (Mbpp/14) ────────────────────────────╮
+│ ```python                                                                    │
+│ def find_Volume(base_area, height):                                          │
+│     """                                                                      │
+│     Calculate the volume of a prism.                                         │
+│                                                                              │
+│     Parameters:                                                              │
+│     - base_area: The area of the base of the prism.                          │
+│     - height: The height of the prism.                                       │
+│                                                                              │
+│     Returns:                                                                 │
+│     - The volume of the prism.                                               │
+│     """                                                                      │
+│     return base_area * height                                                │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 41, in <module>                           │
+│     assertion(find_Volume(*inp), exp, 0, inp)                                │
+│               ^^^^^^^^^^^^^^^^^                                              │
+│ TypeError: find_Volume() takes 2 positional arguments but 3 were given       │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 40.00:  30%|███       | 9/30 [00:39<00:48,  2.33s/it]Pass@1: 40.00:  33%|███▎      | 10/30 [00:39<00:36,  1.83s/it]6a3cb54fec75e29a1581bc359633af4d058ac65f3afcb75f21abb23d92c0bf57
+pytester_e0ac5914-a009-49d4-8662-444a9a02c5f1
+╭──────────────────────────── ❌ Failure (Mbpp/16) ────────────────────────────╮
+│ ```python                                                                    │
+│ def text_lowercase_underscore(text):                                         │
+│     # Split the text into words                                              │
+│     words = text.split()                                                     │
+│                                                                              │
+│     # Initialize an empty list to store the processed words                  │
+│     processed_words = []                                                     │
+│                                                                              │
+│     # Iterate through each word in the list                                  │
+│     for word in words:                                                       │
+│         # Find all sequences of letters in the word                          │
+│         letter_sequences = re.findall(r'\b+\b', word)                        │
+│                                                                              │
+│         # Convert each letter sequence to lowercase                          │
+│         lowercased_sequences =                                               │
+│                                                                              │
+│         # Join the lowercased sequences with underscores                     │
+│         processed_word = '_'.join(lowercased_sequences)                      │
+│                                                                              │
+│         # Append the processed word to the list                              │
+│         processed_words.append(processed_word)                               │
+│                                                                              │
+│     # Join the processed words into a single string                          │
+│     result = ' '.join(processed_words)                                       │
+│                                                                              │
+│     return result                                                            │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 54, in <module>                           │
+│     assertion(text_lowercase_underscore(*inp), exp, 0, inp)                  │
+│               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                │
+│   File "/app/temp_script.py", line 12, in text_lowercase_underscore          │
+│     letter_sequences = re.findall(r'\b+\b', word)                            │
+│                        ^^                                                    │
+│ NameError: name 're' is not defined                                          │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 36.36:  33%|███▎      | 10/30 [00:39<00:36,  1.83s/it]Pass@1: 36.36:  37%|███▋      | 11/30 [00:39<00:28,  1.48s/it]75acbe661bc5304e8b19b1fa5a94afb22a3bf304fd1eebd8754feeca7dce175b
+pytester_aa9e3321-e1e5-4c93-99c0-314437dc9fa3
+╭──────────────────────────── ✅ Success (Mbpp/17) ────────────────────────────╮
+│ ```python                                                                    │
+│ def square_perimeter(side_length):                                           │
+│     """                                                                      │
+│     Calculate the perimeter of a square.                                     │
+│                                                                              │
+│     Args:                                                                    │
+│     side_length (float): The length of one side of the square.               │
+│                                                                              │
+│     Returns:                                                                 │
+│     float: The perimeter of the square.                                      │
+│     """                                                                      │
+│     return 4 * side_length                                                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 41.67:  37%|███▋      | 11/30 [00:40<00:28,  1.48s/it]Pass@1: 41.67:  40%|████      | 12/30 [00:40<00:22,  1.26s/it]1f16dedf6e1edaebb3226e09e5d1f9315b5a89bf736922a5a50964b173be6a87
+pytester_6ddc07b1-c398-489a-8b46-f3be83c98cb8
+╭──────────────────────────── ❌ Failure (Mbpp/18) ────────────────────────────╮
+│ ```python                                                                    │
+│ def remove_dirty_chars(input_string):                                        │
+│     # Define a set of dirty characters                                       │
+│     dirty_chars = {'.', ',', '?', '!', ':', ';', '"', '(', ')', '[', ']',    │
+│ '{', '}', '\'', '`', '~'}                                                    │
+│                                                                              │
+│     # Filter out dirty characters from the input string                      │
+│     clean_string = ''.join(char for char in input_string if char not in      │
+│ dirty_chars)                                                                 │
+│                                                                              │
+│     return clean_string                                                      │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 37, in <module>                           │
+│     assertion(remove_dirty_chars(*inp), exp, 0, inp)                         │
+│               ^^^^^^^^^^^^^^^^^^^^^^^^                                       │
+│ TypeError: remove_dirty_chars() takes 1 positional argument but 2 were given │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 38.46:  40%|████      | 12/30 [00:41<00:22,  1.26s/it]Pass@1: 38.46:  43%|████▎     | 13/30 [00:41<00:19,  1.12s/it]591d44d5d2846f899a96b1d953c85b1d4602375641f5956840dcb5cf46ebb42d
+pytester_656b47ef-dc63-4c02-95b4-e4fccd111135
+╭──────────────────────────── ❌ Failure (Mbpp/19) ────────────────────────────╮
+│ ```python                                                                    │
+│ def test_duplicate(arr):                                                     │
+│     seen = set()                                                             │
+│     duplicates = []                                                          │
+│     for num in arr:                                                          │
+│         if num in seen:                                                      │
+│             duplicates.append(num)                                           │
+│         else:                                                                │
+│             seen.add(num)                                                    │
+│     return duplicates                                                        │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 38, in <module>                           │
+│     assertion(test_duplicate(*inp), exp, 0, inp)                             │
+│   File "/app/temp_script.py", line 33, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[[1, 2, 3, 4, 5]]': Expected 'False', but │
+│ got []                                                                       │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 35.71:  43%|████▎     | 13/30 [00:42<00:19,  1.12s/it]Pass@1: 35.71:  47%|████▋     | 14/30 [00:42<00:15,  1.00it/s]e702eebeead2fe05851925d6e55d48964196254eff8dc1adafafadbf246ee34d
+pytester_3ee96eb3-2566-4036-84b3-cfe409be52b2
+╭──────────────────────────── ❌ Failure (Mbpp/20) ────────────────────────────╮
+│ ```python                                                                    │
+│ def is_woodall(n):                                                           │
+│     # Check if the number is of the form n * 2^n + 1                         │
+│     if n * 2**n + 1 == 2**n + 1:                                             │
+│         return True                                                          │
+│     return False                                                             │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 34, in <module>                           │
+│     assertion(is_woodall(*inp), exp, 0, inp)                                 │
+│   File "/app/temp_script.py", line 29, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[383]': Expected 'True', but got False    │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 33.33:  47%|████▋     | 14/30 [00:42<00:15,  1.00it/s]Pass@1: 33.33:  50%|█████     | 15/30 [00:42<00:14,  1.06it/s]68e18bc183805b29201fdc8e0ff613faa4272613588e4410a0c1ba505f52d54a
+pytester_3b3be6ea-acd5-4d98-a065-d22995017b80
+╭──────────────────────────── ❌ Failure (Mbpp/56) ────────────────────────────╮
+│ ```python                                                                    │
+│ def check(number):                                                           │
+│     """                                                                      │
+│     Check if the number is positive.                                         │
+│                                                                              │
+│     Args:                                                                    │
+│     number (int or float): The number to check.                              │
+│                                                                              │
+│     Returns:                                                                 │
+│     bool: True if the number is positive, False otherwise.                   │
+│     """                                                                      │
+│     return number > 0                                                        │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 40, in <module>                           │
+│     assertion(check(*inp), exp, 0, inp)                                      │
+│   File "/app/temp_script.py", line 35, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[70]': Expected 'False', but got True     │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 31.25:  50%|█████     | 15/30 [00:43<00:14,  1.06it/s]Pass@1: 31.25:  53%|█████▎    | 16/30 [00:43<00:12,  1.13it/s]2717fa78367705f57bfb8fbbeb3327935e43f290cdcc5595c461b6d2f91cb35a
+pytester_5293449d-28fb-4541-a38b-47cd7dc94a00
+╭──────────────────────────── ❌ Failure (Mbpp/57) ────────────────────────────╮
+│ ```python                                                                    │
+│ def find_Max_Num(nums):                                                      │
+│     """                                                                      │
+│     Find the maximum number in a list of digits.                             │
+│                                                                              │
+│     Parameters:                                                              │
+│     nums (list): A list of integers.                                         │
+│                                                                              │
+│     Returns:                                                                 │
+│     int: The maximum number in the list.                                     │
+│     """                                                                      │
+│     # Initialize the maximum number with the first element of the list       │
+│     max_num = nums[0]                                                        │
+│                                                                              │
+│     # Iterate through each number in the list                                │
+│     for num in nums:                                                         │
+│         # Update max_num if the current number is greater                    │
+│         if num > max_num:                                                    │
+│             max_num = num                                                    │
+│                                                                              │
+│     # Return the maximum number found                                        │
+│     return max_num                                                           │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 50, in <module>                           │
+│     assertion(find_Max_Num(*inp), exp, 0, inp)                               │
+│   File "/app/temp_script.py", line 45, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[[1, 2, 3]]': Expected '321', but got 3   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 29.41:  53%|█████▎    | 16/30 [00:44<00:12,  1.13it/s]Pass@1: 29.41:  57%|█████▋    | 17/30 [00:44<00:10,  1.23it/s]374b03e0a32f57457a8b5999c87c97044f631da1f04f3c83d873755acec51c51
+pytester_fe95af60-efaf-4e55-bb6c-dc74064296e2
+╭──────────────────────────── ✅ Success (Mbpp/58) ────────────────────────────╮
+│ ```python                                                                    │
+│ def opposite_Signs(num1, num2):                                              │
+│     """                                                                      │
+│     This function checks the relationship between two numbers.               │
+│                                                                              │
+│     Args:                                                                    │
+│     num1 (int/float): The first number.                                      │
+│     num2 (int/float): The second number.                                     │
+│                                                                              │
+│     Returns:                                                                 │
+│     bool: True if the numbers have opposite signs, False otherwise.          │
+│     """                                                                      │
+│     return num1 * num2 < 0                                                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 33.33:  57%|█████▋    | 17/30 [00:45<00:10,  1.23it/s]Pass@1: 33.33:  60%|██████    | 18/30 [00:45<00:09,  1.30it/s]94741e97ce9a53a9e1042f9504f83c8627c7d89cca39906c69f1831c0e035160
+pytester_98bcf177-f8e6-46a0-964c-e3c034fe685e
+╭──────────────────────────── ❌ Failure (Mbpp/59) ────────────────────────────╮
+│ ```python                                                                    │
+│ def is_octagonal(n):                                                         │
+│     # Formula to find if a number is octagonal                               │
+│     # n + 1 = (2n + 1)^0.5                                                   │
+│     # Solving for n, we get n = ((2n + 1)^0.5 - 1) / 2                       │
+│     import math                                                              │
+│     # Check if (2n + 1)^0.5 is an integer                                    │
+│     return math.isqrt((2 * n + 1)) ** 2 == (2 * n + 1)                       │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 36, in <module>                           │
+│     assertion(is_octagonal(*inp), exp, 0, inp)                               │
+│   File "/app/temp_script.py", line 31, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[5]': Expected '65', but got False        │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 31.58:  60%|██████    | 18/30 [00:45<00:09,  1.30it/s]Pass@1: 31.58:  63%|██████▎   | 19/30 [00:45<00:08,  1.27it/s]00b9816357eae8adb9fb2764e94e22f0c786399df4bfe370e030b1558bfe1428
+pytester_f9e2a0e4-4add-4031-a28c-9fc6207c7bb1
+╭──────────────────────────── ❌ Failure (Mbpp/61) ────────────────────────────╮
+│ ```python                                                                    │
+│ def count_Substrings(s):                                                     │
+│     """                                                                      │
+│     Count the number of substrings in the input string.                      │
+│                                                                              │
+│     Args:                                                                    │
+│     s (str): The input string to count substrings in.                        │
+│                                                                              │
+│     Returns:                                                                 │
+│     int: The total number of substrings in the input string.                 │
+│     """                                                                      │
+│     n = len(s)                                                               │
+│     count = 0                                                                │
+│     for i in range(n):                                                       │
+│         for j in range(i + 1, n + 1):                                        │
+│             count += 1                                                       │
+│     return count                                                             │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 45, in <module>                           │
+│     assertion(count_Substrings(*inp), exp, 0, inp)                           │
+│   File "/app/temp_script.py", line 40, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '['112112']': Expected '6', but got 21     │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 30.00:  63%|██████▎   | 19/30 [00:46<00:08,  1.27it/s]Pass@1: 30.00:  67%|██████▋   | 20/30 [00:46<00:07,  1.33it/s]d0a0cf9acb6cf76083ee0fcce21b56798f68abfe018acebeaec8d6d7fc787025
+pytester_64388d71-15c8-4c07-9d51-696f5e9bcf39
+╭──────────────────────────── ✅ Success (Mbpp/62) ────────────────────────────╮
+│ ```python                                                                    │
+│ def smallest_num(numbers):                                                   │
+│     """                                                                      │
+│     Find and return the smallest number in a list.                           │
+│                                                                              │
+│     Parameters:                                                              │
+│     numbers (list): A list of numbers.                                       │
+│                                                                              │
+│     Returns:                                                                 │
+│     int or float: The smallest number in the list.                           │
+│     """                                                                      │
+│     return min(numbers)                                                      │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 33.33:  67%|██████▋   | 20/30 [00:47<00:07,  1.33it/s]Pass@1: 33.33:  70%|███████   | 21/30 [00:47<00:06,  1.37it/s]dcafba3440c724b3e924db90d0c798fa34532e34570c7a7c0df6ecb4dde26d0c
+pytester_f306e68c-695f-4b18-ae54-f1d0b50b3217
+╭──────────────────────────── ❌ Failure (Mbpp/63) ────────────────────────────╮
+│ ```python                                                                    │
+│ def max_difference():                                                        │
+│     # Read the input data                                                    │
+│     input_data = input().split()                                             │
+│     numbers =                                                                │
+│                                                                              │
+│     # Process the input data to identify pairs                               │
+│     pairs = []                                                               │
+│     for i in range(len(numbers)):                                            │
+│         for j in range(i + 1, len(numbers)):                                 │
+│             pairs.append((numbers, numbers))                                 │
+│                                                                              │
+│     # Calculate the difference between each pair                             │
+│     differences = [abs(pair[0] - pair[1]) for pair in pairs]                 │
+│                                                                              │
+│     # Return the maximum difference found                                    │
+│     return max(differences)                                                  │
+│                                                                              │
+│ # Example usage:                                                             │
+│ print(max_difference())                                                      │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 20, in <module>                           │
+│     print(max_difference())                                                  │
+│           ^^^^^^^^^^^^^^^^                                                   │
+│   File "/app/temp_script.py", line 4, in max_difference                      │
+│     input_data = input().split()                                             │
+│                  ^^^^^^^                                                     │
+│ EOFError: EOF when reading a line                                            │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 31.82:  70%|███████   | 21/30 [00:47<00:06,  1.37it/s]Pass@1: 31.82:  73%|███████▎  | 22/30 [00:47<00:05,  1.52it/s]8a869543752923ab8feded92877101cbe6f9473a488e28933c69d14d7fdd800a
+pytester_00bcc65f-74bb-47a2-8544-1fd89a19ebff
+╭──────────────────────────── ✅ Success (Mbpp/64) ────────────────────────────╮
+│ ```python                                                                    │
+│ def subject_marks(subject_marks_list):                                       │
+│     # Sort the list of tuples based on the second element of each tuple      │
+│     sorted_list = sorted(subject_marks_list, key=lambda x: x[1])             │
+│     return sorted_list                                                       │
+│                                                                              │
+│ # Example usage:                                                             │
+│ subject_marks_list = [("Math", 85), ("Science", 90), ("English", 78)]        │
+│ sorted_subject_marks = subject_marks(subject_marks_list)                     │
+│ print(sorted_subject_marks)  # Output: [('Science', 90), ('Math', 85),       │
+│ ('English', 78)]                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 34.78:  73%|███████▎  | 22/30 [00:48<00:05,  1.52it/s]Pass@1: 34.78:  77%|███████▋  | 23/30 [00:48<00:04,  1.48it/s]9338537fe9dce16f9d6ee9ab146fe13f340846fda6e8d3dedbae3c5b7aee119d
+pytester_5a29850e-1e6b-4747-9a52-87aee29d8950
+╭──────────────────────────── ❌ Failure (Mbpp/65) ────────────────────────────╮
+│ ```python                                                                    │
+│ def recursive_list_sum(lst):                                                 │
+│     if lst:                                                                  │
+│         return lst[0] + recursive_list_sum(lst[1:])                          │
+│     else:                                                                    │
+│         return 0                                                             │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 34, in <module>                           │
+│     assertion(recursive_list_sum(*inp), exp, 0, inp)                         │
+│               ^^^^^^^^^^^^^^^^^^^^^^^^                                       │
+│   File "/app/temp_script.py", line 4, in recursive_list_sum                  │
+│     return lst[0] + recursive_list_sum(lst[1:])                              │
+│                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^                              │
+│   File "/app/temp_script.py", line 4, in recursive_list_sum                  │
+│     return lst[0] + recursive_list_sum(lst[1:])                              │
+│                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^                              │
+│   File "/app/temp_script.py", line 4, in recursive_list_sum                  │
+│     return lst[0] + recursive_list_sum(lst[1:])                              │
+│                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^                              │
+│   [Previous line repeated 1 more time]                                       │
+│ TypeError: can only concatenate list (not "int") to list                     │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 33.33:  77%|███████▋  | 23/30 [00:49<00:04,  1.48it/s]Pass@1: 33.33:  80%|████████  | 24/30 [00:49<00:04,  1.44it/s]2be2f6b5b104280a7a06e04b6b0be8702ae655f5b23287a673d55c853f479389
+pytester_42c960f7-5167-4705-ad09-a1fdb78fdd26
+╭──────────────────────────── ❌ Failure (Mbpp/66) ────────────────────────────╮
+│ ```python                                                                    │
+│ def pos_count(numbers):                                                      │
+│     return len(numbers)                                                      │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 31, in <module>                           │
+│     assertion(pos_count(*inp), exp, 0, inp)                                  │
+│   File "/app/temp_script.py", line 26, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[[1, -2, 3, -4]]': Expected '2', but got  │
+│ 4                                                                            │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 32.00:  80%|████████  | 24/30 [00:49<00:04,  1.44it/s]Pass@1: 32.00:  83%|████████▎ | 25/30 [00:49<00:03,  1.43it/s]0eaf253019b6ca643206bcdf205b828279180cb16f2cbf938e34074e7fc3396d
+pytester_d527c91c-88e4-4fba-8105-c88b5cd8a579
+╭──────────────────────────── ❌ Failure (Mbpp/67) ────────────────────────────╮
+│ ```python                                                                    │
+│ def bell_number(n):                                                          │
+│     """Calculate the Bell number for a given set size n."""                  │
+│     # Initialize a list to store the Bell numbers                            │
+│     bell = [0] * (n + 1)                                                     │
+│     bell[0] = 1  # The Bell number for an empty set is 1                     │
+│                                                                              │
+│     # Calculate the Bell numbers using the recursive formula                 │
+│     for i in range(1, n + 1):                                                │
+│         for j in range(i):                                                   │
+│             bell += bell * bell                                              │
+│                                                                              │
+│     return bell                                                              │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 41, in <module>                           │
+│     assertion(bell_number(*inp), exp, 0, inp)                                │
+│   File "/app/temp_script.py", line 36, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[10]': Expected '115975', but got 16796   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 30.77:  83%|████████▎ | 25/30 [00:50<00:03,  1.43it/s]Pass@1: 30.77:  87%|████████▋ | 26/30 [00:50<00:02,  1.39it/s]e88dcf0f0b3a8fb592556ea969fbae2b1b2bfea0f4e3d619633c7619305fe9e7
+pytester_cd44eff7-4410-495f-87a2-e49ef73ac487
+╭──────────────────────────── ✅ Success (Mbpp/68) ────────────────────────────╮
+│ ```python                                                                    │
+│ def is_Monotonic(arr):                                                       │
+│     """                                                                      │
+│     Check if the array is monotonic. An array is monotonic if it is either   │
+│ entirely non-increasing or non-decreasing.                                   │
+│     """                                                                      │
+│     if not arr:                                                              │
+│         return True  # An empty array is considered monotonic                │
+│                                                                              │
+│     increasing = decreasing = True                                           │
+│                                                                              │
+│     for i in range(1, len(arr)):                                             │
+│         if arr > arr:                                                        │
+│             decreasing = False                                               │
+│         elif arr < arr:                                                      │
+│             increasing = False                                               │
+│                                                                              │
+│     return increasing or decreasing                                          │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 33.33:  87%|████████▋ | 26/30 [00:51<00:02,  1.39it/s]Pass@1: 33.33:  90%|█████████ | 27/30 [00:51<00:02,  1.42it/s]c68b3d696b3fdddee486935cb0c6d2905023792a8cc5a551cb5b9f851a325ffd
+pytester_73ad3225-681e-43cb-8099-4f127c6cc173
+╭──────────────────────────── ✅ Success (Mbpp/69) ────────────────────────────╮
+│ ```python                                                                    │
+│ def is_sublist(main_list, sublist):                                          │
+│     # Check if the sublist is empty                                          │
+│     if not sublist:                                                          │
+│         return True                                                          │
+│                                                                              │
+│     # Loop through the main list to check for the presence of the sublist    │
+│     for i in range(len(main_list) - len(sublist) + 1):                       │
+│         if main_list == sublist:                                             │
+│             return True                                                      │
+│                                                                              │
+│     return False                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 35.71:  90%|█████████ | 27/30 [00:52<00:02,  1.42it/s]Pass@1: 35.71:  93%|█████████▎| 28/30 [00:52<00:01,  1.41it/s]9b6c618788d54eb898474a7c8d213f41b22d15759047fc75a31c27d3e03fb861
+pytester_c67f37b8-30ff-4dde-be69-96f063b753ff
+╭──────────────────────────── ❌ Failure (Mbpp/70) ────────────────────────────╮
+│ ```python                                                                    │
+│ def get_equal(tup1, tup2):                                                   │
+│     """                                                                      │
+│     Check if the lengths of two tuples are equal.                            │
+│                                                                              │
+│     Parameters:                                                              │
+│     tup1 (tuple): The first tuple to compare.                                │
+│     tup2 (tuple): The second tuple to compare.                               │
+│                                                                              │
+│     Returns:                                                                 │
+│     bool: True if the lengths of tup1 and tup2 are equal, False otherwise.   │
+│     """                                                                      │
+│     return len(tup1) == len(tup2)                                            │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 41, in <module>                           │
+│     assertion(get_equal(*inp), exp, 0, inp)                                  │
+│               ^^^^^^^^^^^^^^^                                                │
+│ TypeError: get_equal() missing 1 required positional argument: 'tup2'        │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 34.48:  93%|█████████▎| 28/30 [00:52<00:01,  1.41it/s]Pass@1: 34.48:  97%|█████████▋| 29/30 [00:52<00:00,  1.42it/s]2e55c196c07494dd802a504378cbe6548c66ad03c3c0e96bea1e2e38a15e091f
+pytester_1f0e507e-4d38-48c1-8e87-20182f0e005f
+╭──────────────────────────── ❌ Failure (Mbpp/71) ────────────────────────────╮
+│ ```python                                                                    │
+│ def comb_sort(arr):                                                          │
+│     gap = len(arr)                                                           │
+│     shrink_factor = 1.3  # You can adjust this factor as needed              │
+│     swapped = True                                                           │
+│                                                                              │
+│     while gap > 1 or swapped:                                                │
+│         if gap > 1:                                                          │
+│             gap = int(gap / shrink_factor)                                   │
+│         swapped = False                                                      │
+│                                                                              │
+│         i = 0                                                                │
+│         while i + gap < len(arr):                                            │
+│             if arr > arr:                                                    │
+│                 arr, arr = arr, arr                                          │
+│                 swapped = True                                               │
+│             i += 1                                                           │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 45, in <module>                           │
+│     assertion(comb_sort(*inp), exp, 0, inp)                                  │
+│   File "/app/temp_script.py", line 40, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[[5, 15, 25, 37, 79]]': Expected '[5, 15, │
+│ 25, 37, 79]', but got None                                                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 33.33:  97%|█████████▋| 29/30 [00:53<00:00,  1.42it/s]Pass@1: 33.33: 100%|██████████| 30/30 [00:53<00:00,  1.44it/s]Pass@1: 33.33: 100%|██████████| 30/30 [00:53<00:00,  1.78s/it]
+                       Test Results (MyClarification)                        
+┏━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Task ID ┃ Status ┃ Clarify? ┃ Output                                      ┃
+┡━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Mbpp/11 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/12 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/14 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/16 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/17 │   ✅   │    ❌    │ The provided implementation passed all t... │
+│ Mbpp/18 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/19 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/2  │   ✅   │    ❌    │ The provided implementation passed all t... │
+│ Mbpp/20 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/3  │   ✅   │    ❌    │ The provided implementation passed all t... │
+│ Mbpp/4  │   ✅   │    ❌    │ The provided implementation passed all t... │
+│ Mbpp/56 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/57 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/58 │   ✅   │    ❌    │ The provided implementation passed all t... │
+│ Mbpp/59 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/6  │   ⏲️   │    ❌    │ The provided implementation ran into a t... │
+│ Mbpp/61 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/62 │   ✅   │    ❌    │ The provided implementation passed all t... │
+│ Mbpp/63 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/64 │   ✅   │    ❌    │ The provided implementation passed all t... │
+│ Mbpp/65 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/66 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/67 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/68 │   ✅   │    ❌    │ The provided implementation passed all t... │
+│ Mbpp/69 │   ✅   │    ❌    │ The provided implementation passed all t... │
+│ Mbpp/7  │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/70 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/71 │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+│ Mbpp/8  │   ✅   │    ❌    │ The provided implementation passed all t... │
+│ Mbpp/9  │   ❌   │    ❌    │ The provided implementation failed. Outp... │
+└─────────┴────────┴──────────┴─────────────────────────────────────────────┘
+           Run Statistics            
+┏━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Metric                  ┃ Results ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━┩
+│ Total                   │ 30      │
+│ Turn Discounted Success │ 0.3333  │
+│ nDCG                    │ 0.0000  │
+│ Pass@1                  │ 33.33   │
+│ Clarification rate      │ 0.00%   │
+│ Overasking rate         │ 0.00%   │
+└─────────────────────────┴─────────┘
+real 58.17
+user 4.91
+sys 3.13

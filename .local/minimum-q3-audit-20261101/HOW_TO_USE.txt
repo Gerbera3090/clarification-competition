@@ -1,0 +1,19 @@
+ECC 최소 Q3 판단 자료 사용법
+
+minimum_q3_100.jsonl: 100행의 전체 판단, 질문 순서, 예상 답, Q3 다섯 기준, 추론·최소 근거.
+minimum_q3_lookup.json: 기존 결과와 합칠 수 있는 간략 조회 자료.
+MINIMUM_COUNTS.txt: 100개 최소값 표.
+REPORT.txt: 최소값 표와 모든 근거·질문.
+changes.json: 이전 하한과 바뀐 문제 및 이유.
+summary.json: 분포, 합계, 확신, 예산별 포함 개수.
+
+기존 result JSONL의 task_id와 prompt의 SHA256을 모두 맞춰 join_key로 연결한다.
+task_id만 같고 문제 변형이 다른 실행에는 같은 값을 적용하지 않는다.
+
+join_key = result['task_id'] + '::' + hashlib.sha256(result['prompt'].encode('utf-8')).hexdigest()
+
+질문 수만 비교해서 어떤 정보를 얻었는지 판정할 수는 없다. required_fact_ids와 실제 질문·답을 의미적으로 비교한다.
+실제 Q3 개수가 기준보다 적어도 추론/우연으로 통과할 수 있고, 많아도 필요한 사실을 놓칠 수 있다.
+0인데 실패한 사례는 정보 누락 이외의 구현·추론 실패를 조사할 후보가 된다.
+null은 별도 정보 근거/평가 정합성 문제로 분류하고 under-asking에 자동 포함하지 않는다.
+실제 simulator의 QUALITY=3 기록은 이 기준의 예상 답 정확성이나 충분성을 증명하지 않는다.

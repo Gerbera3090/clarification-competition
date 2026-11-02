@@ -1,0 +1,40 @@
+Hi organizers, and thank you for organizing the challenge.
+
+### Context
+
+While testing the released SDK locally with `gpt-4.1-mini`, we encountered the following cases. We would appreciate your guidance on answer reliability and the reference context available to the simulated human.
+
+### Example
+
+**1. HumanEval/42 — an answer conflicting with evaluation**
+
+> **Question:** Should incr_list raise an error, ignore, or handle differently when the input list contains non-integer elements or invalid types?
+>
+> **Recorded quality:** `QUALITY=3`
+>
+> **Answer:** The function should raise a TypeError if any element in the input list is not an integer.
+
+Our implementation followed this instruction, but evaluation includes float inputs and expects normal incrementing. Removing only the integer check allowed the implementation to pass all **1,002 tests**.
+
+**2. MBPP/753 — an unspecified comparison field**
+
+The reference supplied to the simulated human asks for the “minimum k records from tuple list,” without specifying the comparison field. Its reference example produces the same result under ordinary tuple ordering and ordering by the second numeric field.
+
+In a recorded interaction:
+
+> **Question:** Could you please clarify what criteria or key should be used to determine the order of the records when selecting the maximum k records?
+>
+> **Recorded quality:** `QUALITY=3`
+>
+> **Answer:** The records should be ordered and selected based on the numeric value in the second element of each tuple.
+
+This answer agrees with evaluation's comparison key. Our separate concern is that the supplied reference does not identify that key or distinguish the two interpretations; we are unsure what grounding is intended for this choice.
+
+### Question
+
+Could you please clarify:
+
+1. Are occasional inaccuracies in the simulated human's answers an intended part of the challenge that participants should accommodate, or are there plans to validate/correct such answers or account for their impact on evaluation?
+2. Is the simulated human's reference context intended to specify evaluator-required choices such as MBPP/753's comparison key? Does official evaluation provide additional context for these cases?
+
+Thank you for your time and guidance.

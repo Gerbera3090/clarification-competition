@@ -1,0 +1,32 @@
+{
+  "task_id": "HumanEval/149",
+  "review_date": "2026-11-02",
+  "basis": "actual cached evaluation assertions, not a hypothetical choice of output contract",
+  "source_path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+  "test_sha256": "776e739165e0750e8bff934f466cdcc017ed963f4c3ba3204952f40706dc1a21",
+  "test_code": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate([\"aa\", \"a\", \"aaa\"]) == [\"aa\"]\n    assert candidate([\"school\", \"AI\", \"asdf\", \"b\"]) == [\"AI\", \"asdf\", \"school\"]\n    assert candidate([\"d\", \"b\", \"c\", \"a\"]) == []\n    assert candidate([\"d\", \"dcba\", \"abcd\", \"a\"]) == [\"abcd\", \"dcba\"]\n\n    # Check some edge cases that are easy to work out by hand.\n    assert candidate([\"AI\", \"ai\", \"au\"]) == [\"AI\", \"ai\", \"au\"]\n    assert candidate([\"a\", \"b\", \"b\", \"c\", \"c\", \"a\"]) == []\n    assert candidate(['aaaa', 'bbbb', 'dd', 'cc']) == [\"cc\", \"dd\", \"aaaa\", \"bbbb\"]\n\n",
+  "required_output_contract": {
+    "container": "list of retained even-length strings",
+    "primary_order": "length ascending",
+    "tie_order": "alphabetical ascending"
+  },
+  "functional_decisions": [
+    {
+      "name": "return_container",
+      "expected": "list, not length integer",
+      "assertion": "candidate([\"aa\", \"a\", \"aaa\"]) == [\"aa\"]"
+    },
+    {
+      "name": "equal_length_order",
+      "expected": "alphabetical ascending, not reverse",
+      "assertion": "candidate([\"d\", \"dcba\", \"abcd\", \"a\"]) == [\"abcd\", \"dcba\"]"
+    }
+  ],
+  "evaluation_grounded_budget_risk": true,
+  "minimum_independent_facts_estimate": 2,
+  "formal_impossibility_proven": false,
+  "simulated_user_answer": "Words of the same length should be sorted in reverse alphabetical order.",
+  "answer_test_alignment": "conflict: simulated user requests reverse alphabetical order; test requires alphabetical ascending",
+  "correction": "The prior conditional label was based on a hypothetical integer-return interpretation. Actual tests require a list, so equal-length ordering remains observable and must also be resolved. This is a test-grounded audit finding; source prompt-only labels remain separately identified.",
+  "coverage": "Only HumanEval/149 has received this new test-grounded audit in this follow-up; no full-suite test-grounded relabeling is claimed."
+}

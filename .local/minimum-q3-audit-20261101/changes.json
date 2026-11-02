@@ -1,0 +1,212 @@
+[
+  {
+    "task_id": "HumanEval/43",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "이전 1은 distinct의 가능한 두 해석을 모두 차단하려는 정적 보수 하한이었다. 이번에는 고급 추론자의 표준 리스트 위치 의미를 인정하고 SEARCH SPACE를 엄격히 적용하므로 질문을 필수로 세지 않아 0으로 낮춘다. 실제 scorer에서 그 질문이 어떤 점수를 받을지는 측정하지 않았다."
+  },
+  {
+    "task_id": "HumanEval/116",
+    "prior_lower_bound": 2,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "이전 2는 잘못된 예시와 본문 정렬 키의 충돌, 음수 표현을 각각 요구 확인으로 셌다. 이번에는 명시된 정렬 목적의 우선과 Python 이진 표현을 고급 추론으로 처리해 0으로 낮춘다. hidden도 같은 오류를 포함하므로 질문으로 새 사실을 받았다고 가정하지 않는다. 예시 우선순위를 다르게 보는 평가자는 이 사례를 불확실로 검토할 수 있다."
+  },
+  {
+    "task_id": "HumanEval/111",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "1→0: 구체적인 사전 정의와 모든 공개 결과 예시를 이용하는 추론으로 반환형 확인을 제거했다."
+  },
+  {
+    "task_id": "HumanEval/156",
+    "prior_lower_bound": 2,
+    "minimum_q3_estimate": 1,
+    "reason_ko": "2→1: 표준 로마 숫자 encoding의 정의로 기호 순서를 추론한다."
+  },
+  {
+    "task_id": "HumanEval/18",
+    "prior_lower_bound": 2,
+    "minimum_q3_estimate": 1,
+    "reason_ko": "2→1: 수량 선택은 공개 이름·주 과업·중첩 지시·다수 계수 예시로 추론하고 표현 질문만 남겼다."
+  },
+  {
+    "task_id": "HumanEval/33",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "1→0: 구체적인 기본 분기 정의를 사용하고 미정의 정수 출력은 새 정책으로 발명하지 않는다."
+  },
+  {
+    "task_id": "HumanEval/127",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "1→0: 표준 길이 및 명시 리터럴을 사용하고 불가능한 리터럴 수 변환을 버린다."
+  },
+  {
+    "task_id": "HumanEval/55",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "1→0: 공개 예시와 다형 구현으로 정수 결과를 추론한다."
+  },
+  {
+    "task_id": "HumanEval/137",
+    "prior_lower_bound": 2,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "2→0: 입력 유형과 반환 정책을 모두 공개 예시 및 수치 비교의 다형 지원으로 추론했다."
+  },
+  {
+    "task_id": "HumanEval/7",
+    "prior_lower_bound": 4,
+    "minimum_q3_estimate": 2,
+    "reason_ko": "4→2: 입력 유형과 출력 순서를 공개 signature·예시로 복구했다."
+  },
+  {
+    "task_id": "HumanEval/162",
+    "prior_lower_bound": 2,
+    "minimum_q3_estimate": 1,
+    "reason_ko": "2→1: named digest 정의로 기호 순서를 추론한다."
+  },
+  {
+    "task_id": "HumanEval/47",
+    "prior_lower_bound": null,
+    "minimum_q3_estimate": 1,
+    "reason_ko": "기존 mismatch/null을 재평가해 산술 오류는 표준 정의로 추론하고 반환 표현1개만 남겼다."
+  },
+  {
+    "task_id": "HumanEval/62",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "1→0: 생략 호출과 명시 format 예시를 다형 인터페이스로 해석한다."
+  },
+  {
+    "task_id": "HumanEval/59",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "1→0: 정수·문자열 짝 예시와 다형 지원으로 추론한다."
+  },
+  {
+    "task_id": "HumanEval/0",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "1→0: Python Boolean/int 및 활성==의 관측 동등성을 사용한다."
+  },
+  {
+    "task_id": "HumanEval/11",
+    "prior_lower_bound": 2,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "2→0: 입력 다형 지원과 공개 문자열 결과 예시·위치별 XOR 관례로 추론한다."
+  },
+  {
+    "task_id": "Mbpp/306",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "이전 1개에서 0개로 낮췄다. 누락된 n 인자와 실제로 질문이 필요한 행동 선택을 구분하고 호환 인터페이스를 허용했다."
+  },
+  {
+    "task_id": "Mbpp/763",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "이전 1개에서 0개로 낮췄다. API 차이가 호환 가능한 중복 입력 정보라 필수 Q3로 세지 않았다."
+  },
+  {
+    "task_id": "Mbpp/414",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "이전 1개에서 0개로 낮췄다. 공개 함수명과 입력 적응으로 해결되는 의미를 필수 숨은 사실로 세지 않았다."
+  },
+  {
+    "task_id": "Mbpp/589",
+    "prior_lower_bound": 2,
+    "minimum_q3_estimate": 1,
+    "reason_ko": "이전 2개에서 1개로 낮췄다. 역순 경계는 between의 대칭성으로 추론하고 닫힌 구간 여부 하나만 남겼다."
+  },
+  {
+    "task_id": "Mbpp/7",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "이전 1개에서 0개로 낮췄다. 정규식 관례를 사용하고 canonical에만 있는 세부 토큰 규칙을 Q3 요구로 만들지 않았다."
+  },
+  {
+    "task_id": "Mbpp/772",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "이전 1개에서 0개로 낮췄다. 기본 문자열 토큰 관례와 hidden 미지원 정책의 차이를 반영했다."
+  },
+  {
+    "task_id": "Mbpp/90",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "이전 1개에서 0개로 낮췄다. 타입 분기로 안전하게 함께 지원할 수 있는 입력 형식을 필수 질문으로 세지 않았다."
+  },
+  {
+    "task_id": "Mbpp/232",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "이전 1개에서 0개로 낮췄다. 항목의 중복 출현 보존을 일반 리스트 항목 의미로 추론했다."
+  },
+  {
+    "task_id": "Mbpp/311",
+    "prior_lower_bound": 2,
+    "minimum_q3_estimate": 1,
+    "reason_ko": "이전 2개에서 1개로 낮췄다. 비트 후보 도메인을 정확하게 정의해 0 사례와 빈 후보 항등 처리를 추론 폐쇄로 포함했다."
+  },
+  {
+    "task_id": "Mbpp/611",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "이전 1개에서 0개로 낮췄다. 보통의 Python 인덱싱 관례를 고성능 추론자의 사전 지식으로 인정했다."
+  },
+  {
+    "task_id": "Mbpp/328",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": null,
+    "reason_ko": "기존 1개 질문은 테스트에서 추정한 접두사 슬라이스 의미를 oracle의 의도인 것처럼 물었다. 새 감사에서는 누출과 source 부족을 구분하여 실제 Q3 최소값을 null로 정정한다."
+  },
+  {
+    "task_id": "Mbpp/199",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "기존 1개는 논리 모순을 곧 정보 부족으로 셌다. 유한 최댓값의 존재 여부와 공개 수학 정의를 이용해 질문 없이 줄였다."
+  },
+  {
+    "task_id": "Mbpp/958",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "기존 1개는 public에 있는 4→IV를 다시 질문했다. 판별력 있는 공개 예시로 제거했다."
+  },
+  {
+    "task_id": "Mbpp/382",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "기존 1개는 최소/최대 인덱스를 대등한 선택지로 셌다. 표준 회전 수 정의와 무회전 배열의 0 조건으로 최소 피벗을 추론했다."
+  },
+  {
+    "task_id": "Mbpp/941",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "기존 1개는 공개에 이미 제공된 count=3 예시를 반영하지 않은 확인 질문이었다."
+  },
+  {
+    "task_id": "Mbpp/627",
+    "prior_lower_bound": 2,
+    "minimum_q3_estimate": null,
+    "reason_ko": "기존 2개에서 최소/최대 선택은 비음수 후보 집합을 확인한 뒤 수학적으로 추론해 ideal 1개로 줄였다. 동시에 0 포함을 canonical/tests에서 안 사실과 human hidden에서 얻을 수 있는 사실로 구분해 actual은 null로 정정했다."
+  },
+  {
+    "task_id": "Mbpp/144",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "기존 1개는 수학적으로 이미 결정되는 |x-x|=0을 비추론 요구사항처럼 셌다. 명시된 식으로 해결하여 0개로 정정했다."
+  },
+  {
+    "task_id": "Mbpp/936",
+    "prior_lower_bound": 1,
+    "minimum_q3_estimate": 0,
+    "reason_ko": "기존 1개는 공개 자체의 반복 출력 예시를 다시 확인하는 질문이었다. 점별 규칙과 예시로 추론하여 제거했다."
+  },
+  {
+    "task_id": "Mbpp/753",
+    "prior_lower_bound": 2,
+    "minimum_q3_estimate": null,
+    "reason_ko": "기존 2개는 목표 oracle에 필요한 사실 수로는 유지된다. 그러나 첫 hidden 예시가 숫자순과 사전순을 구별하지 못한다는 점을 반영해 실제 최소 Q3 수는 null로 분리했다."
+  }
+]

@@ -1,0 +1,80 @@
+{
+  "scope": "frozen train100-v1; 100 distinct train task IDs",
+  "manifest_sha256": "47e5d52d4bf7623978fbd617d437f027892261b5a5aaca0827345343149b43b4",
+  "counts": {
+    "no_question_needed": 41,
+    "one_atomic_question": 40,
+    "spec_test_mismatch": 6,
+    "multiple_independent_requirements": 13
+  },
+  "by_stratum": {
+    "humaneval/original": {
+      "no_question_needed": 22,
+      "one_atomic_question": 1,
+      "spec_test_mismatch": 2
+    },
+    "humaneval/larbi_contradictory": {
+      "one_atomic_question": 16,
+      "multiple_independent_requirements": 8,
+      "spec_test_mismatch": 1
+    },
+    "mbpp/original": {
+      "no_question_needed": 14,
+      "one_atomic_question": 8,
+      "multiple_independent_requirements": 2,
+      "spec_test_mismatch": 1
+    },
+    "mbpp/larbi_contradictory": {
+      "one_atomic_question": 15,
+      "spec_test_mismatch": 2,
+      "no_question_needed": 5,
+      "multiple_independent_requirements": 3
+    }
+  },
+  "atomic_questions_extracted": 72,
+  "information_sufficient_with_at_most_one_correct_atomic_answer": 81,
+  "definitions": {
+    "one_atomic_question": "A precise answer reveals one independent behavioral fact. Blanket full-spec recovery is excluded.",
+    "sufficient": "Conditional on a correct answer and a correct implementation; observed test-relevant ambiguity is resolved in static review.",
+    "multiple_independent_requirements": "One answer does not determine all observed independent requirements; guessing can still pass.",
+    "minimum_questions_lower_bound": "Conservative static fact-count estimate under the annotation interpretation, not an information-theoretic theorem.",
+    "spec_test_mismatch": "Original intended behavior/reference and active evaluation disagree; generic injected contradiction alone is not this status.",
+    "no_question_needed": "No critical non-inferable ambiguity found for current evaluator behavior; not a universal claim over untested inputs."
+  },
+  "limitations_ko": [
+    "이 목록은 테스트와 참조를 본 사후 진단이며 참가 알고리즘에 공급할 수 있는 질문 정답지가 아니다.",
+    "예상 답은 실제 가상 사용자에게 받은 응답이 아니다. 참조가 모호하거나 가상 사용자가 틀리면 한 질문 충분 판정도 실제 통과를 보장하지 않는다.",
+    "추출 질문으로 새 코드 생성·채점 실험은 수행하지 않았다. 기존 알고리즘 성적을 이 질문들의 성공률로 제시하지 않는다.",
+    "25개씩 균형을 맞춘 표본으로 전체 train·validation의 비율을 추정하지 않는다."
+  ],
+  "provenance": {
+    ".local/single-question-audit-20261030/annotations-humaneval-larbi_contradictory.jsonl": "8997d07680937a82a981e1280056e5b9bb8661d311a2dad31d72516126e086db",
+    ".local/single-question-audit-20261030/annotations-humaneval-original.jsonl": "cb6fd8460e335c00f95862cf9c1b26427e12787137160e995b358b64c2e02ec4",
+    ".local/single-question-audit-20261030/annotations-mbpp-larbi_contradictory.jsonl": "013072638bb4be2cd6a30e1cf4b56635579ac6641c80db4a21a0a3e9bca8fbdb",
+    ".local/single-question-audit-20261030/annotations-mbpp-original.jsonl": "681ed39e43d98f9349242b3b59b7e9083be14d1b1ea9784878eaee94a6638d7c"
+  },
+  "corpus_inventory_file": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/single-question-audit-20261030/corpus-inventory.json",
+  "corpus_inventory_sha256": "187e2014805bb14f039bf5dc3102c4fdfd786461817d1c3deeaca315b1ebe687",
+  "illustrative_checks": {
+    "file": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/single-question-audit-20261030/example-verification.json",
+    "cases": 4,
+    "all_expected_outcomes": true,
+    "method": "analyst-authored code in current Docker evaluator; no user or LLM calls"
+  },
+  "full_expansion": {
+    "rows": 8731,
+    "coverage": {
+      "pending_semantic_review": 4909,
+      "algorithmic_draft_unreviewed": 3722,
+      "reviewed_frozen100": 100
+    },
+    "source_splits": {
+      "train": 7961,
+      "val": 770
+    },
+    "selected_candidates_before_manual_overrides": 3762,
+    "warning_ko": "개별 확정은 고정 100제뿐이며, 나머지는 미검토 후보 또는 의미 검토 대기 상태다.",
+    "corpus_index_sha256": "8dbcafa4009cc2c3468eca45a0de59bef4e7ce8c217ef0d6cf4692ccf129ada8",
+    "draft_sha256": "d944fa05c72949351f99b3a61abdd7f3d27ed865c692a56f9e7b82340849c9ce"
+  }
+}

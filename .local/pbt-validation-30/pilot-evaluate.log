@@ -1,0 +1,61 @@
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/ee43ecabebf20deef4bb776a405ac5b1.pkl
+Computing expected output...
+Expected outputs computed in 16.35s
+Loaded 770 instances...
+Loaded 1 result instances...
+  0%|          | 0/770 [00:00<?, ?it/s]a39a7b9d39fa63096da242dad55f8992ee2ccfe66fb53b872e945bbdd3405e57
+pytester_afe83a85-5b0d-4c6f-a93d-6c238bc4048b
+╭───────────────────────── ❌ Failure (HumanEval/161) ─────────────────────────╮
+│ ```python                                                                    │
+│ def solve():                                                                 │
+│     s = input()                                                              │
+│     if any(c.isalpha() for c in s):                                          │
+│         # Change case of letters                                             │
+│         result = []                                                          │
+│         for c in s:                                                          │
+│             if c.isalpha():                                                  │
+│                 if c.islower():                                              │
+│                     result.append(c.upper())                                 │
+│                 else:                                                        │
+│                     result.append(c.lower())                                 │
+│             else:                                                            │
+│                 result.append(c)                                             │
+│         print("".join(result))                                               │
+│     else:                                                                    │
+│         # Reverse the string if no letters                                   │
+│         print(s[::-1])                                                       │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 46, in <module>                           │
+│     assertion(solve(*inp), exp, 0, inp)                                      │
+│               ^^^^^^^^^^^                                                    │
+│ TypeError: solve() takes 0 positional arguments but 1 was given              │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 0.00:   0%|          | 0/770 [00:01<?, ?it/s]Pass@1: 0.00:   0%|          | 1/770 [00:01<16:26,  1.28s/it]Pass@1: 0.00:   0%|          | 1/770 [00:01<16:26,  1.28s/it]
+                          Test Results (PBTClarifier)                           
+┏━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Task ID    ┃ Status ┃ Clarify? ┃ Output                                      ┃
+┡━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ HumanEval… │   ❌   │    ☠️    │ The provided implementation failed. Outp... │
+└────────────┴────────┴──────────┴─────────────────────────────────────────────┘
+              Run Statistics              
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Metric                       ┃ Results ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━┩
+│ Total                        │ 1       │
+│ Turn Discounted Success      │ 0.0000  │
+│ nDCG                         │ 0.0000  │
+│ Pass@1                       │ 0.00    │
+│ Clarification rate           │ 100.00% │
+│ Overasking rate              │ 0.00%   │
+│ High quality clarification   │ 0.00%   │
+│ Average clarification length │ 111.00  │
+└──────────────────────────────┴─────────┘
+real 26.06
+user 20.56
+sys 2.73

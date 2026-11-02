@@ -1,0 +1,27 @@
+
+Mbpp/627 (data/mbpp/mbpp_larbi_contradictory.jsonl:627)
+Decoded simulator reference:
+Write a python function to find the smallest missing number from the given array.
+assert find_First_Missing([0,1,2,3],0,3) == 4
+  nonnegative: reference examples=True; checked-in test_cases=[True, True, True]
+  positive: reference examples=True; checked-in test_cases=[True, True, False]
+  Differing test 3: args=[[2, 3, 5, 8, 9], 0, 4], expected=0, outputs={'nonnegative': 0, 'positive': 1}
+
+Mbpp/753 (data/mbpp/mbpp_larbi_contradictory.jsonl:753)
+Decoded simulator reference:
+Write a function to find minimum k records from tuple list.
+assert min_k([('Manjeet', 10), ('Akshat', 4), ('Akash', 2), ('Nikhil', 8)], 2) == [('Akash', 2), ('Akshat', 4)]
+  tuple order: reference examples=True; checked-in test_cases=[True, True, False]
+  numeric field: reference examples=True; checked-in test_cases=[True, True, True]
+  Differing test 3: args=[[('tanmay', 14), ('Amer', 11), ('Ayesha', 9), ('SKD', 16)], 1], expected=[('Ayesha', 9)], outputs={'tuple order': [('Amer', 11)], 'numeric field': [('Ayesha', 9)]}
+
+Mbpp/461 (data/mbpp/mbpp_larbi_contradictory.jsonl:461; separate source/example inconsistency)
+Decoded simulator reference:
+Write a python function to count the upper case characters in a given string.
+assert upper_ctr('PYthon') == 1
+  input='PYthon'; count of uppercase characters=2; checked-in expected=1
+  input='BigData'; count of uppercase characters=2; checked-in expected=1
+  input='program'; count of uppercase characters=0; checked-in expected=0
+
+Scope: examples alone do not distinguish these candidate interpretations.
+This does not establish that a simulator cannot infer the intended rule from conventions.

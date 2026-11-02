@@ -1,0 +1,402 @@
+{
+  "scope": "All raw rows in data/humaneval/*.jsonl and data/mbpp/*.jsonl; SDK split loader scope, including originals and every variant",
+  "schema_version": 1,
+  "root": "/Users/kwonhyukwon/developer/research-bera/ECC",
+  "preprocess_source": "clarify/data.py",
+  "preprocess_source_sha256": "1d64ee6af1842721db3e1a7fc33a76c91eb073b874934475c6e748cc22191926",
+  "runtime_source_sha256": "8f4029ffba4b611c2520f7d7b21af82105a3d1fb7da1f2d2b89b6c9befaae148",
+  "environment_source_sha256": "1cd0126345bd703392bab99b9bdc255a9071ae578b78739bf13816ae903d086e",
+  "generation_source_sha256": "93885748cf069c053334f2518c1218f289000eaa2e10e33f0b604936f1a1b2f2",
+  "preprocess_isolation": "deepcopy raw source rows and pristine official EvalPlus dictionaries per source file; exact SDK preprocessing function",
+  "offline": true,
+  "model_calls": 0,
+  "solution_or_test_execution": false,
+  "source_file_count": 21,
+  "raw_row_count": 8731,
+  "sdk_usable_row_count": 8731,
+  "sdk_excluded_row_count": 0,
+  "raw_rows_by_split": {
+    "train": 7961,
+    "val": 770
+  },
+  "sdk_usable_rows_by_split": {
+    "train": 7961,
+    "val": 770
+  },
+  "unique_task_ids": 1138,
+  "unique_task_ids_by_split": {
+    "train": 1048,
+    "val": 90
+  },
+  "split_task_id_intersection": [],
+  "split_task_id_disjoint": true,
+  "unused_split_task_ids": {
+    "train": [],
+    "val": []
+  },
+  "unique_task_and_exact_processed_prompt_pairs": 8705,
+  "unique_exact_processed_prompt_texts": 8608,
+  "same_task_exact_prompt_duplicate_groups": 26,
+  "same_task_exact_prompt_duplicate_excess_rows": 26,
+  "unique_task_and_prompt_pairs_by_split": {
+    "train": 7937,
+    "val": 768
+  },
+  "processed_prompt_changed_rows": 6796,
+  "effective_hidden_requirements_source_counts": {
+    "reference_prompt": 7396,
+    "clarifications_overlay": 770,
+    "absent_redacted": 565
+  },
+  "reference_prompt_absent_rows": 596,
+  "test_source_counts": {
+    "official_evalplus": 4559,
+    "raw_test_cases": 4172
+  },
+  "annotation_status_counts": {
+    "pending": 8731
+  },
+  "readme_claim": {
+    "train": 7961,
+    "val": 770,
+    "total": 8731
+  },
+  "readme_comparison": {
+    "raw_matches_train": true,
+    "raw_matches_val": true,
+    "usable_matches_train": true,
+    "usable_matches_val": true,
+    "interpretation": "README counts source-variant rows, not distinct task IDs or distinct task+prompt pairs. SDK preprocessing is applied independently to each source file."
+  },
+  "split_files": {
+    "train": {
+      "path": "data/splits/train.txt",
+      "sha256": "2bde75981354d38159b2b74fc66748a50c8758edca36c1c0753b01eb17cb2f78",
+      "task_ids": 1048
+    },
+    "val": {
+      "path": "data/splits/validation.txt",
+      "sha256": "858f4fb8450878eada158c79e978b0feaefe7ea252ebfc39c088d5ae5bf791bc",
+      "task_ids": 90
+    }
+  },
+  "files": [
+    {
+      "path": "data/humaneval/humaneval_akli_lexical_vagueness__lv.jsonl",
+      "sha256": "03444aa7f9542993c05124c827002fa3634c18de55b11ebed2b7268b5d34a93c",
+      "unique_task_ids": 163,
+      "raw_rows": 163,
+      "sdk_usable_rows": 163,
+      "raw_train_rows": 134,
+      "usable_train_rows": 134,
+      "raw_val_rows": 29,
+      "usable_val_rows": 29
+    },
+    {
+      "path": "data/humaneval/humaneval_akli_syntax_and_formatting_sf.jsonl",
+      "sha256": "c181683eed8625907d87d82bfe2642624f3056201c6c1bf631ea1bcaa8be6d09",
+      "unique_task_ids": 164,
+      "raw_rows": 164,
+      "sdk_usable_rows": 164,
+      "raw_train_rows": 134,
+      "usable_train_rows": 134,
+      "raw_val_rows": 30,
+      "usable_val_rows": 30
+    },
+    {
+      "path": "data/humaneval/humaneval_akli_under-specification_us.jsonl",
+      "sha256": "3b232fb2f86a3899eeb453d618750b100475ee1f1d747b39510808d0c76c2fdd",
+      "unique_task_ids": 160,
+      "raw_rows": 160,
+      "sdk_usable_rows": 160,
+      "raw_train_rows": 130,
+      "usable_train_rows": 130,
+      "raw_val_rows": 30,
+      "usable_val_rows": 30
+    },
+    {
+      "path": "data/humaneval/humaneval_larbi_ambiguous.jsonl",
+      "sha256": "b7509b3d6c409a7ffa13082ec90a8f178b1cb4aab68057cb4f117d42389c3e95",
+      "unique_task_ids": 163,
+      "raw_rows": 163,
+      "sdk_usable_rows": 163,
+      "raw_train_rows": 133,
+      "usable_train_rows": 133,
+      "raw_val_rows": 30,
+      "usable_val_rows": 30
+    },
+    {
+      "path": "data/humaneval/humaneval_larbi_contradictory.jsonl",
+      "sha256": "97c70315c75e0a669c285c3bf5ece10022834e29b0dc137c643a27af19b456af",
+      "unique_task_ids": 164,
+      "raw_rows": 164,
+      "sdk_usable_rows": 164,
+      "raw_train_rows": 134,
+      "usable_train_rows": 134,
+      "raw_val_rows": 30,
+      "usable_val_rows": 30
+    },
+    {
+      "path": "data/humaneval/humaneval_larbi_incomplete.jsonl",
+      "sha256": "47a43dd84c0a8fd91133b62ad8757f291053edaa2fc226c890e7c87097d8c61d",
+      "unique_task_ids": 164,
+      "raw_rows": 164,
+      "sdk_usable_rows": 164,
+      "raw_train_rows": 134,
+      "usable_train_rows": 134,
+      "raw_val_rows": 30,
+      "usable_val_rows": 30
+    },
+    {
+      "path": "data/humaneval/humaneval_original.jsonl",
+      "sha256": "a9d5e1c893dcdf18e13c97104315d61faab642f5cb691e7508680f3682790e2f",
+      "unique_task_ids": 164,
+      "raw_rows": 164,
+      "sdk_usable_rows": 164,
+      "raw_train_rows": 134,
+      "usable_train_rows": 134,
+      "raw_val_rows": 30,
+      "usable_val_rows": 30
+    },
+    {
+      "path": "data/humaneval/humaneval_wu_ambiguous.jsonl",
+      "sha256": "3818e2c99448dcb89780daa5d233c15f9b5c41a23eb50cb45f27494d99058ff4",
+      "unique_task_ids": 164,
+      "raw_rows": 164,
+      "sdk_usable_rows": 164,
+      "raw_train_rows": 134,
+      "usable_train_rows": 134,
+      "raw_val_rows": 30,
+      "usable_val_rows": 30
+    },
+    {
+      "path": "data/humaneval/humaneval_wu_ambiguous_and_contradictory.jsonl",
+      "sha256": "d98bbb60d77345a474ab2d1c76cacea92c51b5e3cc6820fc1176ee7074ba8188",
+      "unique_task_ids": 162,
+      "raw_rows": 162,
+      "sdk_usable_rows": 162,
+      "raw_train_rows": 132,
+      "usable_train_rows": 132,
+      "raw_val_rows": 30,
+      "usable_val_rows": 30
+    },
+    {
+      "path": "data/humaneval/humaneval_wu_ambiguous_and_incomplete.jsonl",
+      "sha256": "1381ccbd66a223fe8a28b8e8eee9b442e9a47c98a5d22e8927e1b93725c5386e",
+      "unique_task_ids": 71,
+      "raw_rows": 71,
+      "sdk_usable_rows": 71,
+      "raw_train_rows": 60,
+      "usable_train_rows": 60,
+      "raw_val_rows": 11,
+      "usable_val_rows": 11
+    },
+    {
+      "path": "data/humaneval/humaneval_wu_ambiguous_contradictory_and_incomplete.jsonl",
+      "sha256": "2eeb132b0baee54ac62f12d4bef6a6601ae7a07f6b3f963f5d6b51d4d23535de",
+      "unique_task_ids": 12,
+      "raw_rows": 12,
+      "sdk_usable_rows": 12,
+      "raw_val_rows": 2,
+      "usable_val_rows": 2,
+      "raw_train_rows": 10,
+      "usable_train_rows": 10
+    },
+    {
+      "path": "data/humaneval/humaneval_wu_contradictory.jsonl",
+      "sha256": "d8043348398557a1906f4b17a5396b029efb2400a07e12089214a675b05b5a35",
+      "unique_task_ids": 163,
+      "raw_rows": 163,
+      "sdk_usable_rows": 163,
+      "raw_train_rows": 133,
+      "usable_train_rows": 133,
+      "raw_val_rows": 30,
+      "usable_val_rows": 30
+    },
+    {
+      "path": "data/humaneval/humaneval_wu_contradictory_and_incomplete.jsonl",
+      "sha256": "2009c6d002a05e6a3ce895d27a41b3fa69c7b15e32978f5118680e7bc86fd267",
+      "unique_task_ids": 35,
+      "raw_rows": 35,
+      "sdk_usable_rows": 35,
+      "raw_val_rows": 8,
+      "usable_val_rows": 8,
+      "raw_train_rows": 27,
+      "usable_train_rows": 27
+    },
+    {
+      "path": "data/humaneval/humaneval_wu_incomplete.jsonl",
+      "sha256": "3cbc290edded40a19009da0d46577fbae514ccf77e306a9885102075bb11d159",
+      "unique_task_ids": 164,
+      "raw_rows": 164,
+      "sdk_usable_rows": 164,
+      "raw_train_rows": 134,
+      "usable_train_rows": 134,
+      "raw_val_rows": 30,
+      "usable_val_rows": 30
+    },
+    {
+      "path": "data/mbpp/mbpp_akli_lexical_vagueness__lv.jsonl",
+      "sha256": "2cc1afda88341a9fc71cc63f12561450b6ca349afb54cc7209f674df1e39fa08",
+      "unique_task_ids": 974,
+      "raw_rows": 974,
+      "sdk_usable_rows": 974,
+      "raw_train_rows": 914,
+      "usable_train_rows": 914,
+      "raw_val_rows": 60,
+      "usable_val_rows": 60
+    },
+    {
+      "path": "data/mbpp/mbpp_akli_syntax_and_formatting_sf.jsonl",
+      "sha256": "27a7cac2be792eb45f08cbaf67c50109d25b7a940ec0ddc8023268c848e954ac",
+      "unique_task_ids": 974,
+      "raw_rows": 974,
+      "sdk_usable_rows": 974,
+      "raw_train_rows": 914,
+      "usable_train_rows": 914,
+      "raw_val_rows": 60,
+      "usable_val_rows": 60
+    },
+    {
+      "path": "data/mbpp/mbpp_akli_under-specification_us.jsonl",
+      "sha256": "5d2c9e7d73c7cc95900fe773c4b34792b1dfeda3c9c06129fb7d90f63f25a42c",
+      "unique_task_ids": 974,
+      "raw_rows": 974,
+      "sdk_usable_rows": 974,
+      "raw_train_rows": 914,
+      "usable_train_rows": 914,
+      "raw_val_rows": 60,
+      "usable_val_rows": 60
+    },
+    {
+      "path": "data/mbpp/mbpp_larbi_ambiguous.jsonl",
+      "sha256": "fa82f2c05ca4ee21d2ae994d593cbd8732c10d7477c34d56be47f7e2a578438f",
+      "unique_task_ids": 974,
+      "raw_rows": 974,
+      "sdk_usable_rows": 974,
+      "raw_train_rows": 914,
+      "usable_train_rows": 914,
+      "raw_val_rows": 60,
+      "usable_val_rows": 60
+    },
+    {
+      "path": "data/mbpp/mbpp_larbi_contradictory.jsonl",
+      "sha256": "bd907733168d7f13696870997aa0240065231e0e22af47908b5c3cc90e784227",
+      "unique_task_ids": 974,
+      "raw_rows": 974,
+      "sdk_usable_rows": 974,
+      "raw_train_rows": 914,
+      "usable_train_rows": 914,
+      "raw_val_rows": 60,
+      "usable_val_rows": 60
+    },
+    {
+      "path": "data/mbpp/mbpp_larbi_incomplete.jsonl",
+      "sha256": "b89d55524bac328bb1067f2a596e741d2130f9a800a4fe1d163e6606b909903d",
+      "unique_task_ids": 974,
+      "raw_rows": 974,
+      "sdk_usable_rows": 974,
+      "raw_train_rows": 914,
+      "usable_train_rows": 914,
+      "raw_val_rows": 60,
+      "usable_val_rows": 60
+    },
+    {
+      "path": "data/mbpp/mbpp_original.jsonl",
+      "sha256": "011a5f9e48eb87b3af70ce77521fc0a2cb46ef94315911e5ef2a9ce8703603b8",
+      "unique_task_ids": 974,
+      "raw_rows": 974,
+      "sdk_usable_rows": 974,
+      "raw_train_rows": 914,
+      "usable_train_rows": 914,
+      "raw_val_rows": 60,
+      "usable_val_rows": 60
+    }
+  ],
+  "evalplus": {
+    "package_path": "/Users/kwonhyukwon/developer/research-bera/ECC/.venv/lib/python3.13/site-packages/evalplus/__init__.py",
+    "caches": {
+      "HumanEval": {
+        "path": "/Users/kwonhyukwon/Library/Caches/evalplus/HumanEvalPlus-v0.1.10.jsonl",
+        "version": "v0.1.10",
+        "sha256": "42526ec0e7d5f3ee0b06d6ced98f8c8bae3d76519151bfb3d36f79010645bd7f",
+        "rows": 164
+      },
+      "Mbpp": {
+        "path": "/Users/kwonhyukwon/Library/Caches/evalplus/MbppPlus-v0.2.0.jsonl",
+        "version": "v0.2.0",
+        "sha256": "b54e762755248ca411b523c917fa9f93c07b5ff2966bf60b3917b853926a3dad",
+        "rows": 378
+      }
+    }
+  },
+  "clarifications_overlay": {
+    "path": "data/clarifications.jsonl",
+    "sha256": "da8e1cdec62cb313e74b65e32483a0af52af178ac946446eb99a7bac0172a288",
+    "raw_rows": 770,
+    "unique_exact_keys": 768,
+    "duplicate_keys": [
+      {
+        "task_id": "Mbpp/850",
+        "prompt_sha256": "1f9762ab3771570b46747158126cca0e01dc8d73f24d6f665a9e6a39fdc87970",
+        "entries": [
+          {
+            "line": 402,
+            "clarifications": [
+              "What is the exact function name that the test cases expect to call - should it be `is_triangle_exists` or `is_triangleexists` (without the underscore)?",
+              "Use `is_triangleexists` — without the underscore."
+            ]
+          },
+          {
+            "line": 582,
+            "clarifications": []
+          }
+        ],
+        "effective_line": 582,
+        "exact_payloads_differ": true
+      },
+      {
+        "task_id": "Mbpp/876",
+        "prompt_sha256": "da66d8eb9ddb1ff3299a5c7bd1e5bbb0b6e3d6574e97983ffda4e6612aa07c2a",
+        "entries": [
+          {
+            "line": 405,
+            "clarifications": [
+              "Should the solution avoid reading from standard input and instead just define the LCM function for the grader to call directly?",
+              "Yes — just define the `lcm(x, y)` function for the grader to call directly, and do not read from standard input."
+            ]
+          },
+          {
+            "line": 585,
+            "clarifications": [
+              "Should the function read the two integers from standard input, or should it only define and return the LCM as a function?",
+              "It should only define a function that takes two integers as arguments and returns their LCM; it should not read from standard input."
+            ]
+          }
+        ],
+        "effective_line": 585,
+        "exact_payloads_differ": true
+      }
+    ],
+    "matching_usable_source_rows": 770,
+    "semantics": "last identical (task_id, prompt) key wins; exact match against SDK-processed prompt, as in generate_responses.py"
+  },
+  "index": {
+    "path": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/single-question-audit-20261030/corpus-index.jsonl",
+    "sha256": "8dbcafa4009cc2c3468eca45a0de59bef4e7ce8c217ef0d6cf4692ccf129ada8",
+    "rows": 8731,
+    "row_key": "source_file :: task_id :: SHA256(exact SDK-processed prompt)",
+    "no_omission_check": true
+  },
+  "limits": [
+    "Inventory only: all individual single-question semantic annotations remain pending.",
+    "Test/canonical snippets are context, not executed proof that a question is necessary or sufficient.",
+    "EvalPlus cached canonical prompt/solution and inputs define official task tests; raw variant test_cases may differ.",
+    "An absent reference_prompt means the simulator falls back to [REDACTED] unless exact clarifications overlay matches.",
+    "Source-variant identity is retained even when its exact prompt is duplicated in another file."
+  ],
+  "special_oracle_row_counts": {
+    "output_set_eq": 49,
+    "output_not_none": 21
+  }
+}

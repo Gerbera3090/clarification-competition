@@ -41,6 +41,10 @@ class LanguageModel:
         self._total_tokens_out: int = 0
         self._cost_lock = threading.Lock()
 
+        # Disable Ollama thinking by default for code generation and clarification.
+        if model.startswith(("ollama/", "ollama_chat/")):
+            kwargs.setdefault("reasoning_effort", "none")
+
         self.completion_kwargs: dict[str, Any] = {
             **({"temperature": temperature} if temperature is not None else {}),
             **({"max_tokens": max_tokens} if max_tokens is not None else {}),

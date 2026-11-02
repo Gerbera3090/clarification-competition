@@ -1,0 +1,52 @@
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/ee43ecabebf20deef4bb776a405ac5b1.pkl
+Loaded 770 instances...
+Loaded 1 result instances...
+  0%|          | 0/770 [00:00<?, ?it/s]2a8bc739ab23137669a3664e9fcbecb4b62f425de4c37a051c382fb390f92235
+pytester_61ca13ea-b71a-4d3b-a50b-e139e1ae3d24
+╭───────────────────────── ❌ Failure (HumanEval/161) ─────────────────────────╮
+│ ```python                                                                    │
+│ def solve():                                                                 │
+│     s = input()                                                              │
+│     if any(c.isalpha() for c in s):                                          │
+│         # toggle case for each letter                                        │
+│         result = ''.join(c.swapcase() if c.isalpha() else c for c in s)      │
+│     else:                                                                    │
+│         # no letters: reverse the string                                     │
+│         result = s[::-1]                                                     │
+│     print(result)                                                            │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 38, in <module>                           │
+│     assertion(solve(*inp), exp, 0, inp)                                      │
+│               ^^^^^^^^^^^                                                    │
+│ TypeError: solve() takes 0 positional arguments but 1 was given              │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 0.00:   0%|          | 0/770 [00:03<?, ?it/s]Pass@1: 0.00:   0%|          | 1/770 [00:03<41:48,  3.26s/it]Pass@1: 0.00:   0%|          | 1/770 [00:03<41:48,  3.26s/it]
+                          Test Results (PBTClarifier1)                          
+┏━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Task ID    ┃ Status ┃ Clarify? ┃ Output                                      ┃
+┡━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ HumanEval… │   ❌   │    ☠️    │ The provided implementation failed. Outp... │
+└────────────┴────────┴──────────┴─────────────────────────────────────────────┘
+              Run Statistics              
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Metric                       ┃ Results ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━┩
+│ Total                        │ 1       │
+│ Turn Discounted Success      │ 0.0000  │
+│ nDCG                         │ 0.0000  │
+│ Pass@1                       │ 0.00    │
+│ Clarification rate           │ 100.00% │
+│ Overasking rate              │ 0.00%   │
+│ High quality clarification   │ 0.00%   │
+│ Average clarification length │ 200.00  │
+└──────────────────────────────┴─────────┘
+real 11.75
+user 5.90
+sys 2.00

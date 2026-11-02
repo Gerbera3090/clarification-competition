@@ -58,13 +58,23 @@ def init_evalplus_evaluator(dataset, train=False):
 
     _check_consistency(dataset, missing_entries)
     final_dataset.update(missing_entries)
-    return EvalPlusEvaluator(final_dataset, ground_truth)
+    # Keep EvalPlus inputs, expected outputs and oracle selection authoritative,
+    # but call the entry point that was actually provided to the algorithm.
+    # MBPP names can differ in capitalization between the two datasets.
+    entry_points = {}
+    for example in dataset:
+        task_id, entry_point = example["task_id"], example["entry_point"]
+        if task_id in entry_points and entry_points[task_id] != entry_point:
+            raise ValueError(f"Problem {task_id} has conflicting entry points in the dataset.")
+        entry_points[task_id] = entry_point
+    return EvalPlusEvaluator(final_dataset, ground_truth, entry_points=entry_points)
 
 
 class EvalPlusEvaluator:
-    def __init__(self, problems, ground_truth):
+    def __init__(self, problems, ground_truth, entry_points=None):
         self.problems = problems
         self.ground_truth = ground_truth
+        self.entry_points = dict(entry_points or {})
 
     def partial(self, example):
         task_id = example["task_id"]
@@ -82,7 +92,9 @@ class EvalPlusEvaluator:
             else:
                 raise ValueError(f"Problem {task_id} does not have a ground truth.") from e
 
-        return EvalPlusDockerInstanceEvaluator(problem, gt)
+        return EvalPlusDockerInstanceEvaluator(
+            problem, gt, entry_point=self.entry_points.get(task_id)
+        )
 
     def evaluate(self, example, response):
         return self.partial(example).evaluate(example, response)
@@ -122,9 +134,10 @@ print("PASSED TESTS")
 
 
 class EvalPlusDockerInstanceEvaluator:
-    def __init__(self, problem, ground_truth):
+    def __init__(self, problem, ground_truth, entry_point=None):
         self.problem = problem
         self.ground_truth = ground_truth
+        self.entry_point = problem["entry_point"] if entry_point is None else entry_point
 
     def _oracle(self):
         entry_point = self.problem["entry_point"]
@@ -149,7 +162,7 @@ class EvalPlusDockerInstanceEvaluator:
             results = self.ground_truth["base"] + list(self.ground_truth["plus"])
 
             for key, value in [
-                ("entry_point", self.problem["entry_point"]),
+                ("entry_point", self.entry_point),
                 ("inputs", inputs),
                 ("results", results),
                 ("atol", self.problem.get("atol", "0")),

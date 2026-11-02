@@ -1,0 +1,99 @@
+{
+  "task_id": "HumanEval/42",
+  "public_prompt": "\n\ndef incr_list(l: list):\n    \"\"\"Return list with elements incremented by 1.\n    >>> incr_list([1, 2, 3])\n    [2, 3, 4]\n    >>> incr_list([5, 3, 5, 2, 3, 3, 9, 0, 123])\n    [6, 4, 6, 3, 4, 4, 10, 1, 124]\n    \"\"\"\n",
+  "reference_prompt": "\n\ndef incr_list(l: list):\n    \"\"\"Return list with elements incremented by 1.\n    >>> incr_list([1, 2, 3])\n    [2, 3, 4]\n    >>> incr_list([5, 3, 5, 2, 3, 3, 9, 0, 123])\n    [6, 4, 6, 3, 4, 4, 10, 1, 124]\n    \"\"\"\n",
+  "canonical_solution": "\n    return [x + 1 for x in l]\n\n",
+  "contract": "\n    assert type(l) == list, \"invalid inputs\" # $_CONTRACT_$\n",
+  "dataset_source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/batches/humaneval-02.jsonl",
+  "dataset_line": 6,
+  "dataset_sha256": "a25370a9ad79042ef83f3c0af3e3d632cf5094f404dd721c2676e1d316b21f29",
+  "base_input_count": 3,
+  "plus_input_count": 999,
+  "example_conflicting_plus_input_index_0": 3,
+  "example_input_args": [
+    [
+      2.5,
+      3.7,
+      8.9,
+      1.2,
+      0.5
+    ]
+  ],
+  "runs": [
+    {
+      "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/PBT2-20261030/results.jsonl",
+      "line": 26,
+      "sha256": "77437c1c83d97185744a046f6865eabdcfe22a260891f0ef0dae3816e182541b",
+      "task_id": "HumanEval/42",
+      "prompt": "\n\ndef incr_list(l: list):\n    \"\"\"Return list with elements incremented by 1.\n    >>> incr_list([1, 2, 3])\n    [2, 3, 4]\n    >>> incr_list([5, 3, 5, 2, 3, 3, 9, 0, 123])\n    [6, 4, 6, 3, 4, 4, 10, 1, 124]\n    \"\"\"\n",
+      "algorithm": "PBTClarifier2",
+      "model": "openai/gpt-4.1-mini",
+      "algorithm_path": ".local/train100-v1/algorithms/pbt_clarifier2.py",
+      "prompt_result": "\ndef incr_list(l: list):\n    \"\"\"Return list with elements incremented by 1.\n    >>> incr_list([1, 2, 3])\n    [2, 3, 4]\n    >>> incr_list([5, 3, 5, 2, 3, 3, 9, 0, 123])\n    [6, 4, 6, 3, 4, 4, 10, 1, 124]\n    \"\"\"\n    if not all(isinstance(x, int) for x in l):\n        raise TypeError(\"All elements must be integers\")\n    return [x + 1 for x in l]\n",
+      "need_clarification": true,
+      "clarification_history": [
+        [
+          "Should incr_list raise an error, ignore, or handle differently when the input list contains non-integer elements or invalid types?",
+          "non-integer-handling",
+          "3",
+          "The function should raise a TypeError if any element in the input list is not an integer."
+        ]
+      ],
+      "prompt_cost": 0.0043748,
+      "clarification_cost": 0.00045999999999999996,
+      "success": false,
+      "test_result": "The provided implementation failed. Output:\n```Exception:\nTraceback (most recent call last):\n  File \"/app/temp_script.py\", line 39, in <module>\n    assertion(incr_list(*inp), exp, 0, inp)\n              ^^^^^^^^^^^^^^^\n  File \"/app/temp_script.py\", line 10, in incr_list\n    raise TypeError(\"All elements must be integers\")\nTypeError: All elements must be integers\n```",
+      "local_replay": {
+        "base_input": {
+          "passed": 3,
+          "failed": 0
+        },
+        "plus_input": {
+          "passed": 891,
+          "failed": 108
+        }
+      }
+    },
+    {
+      "source": "/Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/regraded-entry-fix-20261030/CounterThenPBT-20261030/results.jsonl",
+      "line": 16,
+      "sha256": "14cd9dd5f60957bbe6e441a8d98636e4029cd5b1fc655d62d908c6ef6aa494d5",
+      "task_id": "HumanEval/42",
+      "prompt": "\n\ndef incr_list(l: list):\n    \"\"\"Return list with elements incremented by 1.\n    >>> incr_list([1, 2, 3])\n    [2, 3, 4]\n    >>> incr_list([5, 3, 5, 2, 3, 3, 9, 0, 123])\n    [6, 4, 6, 3, 4, 4, 10, 1, 124]\n    \"\"\"\n",
+      "algorithm": "PBTClarifier3",
+      "model": "openai/gpt-4.1-mini",
+      "algorithm_path": ".local/train100-v1/algorithms/pbt_clarifier3.py",
+      "prompt_result": "\ndef incr_list(l: list):\n    \"\"\"Return list with elements incremented by 1.\n    >>> incr_list([1, 2, 3])\n    [2, 3, 4]\n    >>> incr_list([5, 3, 5, 2, 3, 3, 9, 0, 123])\n    [6, 4, 6, 3, 4, 4, 10, 1, 124]\n    \"\"\"\n    if not isinstance(l, list):\n        raise TypeError(\"Input must be a list\")\n    for i, el in enumerate(l):\n        if not isinstance(el, int):\n            raise TypeError(f\"Element at index {i} is not an integer\")\n    return [el + 1 for el in l]\n",
+      "need_clarification": true,
+      "clarification_history": [
+        [
+          "Should the function incr_list raise an error, ignore, or handle gracefully inputs that are not lists or contain non-integer elements?",
+          "input-validation",
+          "3",
+          "The function incr_list should raise an error if the input is not a list or if the list contains non-integer elements."
+        ]
+      ],
+      "prompt_cost": 0.0030911999999999997,
+      "clarification_cost": 0.0004636,
+      "success": false,
+      "test_result": "The provided implementation failed. Output:\n```Exception:\nTraceback (most recent call last):\n  File \"/app/temp_script.py\", line 42, in <module>\n    assertion(incr_list(*inp), exp, 0, inp)\n              ^^^^^^^^^^^^^^^\n  File \"/app/temp_script.py\", line 13, in incr_list\n    raise TypeError(f\"Element at index {i} is not an integer\")\nTypeError: Element at index 0 is not an integer\n```",
+      "local_replay": {
+        "base_input": {
+          "passed": 3,
+          "failed": 0
+        },
+        "plus_input": {
+          "passed": 891,
+          "failed": 108
+        }
+      }
+    }
+  ],
+  "expected_canonical": [
+    3.5,
+    4.7,
+    9.9,
+    2.2,
+    1.5
+  ]
+}

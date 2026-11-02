@@ -1,0 +1,102 @@
+Verified upstream basis
+=======================
+Repository: https://github.com/serval-uni-lu/clarification-competition
+Local HEAD: be108fb8ef4b87ede7b9f8edd1bd3c2166169e29
+Unmodified tracked evidence paths: clarify/env.py, clarify/data.py,
+generate_responses.py, data/mbpp/mbpp_larbi_contradictory.jsonl,
+data/clarifications.jsonl, data/splits/train.txt.
+
+The working tree has modifications in clarify/llm.py and clarify/runtime.py.
+No language model was called. No constructor of _ClarificationEnvironment was
+called. Runtime inspection below uses the checked-in runtime from git show HEAD.
+Its current local entry-point patch is unrelated to the human prompt construction.
+
+Exact human context
+===================
+clarify/env.py:156-172 selects clarifications when that key exists, otherwise
+reference_prompt; it formats only public prompt and requirements into the human
+system prompt. canonical_solution, test_cases, base_input and plus_input are not
+formatted into this prompt.
+
+clarify/data.py:76-88 decodes raw references before merging the task over the
+EvalPlus object. Therefore a variant's decoded reference_prompt replaces the
+default EvalPlus prompt, including for Mbpp/753 which is present in EvalPlus.
+Decoding logic: clarify/data.py:160-172.
+
+generate_responses.py:278-291 applies data/clarifications.jsonl by exact
+(task_id, processed prompt) key, without a split-specific condition. All three
+tasks checked here are in train and have no entry at all in that overlay file.
+Consequently each uses the decoded reference in the standard generation path.
+
+Executed with installed EvalPlus 0.3.1, MBPP dataset hash
+ee43ecabebf20deef4bb776a405ac5b1:
+
+Mbpp/461 decoded ref == preprocess_benchmark reference_prompt == actual
+_build_human_system_prompt Hidden Requirements: True; no clarifications;
+not in EvalPlus; no canonical_solution.
+Mbpp/627: same equality True; no clarifications; not in EvalPlus;
+no canonical_solution.
+Mbpp/753: same equality True; no clarifications; present in EvalPlus;
+canonical_solution uses sorted(test_list, key=lambda x: x[1])[:K].
+
+For /461 and /627, checked-in runtime.py:52-61 brings missing examples into the
+evaluation dataset; runtime.py:77-85 falls back to the raw test_cases string;
+runtime.py:159-161 uses that string as the executable assertion trigger.
+For /753, runtime.py:41-44 obtains EvalPlus ground truth. Both raw test_cases and
+the locally installed EvalPlus canonical solution agree on numeric field order.
+The stdlib reproduction checks raw checked-in tests, not a Docker evaluator run.
+
+Strong examples
+===============
+Mbpp/753, data/mbpp/mbpp_larbi_contradictory.jsonl:753:
+Decoded reference gives one example. Both normal Python tuple ordering and
+ordering by the numeric second field produce exactly that example's expected
+output. Both also pass the second checked-in assertion. For the third assertion,
+normal tuple order selects ('Amer', 11), while the expected result is
+('Ayesha', 9), consistent with ordering by the numeric second field.
+The reference does not explicitly identify which tuple field defines minimum.
+This is the stronger example of a residual specification choice.
+
+Mbpp/627, same file:627:
+The decoded reference has [0,1,2,3] -> 4. Searching for the first missing
+nonnegative integer and searching for the first missing positive integer both
+produce 4. Both also match the second checked-in assertion. For [2,3,5,8,9],
+the former gives 0 and the latter 1; the checked-in assertion expects 0.
+Caveat: a simulator could reasonably infer nonnegative semantics from the
+zero-containing example or known problem convention. This example establishes
+that the example does not distinguish the domains, not that no inference is
+possible. The arguments (array, 0, end) may themselves provide a convention cue.
+
+Mbpp/461, same file:461 (separate issue/category):
+The decoded reference says to count uppercase characters, but its own example
+upper_ctr('PYthon') == 1 disagrees with the conventional uppercase count 2.
+The checked-in tests also expect upper_ctr('BigData') == 1 (conventional count 2).
+This is source/example inconsistency, not simply a missing simulator fact.
+Giving all tests to the simulator would not itself explain the intended rule.
+
+Claims to avoid
+===============
+- Do not say test invisibility is intrinsically a bug. Hidden tests may properly
+  stay hidden; a complete authoritative behavioral specification can suffice.
+- Do not claim impossibility of passing or inability of the model to answer.
+- Do not claim measured simulator failure: this investigation calls no models.
+- Do not generalize from these cases to all tasks or validation/test behavior.
+- Do not equate raw checked-in test_cases with every EvalPlus plus test.
+- Do not put uppercase mismatch461 in the same causal category as missing key753.
+
+Upstream permalinks
+===================
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/clarify/env.py#L156-L172
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/clarify/env.py#L47-L73
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/clarify/data.py#L76-L88
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/clarify/data.py#L160-L172
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/generate_responses.py#L278-L291
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/data/mbpp/mbpp_larbi_contradictory.jsonl#L753
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/data/mbpp/mbpp_larbi_contradictory.jsonl#L627
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/data/mbpp/mbpp_larbi_contradictory.jsonl#L461
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/data/splits/train.txt#L839
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/data/splits/train.txt#L722
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/data/splits/train.txt#L562
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/clarify/runtime.py#L41-L61
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/clarify/runtime.py#L77-L85
+https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/clarify/runtime.py#L159-L161

@@ -1,0 +1,75 @@
+Simulated-user references can leave evaluator-required semantics unspecified (MBPP 753/627)
+
+Hi organizers, and thanks for organizing the challenge.
+
+I found two released training examples where the privileged reference supplied to the simulated user does not distinguish semantic choices that evaluation later distinguishes. Could you clarify whether this is intended, or whether these references should be expanded?
+
+Current context
+
+In [`_build_human_system_prompt`](https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/clarify/env.py#L156-L172), the simulated user receives `clarifications` when present, otherwise `reference_prompt`. For the two variants below, the released clarification overlay does not contain a matching entry, so the decoded reference is the effective hidden-requirements context.
+
+These observations were made at commit `be108fb8ef4b87ede7b9f8edd1bd3c2166169e29`. I also checked that the relevant `clarify/env.py` and variant-data blobs are unchanged on `main` when preparing this report.
+
+Example 1: MBPP/753 — which tuple field defines the minimum?
+
+The [variant record](https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/data/mbpp/mbpp_larbi_contradictory.jsonl#L753) decodes to this reference:
+
+Write a function to find minimum k records from tuple list.
+assert min_k([('Manjeet', 10), ('Akshat', 4), ('Akash', 2), ('Nikhil', 8)], 2) == [('Akash', 2), ('Akshat', 4)]
+
+Both of these interpretations satisfy that reference example:
+
+sorted(records)[:k]                         # ordinary tuple ordering
+sorted(records, key=lambda r: r[1])[:k]     # second numeric field
+
+They also agree on the second checked-in assertion. On the third assertion, `records=[('tanmay',14), ('Amer',11), ('Ayesha',9), ('SKD',16)]`, `k=1`, tuple ordering selects `('Amer',11)`, while numeric-field ordering selects `('Ayesha',9)`. The checked-in assertion and EvalPlus reference implementation require the latter.
+
+An atomic question such as “Which tuple field should determine the ranking?” addresses this choice, but the supplied reference does not explicitly identify the field, and its example is non-discriminating.
+
+Example 2: MBPP/627 — does the missing-number domain include zero?
+
+The [reference](https://github.com/serval-uni-lu/clarification-competition/blob/be108fb8ef4b87ede7b9f8edd1bd3c2166169e29/data/mbpp/mbpp_larbi_contradictory.jsonl#L627) says “find the smallest missing number” and gives only:
+
+assert find_First_Missing([0,1,2,3],0,3) == 4
+
+Searching for the smallest missing nonnegative integer and the smallest missing positive integer both return `4`. Evaluation additionally requires `find_First_Missing([2,3,5,8,9],0,4) == 0`, which distinguishes these choices. The reference does not state the candidate domain.
+
+Why this matters
+
+The intended ambiguity in the assistant-facing prompt can be resolved only if the simulated user has sufficiently specified intent. Otherwise, an answer may depend on the model's conventions rather than an identified requirement, potentially confounding clarification quality and end-to-end success.
+
+This is a deterministic reference-coverage observation. I have not established that a particular simulated-user model must fail, that no successful question exists, or how much this affects aggregate scores. A model may infer the intended convention.
+
+Suggested clarification or improvement
+
+1. Does the official evaluation provide an additional authoritative specification beyond this context?
+2. If not, could the simulator-only reference explicitly state behavioral facts such as “rank by the second tuple element” and “search over nonnegative integers including zero”?
+3. Could reference coverage and reference/example/evaluator consistency be checked when preparing the benchmark, with unresolved cases corrected or marked separately?
+
+The assistant-facing interface and hidden evaluation tests can stay unchanged. A complete behavioral reference for the simulated user would let clarification recover intent without requiring direct access to test cases or reference code.
+
+Reproduction
+
+This uses only the standard library, from the repository root; no model calls or Docker are needed:
+
+import base64, json, zlib
+from pathlib import Path
+
+path = Path("data/mbpp/mbpp_larbi_contradictory.jsonl")
+rows = {r["task_id"]: r for r in map(json.loads, path.read_text().splitlines())}
+for task in ("Mbpp/753", "Mbpp/627"):
+    ref = rows[task]["reference_prompt"]
+    print(task, zlib.decompress(base64.b64decode(ref[4:])).decode())
+
+reference_records = [('Manjeet',10), ('Akshat',4), ('Akash',2), ('Nikhil',8)]
+assert sorted(reference_records)[:2] == sorted(reference_records, key=lambda r:r[1])[:2]
+check_records = [('tanmay',14), ('Amer',11), ('Ayesha',9), ('SKD',16)]
+print(sorted(check_records)[:1])                         # [('Amer', 11)]
+print(sorted(check_records, key=lambda r:r[1])[:1])     # [('Ayesha', 9)]
+
+def missing(values, start):
+    while start in values:
+        start += 1
+    return start
+assert missing([0,1,2,3], 0) == missing([0,1,2,3], 1) == 4
+print(missing([2,3,5,8,9], 0), missing([2,3,5,8,9], 1))  # 0 1

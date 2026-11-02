@@ -1,0 +1,96 @@
+{
+  "checked_date": "2026-11-01",
+  "repository": "serval-uni-lu/clarification-competition",
+  "issues": [
+    {
+      "number": 5,
+      "title": "can_ask() is dead (always raises)",
+      "state": "closed",
+      "labels": [],
+      "url": "https://github.com/serval-uni-lu/clarification-competition/issues/5",
+      "comments": [
+        {
+          "url": "https://github.com/serval-uni-lu/clarification-competition/issues/5#issuecomment-5703058104",
+          "body": "Thanks, fixed by `c930f05`"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "title": "Val split unevaluable - 217/770 instances",
+      "state": "closed",
+      "labels": [],
+      "url": "https://github.com/serval-uni-lu/clarification-competition/issues/6",
+      "comments": [
+        {
+          "url": "https://github.com/serval-uni-lu/clarification-competition/issues/6#issuecomment-5703463049",
+          "body": "Should be fixed now. Need to write some automatic test to catch these bugs in the future.\n\nMBPP+ has now authority, but it does not provide reference for all MBPP tasks.\nWe now fallback to the default tests when no reference is available."
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "title": "`entry_point` disagrees between variant files and evalplus for 3 tasks",
+      "state": "open",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/serval-uni-lu/clarification-competition/issues/7",
+      "comments": [
+        {
+          "url": "https://github.com/serval-uni-lu/clarification-competition/issues/7#issuecomment-5703628416",
+          "body": "Unfortunately, this is common problem with MBPP. I manually fixed the dataset instances mentioned here, but leave further open for now. "
+        }
+      ]
+    },
+    {
+      "number": 28,
+      "title": "Clarification: auxiliary decision models via the environment and local CPU inference",
+      "state": "closed",
+      "labels": [],
+      "url": "https://github.com/serval-uni-lu/clarification-competition/issues/28",
+      "comments": []
+    },
+    {
+      "number": 29,
+      "title": "Questions about updating LiteLLM and submitting local model weights",
+      "state": "closed",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/serval-uni-lu/clarification-competition/issues/29",
+      "comments": [
+        {
+          "url": "https://github.com/serval-uni-lu/clarification-competition/issues/29#issuecomment-6078392783",
+          "body": "Hello! Thanks for your inquiry.\n\n1. I think it is no problem to update the liteLLM version. We plan to update the `ClarificationEnvironment` to give access to the new features of liteLLM. For API models, we would prefer if participants use the environment to access the API instead of their own API handler. \n2. Thanks for the question. Local models are technically not allowed, because they require a change that is larger than the code submission. However, we open for the submission to include code to load a model from Huggingface (or other reputable source) in a secure format (e.g. `safetensors`).\n\nAt the moment, we cannot make any concrete promises on the execution environment. We try to ensure at least 4 cores, 16GB RAM per run. We might be able to access GPUs (but please request it specifically in your submission).\n\n**Testing process:** For fair evaluation, we run all submissions in a comparable environment (GPU on request). Any runs that exceed resource limitations in terms of memory or runtime will however be counted as failures and reduce the final score.\n"
+        },
+        {
+          "url": "https://github.com/serval-uni-lu/clarification-competition/issues/29#issuecomment-6080677467",
+          "body": "PR #37 addresses your first question. Please let us know if you are fine with the addition. Also, please let us know whether we could address your second question."
+        },
+        {
+          "url": "https://github.com/serval-uni-lu/clarification-competition/issues/29#issuecomment-6084156774",
+          "body": "Thank you for the quick response and for putting together PR #37! The LiteLLM update and the new environment interface address what I was asking for.\n\nYour explanation regarding local model loading also clarifies my second question. If we decide to use this option, we will describe the model source, loading format, and resource requirements in our submission, including any GPU request.\n\nThanks again for your support!\n"
+        }
+      ]
+    },
+    {
+      "number": 46,
+      "title": "Are call adapters (tolerating extra or missing arguments) allowed in the returned code?",
+      "state": "open",
+      "labels": [
+        "question"
+      ],
+      "url": "https://github.com/serval-uni-lu/clarification-competition/issues/46",
+      "comments": [
+        {
+          "url": "https://github.com/serval-uni-lu/clarification-competition/issues/46#issuecomment-6440567735",
+          "body": "Thank you for the question.\n\nI don’t see this approach as directly conflicting with the rules, nor do I see a compelling reason to disallow it. Wrappers that target the test oracle directly are forbidden.\n\nIn practice, however, I would prefer asking a clarifying question over resorting to a hacky workaround. Therefore, my position would be that this approach is discouraged but allowed."
+        }
+      ]
+    }
+  ],
+  "recommended_mode": "Policy clarification with a reproducible observed example; retain reference coverage as a distinct secondary example",
+  "main_question": "What behavior is expected when a simulator answer conflicts with evaluation?",
+  "quality_caveat": "Recorded QUALITY=3 judges the question; it does not independently certify the answer's truth."
+}

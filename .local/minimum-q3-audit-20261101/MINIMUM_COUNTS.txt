@@ -1,0 +1,122 @@
+ECC 100제 최소 Q3 질문 수 판단 기준
+
+0개: 66문제
+1개: 24문제
+2개: 4문제
+3개 이상: 0문제
+현재 근거로 유한 최소값 미확정: 6문제
+
+유한값을 판단한 94문제의 필요한 질문 합계: 32개.
+이전 정적 감사의 하한에서 숫자 또는 미확정 상태가 달라진 문제: 35개.
+
+공개 문제와 예시·수학·Python 관례 및 답변 후의 추론을 최대한 사용하고도 남는, 정확히 한 사실을 묻는 Q3 적격 질문 수의 고성능 모델 판단값.
+현재 참조·평가 근거로 합법적인 Q3 경로의 유한 최소값을 확정하지 못함. 0이나 수학적 무한대가 아님.
+실제 simulator의 QUALITY를 측정한 값이 아니라 다섯 기준에 대한 모델 판단이다.
+최소값은 강한 추론 정책과 명시한 관례에 조건부이며 수학적 최소값 증명이 아니다.
+0은 정보 확인이 필요 없다는 판단이고 모델이 반드시 올바른 코드를 생성한다는 뜻은 아니다.
+null 사례를 제외한 질문 수 합계에 임의의 대체값을 더하지 않는다.
+이전 감사의 질문 후보 수/하한과 목적이 달라졌다. 차이는 행별 설명에 기록했다.
+
+문제별 최소값 요약
+번호 | 문제 | 최소 Q3 | 확신 | 현재 상태
+001 | HumanEval/157 | 0 | high | 최소값 추정 가능
+002 | HumanEval/43 | 0 | medium | 최소값 추정 가능
+003 | HumanEval/67 | 0 | high | 최소값 추정 가능
+004 | HumanEval/106 | 0 | high | 최소값 추정 가능
+005 | HumanEval/21 | 0 | high | 최소값 추정 가능
+006 | HumanEval/24 | 0 | high | 최소값 추정 가능
+007 | HumanEval/13 | 0 | high | 최소값 추정 가능
+008 | HumanEval/143 | 0 | high | 최소값 추정 가능
+009 | HumanEval/136 | 0 | high | 최소값 추정 가능
+010 | HumanEval/153 | 0 | high | 최소값 추정 가능
+011 | HumanEval/116 | 0 | medium | 최소값 추정 가능
+012 | HumanEval/42 | 0 | high | 최소값 추정 가능
+013 | HumanEval/89 | 0 | high | 최소값 추정 가능
+014 | HumanEval/119 | 0 | high | 최소값 추정 가능
+015 | HumanEval/107 | 0 | high | 최소값 추정 가능
+016 | HumanEval/100 | 0 | high | 최소값 추정 가능
+017 | HumanEval/90 | 0 | high | 최소값 추정 가능
+018 | HumanEval/87 | 0 | high | 최소값 추정 가능
+019 | HumanEval/44 | 0 | high | 최소값 추정 가능
+020 | HumanEval/144 | 0 | high | 최소값 추정 가능
+021 | HumanEval/52 | 0 | high | 최소값 추정 가능
+022 | HumanEval/99 | 미확정 | high | 의도와 채점 동작의 불일치
+023 | HumanEval/93 | 0 | high | 최소값 추정 가능
+024 | HumanEval/154 | 0 | high | 최소값 추정 가능
+025 | HumanEval/140 | 0 | high | 최소값 추정 가능
+026 | HumanEval/111 | 0 | medium | 최소값 추정 가능
+027 | HumanEval/105 | 1 | high | 최소값 추정 가능
+028 | HumanEval/31 | 1 | high | 최소값 추정 가능
+029 | HumanEval/156 | 1 | medium | 최소값 추정 가능
+030 | HumanEval/18 | 1 | medium | 최소값 추정 가능
+031 | HumanEval/84 | 1 | high | 최소값 추정 가능
+032 | HumanEval/33 | 0 | medium | 최소값 추정 가능
+033 | HumanEval/127 | 0 | medium | 최소값 추정 가능
+034 | HumanEval/55 | 0 | high | 최소값 추정 가능
+035 | HumanEval/137 | 0 | high | 최소값 추정 가능
+036 | HumanEval/149 | 2 | high | 최소값 추정 가능
+037 | HumanEval/7 | 2 | medium | 최소값 추정 가능
+038 | HumanEval/162 | 1 | medium | 최소값 추정 가능
+039 | HumanEval/47 | 1 | high | 최소값 추정 가능
+040 | HumanEval/54 | 1 | medium | 최소값 추정 가능
+041 | HumanEval/62 | 0 | medium | 최소값 추정 가능
+042 | HumanEval/123 | 1 | high | 최소값 추정 가능
+043 | HumanEval/59 | 0 | high | 최소값 추정 가능
+044 | HumanEval/88 | 1 | high | 최소값 추정 가능
+045 | HumanEval/0 | 0 | high | 최소값 추정 가능
+046 | HumanEval/28 | 1 | medium | 최소값 추정 가능
+047 | HumanEval/11 | 0 | medium | 최소값 추정 가능
+048 | HumanEval/75 | 1 | high | 최소값 추정 가능
+049 | HumanEval/14 | 1 | high | 최소값 추정 가능
+050 | HumanEval/95 | 2 | high | 최소값 추정 가능
+051 | Mbpp/762 | 0 | high | 최소값 추정 가능
+052 | Mbpp/306 | 0 | medium | 최소값 추정 가능
+053 | Mbpp/253 | 0 | high | 최소값 추정 가능
+054 | Mbpp/763 | 0 | medium | 최소값 추정 가능
+055 | Mbpp/18 | 0 | high | 최소값 추정 가능
+056 | Mbpp/227 | 0 | high | 최소값 추정 가능
+057 | Mbpp/641 | 0 | high | 최소값 추정 가능
+058 | Mbpp/414 | 0 | medium | 최소값 추정 가능
+059 | Mbpp/166 | 0 | high | 최소값 추정 가능
+060 | Mbpp/70 | 0 | high | 최소값 추정 가능
+061 | Mbpp/589 | 1 | high | 최소값 추정 가능
+062 | Mbpp/7 | 0 | medium | 최소값 추정 가능
+063 | Mbpp/772 | 0 | medium | 최소값 추정 가능
+064 | Mbpp/135 | 0 | high | 최소값 추정 가능
+065 | Mbpp/268 | 0 | high | 최소값 추정 가능
+066 | Mbpp/409 | 0 | medium | 최소값 추정 가능
+067 | Mbpp/222 | 0 | high | 최소값 추정 가능
+068 | Mbpp/600 | 0 | high | 최소값 추정 가능
+069 | Mbpp/90 | 0 | high | 최소값 추정 가능
+070 | Mbpp/577 | 미확정 | high | 의도와 채점 동작의 불일치
+071 | Mbpp/165 | 0 | high | 최소값 추정 가능
+072 | Mbpp/84 | 0 | high | 최소값 추정 가능
+073 | Mbpp/232 | 0 | high | 최소값 추정 가능
+074 | Mbpp/311 | 1 | medium | 최소값 추정 가능
+075 | Mbpp/611 | 0 | medium | 최소값 추정 가능
+076 | Mbpp/723 | 1 | high | 최소값 추정 가능
+077 | Mbpp/378 | 1 | high | 최소값 추정 가능
+078 | Mbpp/328 | 미확정 | high | 현재 참조로 필요한 답을 식별할 수 없음
+079 | Mbpp/874 | 0 | medium | 최소값 추정 가능
+080 | Mbpp/423 | 1 | high | 최소값 추정 가능
+081 | Mbpp/199 | 0 | medium | 최소값 추정 가능
+082 | Mbpp/958 | 0 | high | 최소값 추정 가능
+083 | Mbpp/382 | 0 | medium | 최소값 추정 가능
+084 | Mbpp/698 | 0 | high | 최소값 추정 가능
+085 | Mbpp/361 | 1 | high | 최소값 추정 가능
+086 | Mbpp/941 | 0 | high | 최소값 추정 가능
+087 | Mbpp/627 | 미확정 | medium | 현재 참조로 필요한 답을 식별할 수 없음
+088 | Mbpp/38 | 0 | high | 최소값 추정 가능
+089 | Mbpp/308 | 1 | high | 최소값 추정 가능
+090 | Mbpp/628 | 1 | medium | 최소값 추정 가능
+091 | Mbpp/645 | 1 | high | 최소값 추정 가능
+092 | Mbpp/144 | 0 | high | 최소값 추정 가능
+093 | Mbpp/373 | 0 | high | 최소값 추정 가능
+094 | Mbpp/461 | 미확정 | high | 의도와 채점 동작의 불일치
+095 | Mbpp/770 | 1 | high | 최소값 추정 가능
+096 | Mbpp/936 | 0 | high | 최소값 추정 가능
+097 | Mbpp/247 | 2 | high | 최소값 추정 가능
+098 | Mbpp/753 | 미확정 | high | 현재 참조로 필요한 답을 식별할 수 없음
+099 | Mbpp/736 | 1 | high | 최소값 추정 가능
+100 | Mbpp/183 | 0 | high | 최소값 추정 가능
+

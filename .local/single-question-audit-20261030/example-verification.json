@@ -1,0 +1,53 @@
+{
+  "cases": [
+    {
+      "task_id": "HumanEval/43",
+      "interpretation": "distinct_positions",
+      "expected_pass": true,
+      "actual_pass": true,
+      "message": "The provided implementation passed all tests.",
+      "code": "def pairs_sum_to_zero(l):\n    seen = set()\n    for x in l:\n        if -x in seen:\n            return True\n        seen.add(x)\n    return False\n",
+      "method": "analyst_authored_counterinterpretation_checked_in_current_docker_evaluator",
+      "simulator_called": false,
+      "llm_called": false
+    },
+    {
+      "task_id": "HumanEval/43",
+      "interpretation": "distinct_values_counterinterpretation",
+      "expected_pass": false,
+      "actual_pass": false,
+      "message": "The provided implementation failed. Output:\n```Exception:\nTraceback (most recent call last):\n  File \"/app/temp_script.py\", line 33, in <module>\n    assertion(pairs_sum_to_zero(*inp), exp, 0, inp)\n  File \"/app/temp_script.py\", line 28, in assertion\n    assert out == exp, f\"Failed for inputs '{inp}': Expected '{exp}', but got {out}\"\n           ^^^^^^^^^^\nAssertionError: Failed for inputs '[[0, 0]]': Expected 'True', but got False\n```",
+      "code": "def pairs_sum_to_zero(l):\n    values = set(l)\n    return any(-x in values and x != -x for x in values)\n",
+      "method": "analyst_authored_counterinterpretation_checked_in_current_docker_evaluator",
+      "simulator_called": false,
+      "llm_called": false
+    },
+    {
+      "task_id": "HumanEval/149",
+      "interpretation": "list_return_alphabetical_ties",
+      "expected_pass": true,
+      "actual_pass": true,
+      "message": "The provided implementation passed all tests.",
+      "code": "def sorted_list_sum(lst):\n    return sorted((s for s in lst if len(s) % 2 == 0), key=lambda s: (len(s), s))\n",
+      "method": "analyst_authored_counterinterpretation_checked_in_current_docker_evaluator",
+      "simulator_called": false,
+      "llm_called": false
+    },
+    {
+      "task_id": "HumanEval/149",
+      "interpretation": "list_return_reverse_alphabetical_ties",
+      "expected_pass": false,
+      "actual_pass": false,
+      "message": "The provided implementation failed. Output:\n```Exception:\nTraceback (most recent call last):\n  File \"/app/temp_script.py\", line 33, in <module>\n    assertion(sorted_list_sum(*inp), exp, 0, inp)\n  File \"/app/temp_script.py\", line 28, in assertion\n    assert out == exp, f\"Failed for inputs '{inp}': Expected '{exp}', but got {out}\"\n           ^^^^^^^^^^\nAssertionError: Failed for inputs '[['d', 'dcba', 'abcd', 'a']]': Expected '['abcd', 'dcba']', but got ['dcba', 'abcd']\n```",
+      "code": "def sorted_list_sum(lst):\n    values = sorted((s for s in lst if len(s) % 2 == 0), reverse=True)\n    return sorted(values, key=len)\n",
+      "method": "analyst_authored_counterinterpretation_checked_in_current_docker_evaluator",
+      "simulator_called": false,
+      "llm_called": false
+    }
+  ],
+  "limitations": [
+    "These checks validate illustrative test distinctions only, not the sufficiency annotations for all 100 tasks.",
+    "Code was written with oracle knowledge; this is not a one-question LLM success-rate experiment."
+  ],
+  "runtime_sha256": "8f4029ffba4b611c2520f7d7b21af82105a3d1fb7da1f2d2b89b6c9befaae148"
+}

@@ -1,0 +1,2245 @@
+단일 질문으로 테스트 요구사항을 확정할 수 있는가
+
+고정 train100-v1의 100문제를 개별 검토했다.
+하나의 문장이나 한 번의 메시지가 아니라, 답이 정확히 하나의 독립 사실인 질문을 기준으로 삼았다.
+
+질문 불필요: 41개
+정확한 답 하나면 정보상 충분: 40개
+한 답 뒤에도 독립 조건이 남음: 13개
+원래 의도와 채점 동작의 불일치: 6개
+판정 보류: 0개
+
+판정 해석
+이 목록은 테스트와 참조를 본 사후 진단이며 참가 알고리즘에 공급할 수 있는 질문 정답지가 아니다.
+예상 답은 실제 가상 사용자에게 받은 응답이 아니다. 참조가 모호하거나 가상 사용자가 틀리면 한 질문 충분 판정도 실제 통과를 보장하지 않는다.
+추출 질문으로 새 코드 생성·채점 실험은 수행하지 않았다. 기존 알고리즘 성적을 이 질문들의 성공률로 제시하지 않는다.
+25개씩 균형을 맞춘 표본으로 전체 train·validation의 비율을 추정하지 않는다.
+여러 조건이 남는 문제도 남은 선택을 추론하거나 우연히 맞히면 통과할 수 있다. 여기서 불충분은 한 답으로 명세를 확정할 수 없다는 뜻이다.
+원자 질문 수 하한은 명세 해석에 따른 보수적인 정적 판단이다. 수학적인 최소 질문 수 증명이나 모델 성공률이 아니다.
+조건을 이미 합리적으로 추론할 수 있거나 현재 테스트가 구별하지 않으면 질문 수를 늘리지 않았다.
+성능·루프 사용·입력 변이 같은 조건도 평가가 측정하지 않으면 독립적인 필수 질문에서 제외했다.
+
+출처
+고정 표본 manifest: /Users/kwonhyukwon/developer/research-bera/ECC/.local/train100-v1/manifest.json
+manifest SHA256: 47e5d52d4bf7623978fbd617d437f027892261b5a5aaca0827345343149b43b4
+평가 기준: clarify/env.py의 CRITICALITY, SEARCH SPACE, LEAKAGE, ATOMICITY, OBJECTIVITY 및 clarify/runtime.py의 실제 oracle.
+평가 데이터가 있는 ID는 현재 EvalPlus 입력·canonical·특수 oracle을 우선하고, 없는 MBPP ID는 test_cases를 사용했다.
+
+
+전체 데이터로의 확장
+train 7,961행 + validation 770행 = 8,731행을 누락 없이 색인했다.
+개별 확정은 고정 100제뿐이며, 나머지는 미검토 후보 또는 의미 검토 대기 상태다.
+단계별 행 수: {'pending_semantic_review': 4909, 'algorithmic_draft_unreviewed': 3722, 'reviewed_frozen100': 100}
+전체 행별 결과: all-questions.jsonl. 원본·실효 요구사항·채점 출처: corpus-index.jsonl.
+자동 후보는 문장 차이 기반으로 생성되어 원자성·필수성·충분성 판정이 없으며, 필요하지 않은 질문이나 누락이 있을 수 있다.
+train 원본 MBPP 565행은 가상 사용자에게 제공되는 숨은 요구사항이 [REDACTED]다. validation은 전체에 기존 clarification overlay가 적용된다.
+
+예시의 현재 채점 검증
+HumanEval/43: 위치가 다르면 같은 값도 허용하는 구현은 통과, 서로 다른 값만 허용하는 구현은 실패했다.
+HumanEval/149: 리스트를 반환해도 동률을 역알파벳순으로 처리하면 실패했고, 알파벳순 구현은 통과했다.
+직접 작성한 네 구현을 현재 Docker evaluator로 확인했다. 가상 사용자나 생성 모델의 한 질문 실험은 아니다.
+
+문제별 질문과 예상 답
+001. HumanEval/157 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 세 변이 직각삼각형을 이루는지라는 수학적 판정과 두 예시가 일치한다. 입력 순서가 빗변 순서를 고정한다는 조건은 없고 테스트도 순서를 섞어 확인한다. 유효 양수 입력 밖의 조건이나 관찰되지 않은 부동소수점 허용오차는 필수 질문으로 세지 않았다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base test: (10, 6, 8) => True, (15, 8, 17) => True로 빗변 위치와 무관한 판정을 확인한다.
+  - base test: (2, 2, 10) => False. canonical은 세 가지 피타고라스 등식의 OR이다.
+  - 로컬 EvalPlus plus의 실수 입력 9개에서 기본 math.isclose와 canonical의 진릿값 차이는 관찰되지 않았다.
+
+공개 문제:
+def right_angle_triangle(a, b, c):
+    '''
+    Given the lengths of the three sides of a triangle. Return True if the three
+    sides form a right-angled triangle, False otherwise.
+    A right-angled triangle is a triangle in which one angle is right angle or 
+    90 degree.
+    Example:
+    right_angle_triangle(3, 4, 5) == True
+    right_angle_triangle(1, 2, 3) == False
+    '''
+
+========================================================================
+
+002. HumanEval/43 | humaneval/original | 정확한 답 하나면 정보상 충분
+대표 질문: 서로 다른 위치에 있는 같은 값도 "서로 다른 두 원소"로 셀 수 있나요?
+예상 답: 예. 두 위치의 값이 같아도 된다. 따라서 0이 두 번 나오면 합이 0인 쌍이 있다.
+판단: 합이 0이라는 계산 규칙은 분명하지만 distinct의 기준은 중복 0에서 실제 평가 결과를 바꾼다. 이를 위치 기준이라는 단일 사실로 확정하면 다른 관찰된 정보 공백은 남지 않는다. reference_prompt도 동일한 distinct 문구만 제공하므로 위치 기준이라는 정답이 명시되어 있지는 않다. 제시한 expected_answer는 canonical·실제 plus 입력으로 확인한 오프라인 oracle 목표이며, 모의 사용자가 reference만 읽고 반드시 이 답을 낸다는 보장은 없다.
+질문 수 하한 추정: 1 | 확신: medium
+근거:
+  - 역사적 assert test 및 현재 EvalPlus base_input: [1,3,5,0]은 0 하나만 포함하며 기대 결과는 False이다.
+  - 현재 로컬 EvalPlus v0.1.10 plus_input에 [[0,0]], [[0,0,0]], [[2,3,0,0]]이 있다.
+  - 현재 평가에 사용하는 제공 canonical의 i!=j 조건으로 [0,0] => True를 직접 확인했다.
+
+공개 문제:
+def pairs_sum_to_zero(l):
+    """
+    pairs_sum_to_zero takes a list of integers as an input.
+    it returns True if there are two distinct elements in the list that
+    sum to zero, and False otherwise.
+    >>> pairs_sum_to_zero([1, 3, 5, 0])
+    False
+    >>> pairs_sum_to_zero([1, 3, -2, 1])
+    False
+    >>> pairs_sum_to_zero([1, 2, 3, 7])
+    False
+    >>> pairs_sum_to_zero([2, 4, -5, 3, 5, 7])
+    True
+    >>> pairs_sum_to_zero([1])
+    False
+    """
+
+========================================================================
+
+003. HumanEval/67 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 문자열의 사과·오렌지 개수와 전체 과일 수에서 망고 수를 빼기로 계산한다는 설명과 계산식 예시가 모두 주어졌다. 포맷과 0개 경우도 예시로 결정되어 추가 사실이 필요하지 않다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: "5 apples and 6 oranges", 19 -> 19 - 5 - 6 = 8.
+  - base test: "2 apples and 3 oranges", 5 => 0; "1 apples and 0 oranges", 3 => 2.
+  - canonical은 첫째·넷째 토큰을 정수로 읽고 n에서 뺀다.
+
+공개 문제:
+def fruit_distribution(s,n):
+    """
+    In this task, you will be given a string that represents a number of apples and oranges 
+    that are distributed in a basket of fruit this basket contains 
+    apples, oranges, and mango fruits. Given the string that represents the total number of 
+    the oranges and apples and an integer that represent the total number of the fruits 
+    in the basket return the number of the mango fruits in the basket.
+    for examble:
+    fruit_distribution("5 apples and 6 oranges", 19) ->19 - 5 - 6 = 8
+    fruit_distribution("0 apples and 1 oranges",3) -> 3 - 0 - 1 = 2
+    fruit_distribution("2 apples and 3 oranges", 100) -> 100 - 2 - 3 = 95
+    fruit_distribution("100 apples and 1 oranges",120) -> 120 - 100 - 1 = 19
+    """
+
+========================================================================
+
+004. HumanEval/106 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 1부터 시작하는 i, 짝수의 팩토리얼, 홀수의 1..i 합, 결과 길이 n이 모두 명시되어 있다. 빈 결과인 n=0도 길이 규칙에서 결정된다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt와 base test: f(5) => [1, 2, 6, 24, 15].
+  - base test: f(7) => [1, 2, 6, 24, 15, 720, 28].
+  - canonical의 n==0 분기는 []이며 길이 n 규칙과 일치한다.
+
+공개 문제:
+def f(n):
+    """ Implement the function f that takes n as a parameter,
+    and returns a list of size n, such that the value of the element at index i is the factorial of i if i is even
+    or the sum of numbers from 1 to i otherwise.
+    i starts from 1.
+    the factorial of i is the multiplication of the numbers from 1 to i (1 * 2 * ... * i).
+    Example:
+    f(5) == [1, 2, 6, 24, 15]
+    """
+
+========================================================================
+
+005. HumanEval/21 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 최솟값을 0, 최댓값을 1로 보내는 선형 변환은 유효한 비상수 입력에서 유일하다. 입력의 순서도 리스트에 변환을 적용한다는 설명과 순서가 섞인 테스트로 결정된다. 모든 수가 같은 경우는 contract에서 제외되어 필수 질문이 아니다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base test: [100.0, 49.9] => [1.0, 0.0].
+  - base test: [2.0, 1.0, 5.0, 3.0, 4.0] => [0.25, 0.0, 1.0, 0.5, 0.75].
+  - contract: len(numbers)>=2 및 max(numbers)>min(numbers).
+
+공개 문제:
+from typing import List
+
+
+def rescale_to_unit(numbers: List[float]) -> List[float]:
+    """ Given list of numbers (of at least two elements), apply a linear transform to that list,
+    such that the smallest number will become 0 and the largest will become 1
+    >>> rescale_to_unit([1.0, 2.0, 3.0, 4.0, 5.0])
+    [0.0, 0.25, 0.5, 0.75, 1.0]
+    """
+
+========================================================================
+
+006. HumanEval/24 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: n보다 작은 최대 약수라는 정의와 예시가 충분하다. 유효 입력 n>1에서 소수의 답 1은 정의에서 따라온다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: largest_divisor(15) => 5.
+  - base test: 3 => 1, 7 => 1, 100 => 50, 49 => 7.
+  - contract는 정수 n>1로 제한한다.
+
+공개 문제:
+def largest_divisor(n: int) -> int:
+    """ For a given number n, find the largest number that divides n evenly, smaller than n
+    >>> largest_divisor(15)
+    5
+    """
+
+========================================================================
+
+007. HumanEval/13 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 두 정수의 최대공약수라는 표준 수학적 정의와 예시가 충분하다. 부호나 (0,0) 동작은 현재 유효 입력 영역 밖이다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: (3,5) => 1, (25,15) => 5.
+  - base test: (49,14) => 7, (144,60) => 12.
+  - contract: a>0 및 b>0인 정수.
+
+공개 문제:
+def greatest_common_divisor(a: int, b: int) -> int:
+    """ Return a greatest common divisor of two integers a and b
+    >>> greatest_common_divisor(3, 5)
+    1
+    >>> greatest_common_divisor(25, 15)
+    5
+    """
+
+========================================================================
+
+008. HumanEval/143 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 소수 길이인 단어를 원래 순서로 반환한다는 필터 규칙이 명시되어 있다. 공백이 있는 문장 예시로 "letters only"라는 제약의 느슨한 표현도 해소된다. 1은 소수가 아니며 결과가 없으면 빈 문자열인 것은 필터 결과 형식에서 따라온다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: "This is a test" => "is" 및 "lets go for swimming" => "go for".
+  - base test: "Hi I am Hussein" => "Hi am Hussein"; "here" => "".
+  - canonical은 sentence.split(" ") 후 소수 길이만 유지하고 한 칸 공백으로 연결한다.
+
+공개 문제:
+def words_in_sentence(sentence):
+    """
+    You are given a string representing a sentence,
+    the sentence contains some words separated by a space,
+    and you have to return a string that contains the words from the original sentence,
+    whose lengths are prime numbers,
+    the order of the words in the new string should be the same as the original one.
+
+    Example 1:
+        Input: sentence = "This is a test"
+        Output: "is"
+
+    Example 2:
+        Input: sentence = "lets go for swimming"
+        Output: "go for"
+
+    Constraints:
+        * 1 <= len(sentence) <= 100
+        * sentence contains only letters
+    """
+
+========================================================================
+
+009. HumanEval/136 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 음수 중 최댓값과 양수 중 최솟값의 튜플 순서, 해당 부호가 없을 때 None, 0의 제외가 모두 설명 또는 예시로 결정된다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: [] 및 [0] => (None, None).
+  - base test: [-1,-3,-5,-6] => (-1,None), [-6,-4,-4,-3,1] => (-3,1).
+  - canonical의 필터는 각각 x<0과 x>0이다.
+
+공개 문제:
+def largest_smallest_integers(lst):
+    '''
+    Create a function that returns a tuple (a, b), where 'a' is
+    the largest of negative integers, and 'b' is the smallest
+    of positive integers in a list.
+    If there is no negative or positive integers, return them as None.
+
+    Examples:
+    largest_smallest_integers([2, 4, 1, 3, 5, 7]) == (None, 1)
+    largest_smallest_integers([]) == (None, None)
+    largest_smallest_integers([0]) == (None, None)
+    '''
+
+========================================================================
+
+010. HumanEval/153 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 강도 CAP-SM, 최대 강도의 선택, 동률일 때 첫 항목, 반환 문자열의 형식이 모두 명시되어 있다. 숫자·기호는 대문자/소문자 수에 들어가지 않는다는 정의로 처리할 수 있다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt는 CAP-SM과 최초 동률 선택을 명시하고 [AA,Be,CC]에서 AA를 선택한다.
+  - base test: __HAHA 및 [Tab,123,781345,-_-] => __HAHA.123.
+  - base test: _ 및 [Bb,91245] => _.Bb; Sp 및 [671235,Bb] => Sp.671235.
+
+공개 문제:
+def Strongest_Extension(class_name, extensions):
+    """You will be given the name of a class (a string) and a list of extensions.
+    The extensions are to be used to load additional classes to the class. The
+    strength of the extension is as follows: Let CAP be the number of the uppercase
+    letters in the extension's name, and let SM be the number of lowercase letters 
+    in the extension's name, the strength is given by the fraction CAP - SM. 
+    You should find the strongest extension and return a string in this 
+    format: ClassName.StrongestExtensionName.
+    If there are two or more extensions with the same strength, you should
+    choose the one that comes first in the list.
+    For example, if you are given "Slices" as the class and a list of the
+    extensions: ['SErviNGSliCes', 'Cheese', 'StuFfed'] then you should
+    return 'Slices.SErviNGSliCes' since 'SErviNGSliCes' is the strongest extension 
+    (its strength is -1).
+    Example:
+    for Strongest_Extension('my_class', ['AA', 'Be', 'CC']) == 'my_class.AA'
+    """
+
+========================================================================
+
+011. HumanEval/116 | humaneval/original | 원래 의도와 채점 동작의 불일치
+대표 질문: 제시된 예시 순서와 이진수 1의 개수가 충돌할 때도, 1의 개수를 오름차순 1차 정렬 기준으로 써야 하나요?
+예상 답: 예. 예시의 단순 숫자 오름차순 결과 대신 이진수 1의 개수를 우선한다. [1,5,2,3,4]의 올바른 평가 결과는 [1,2,4,3,5]이다.
+각 독립 조건의 질문:
+  - 제시된 예시 순서와 이진수 1의 개수가 충돌할 때도, 1의 개수를 오름차순 1차 정렬 기준으로 써야 하나요?
+    답: 예. 예시의 단순 숫자 오름차순 결과 대신 이진수 1의 개수를 우선한다. [1,5,2,3,4]의 올바른 평가 결과는 [1,2,4,3,5]이다.
+  - 음수의 이진수 1 개수는 절댓값의 이진 표현을 기준으로 세나요?
+    답: 예. 부호를 제외한 절댓값의 이진 표현에서 1을 센다. 고정 비트폭의 2의 보수 표현을 쓰지 않는다.
+대표 질문에 답한 뒤 남는 조건:
+  - 음수 입력도 지원해야 하며 음수의 1 개수는 절댓값 이진수 기준이라는 독립적인 사실이 아직 필요하다.
+판단: 원본 문제 자체에서 정렬 본문과 예시가 충돌하고, 비음수 제한과 음수 base test도 충돌한다. 1차 정렬 기준을 묻는 한 질문만으로 음수 표현 규칙까지 정해지지는 않으므로 최소 두 독립 사실의 확인이 필요하다. 이는 코드 작성 오류와 별개의 명세·평가 불일치이다.
+질문 수 하한 추정: 2 | 확신: high
+근거:
+  - 현재 prompt example: [1,5,2,3,4] => [1,2,3,4,5]. 현재 EvalPlus base_input에도 같은 입력이 있으며 현재 canonical 결과는 [1,2,4,3,5]이다. 역사적 assert test도 후자를 요구한다.
+  - 현재 prompt example: [-2,-3,-4,-5,-6] => [-6,-5,-4,-3,-2]. 현재 EvalPlus base_input에 같은 음수 입력이 있으며 현재 canonical 결과는 [-4,-2,-6,-5,-3]이다. 역사적 assert test도 후자를 요구한다.
+  - 현재 contract는 모든 원소 x>=0을 요구하지만 현재 base_input에는 음수 리스트가 포함되어 있다.
+  - 현재 로컬 EvalPlus v0.1.10 plus_input에는 음수가 없지만 base_input의 음수 입력은 현재 평가 대상이다.
+
+공개 문제:
+def sort_array(arr):
+    """
+    In this Kata, you have to sort an array of non-negative integers according to
+    number of ones in their binary representation in ascending order.
+    For similar number of ones, sort based on decimal value.
+
+    It must be implemented like this:
+    >>> sort_array([1, 5, 2, 3, 4]) == [1, 2, 3, 4, 5]
+    >>> sort_array([-2, -3, -4, -5, -6]) == [-6, -5, -4, -3, -2]
+    >>> sort_array([1, 0, 2, 3, 4]) [0, 1, 2, 3, 4]
+    """
+
+========================================================================
+
+012. HumanEval/42 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 모든 원소에 1을 더한 리스트라는 연산과 순서를 유지하는 예시가 충분하다. 빈 리스트에는 적용할 원소가 없으므로 []가 결정된다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: [1,2,3] => [2,3,4].
+  - base test: [] => [], [3,2,1] => [4,3,2].
+  - canonical은 [x+1 for x in l]이다.
+
+공개 문제:
+def incr_list(l: list):
+    """Return list with elements incremented by 1.
+    >>> incr_list([1, 2, 3])
+    [2, 3, 4]
+    >>> incr_list([5, 3, 5, 2, 3, 3, 9, 0, 123])
+    [6, 4, 6, 3, 4, 4, 10, 1, 124]
+    """
+
+========================================================================
+
+013. HumanEval/89 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 회전하는 알파벳을 네 칸 이동한다는 문구는 여러 입출력 예시로 확정된다. 알파벳에 속하지 않는 문자에 알파벳 이동을 적용하지 않는 것은 문자 변환의 자연스러운 해석이며, 이를 별도의 필수 사실로 부풀리지 않았다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt 및 base test: hi => lm, asdfghjkl => ewhjklnop.
+  - base test의 dxz... 입력으로 x/z에서 처음 알파벳으로 돌아가는 회전을 확인한다.
+  - 로컬 EvalPlus plus에는 test123, 1a2b3c, hello world가 있으며 canonical은 a..z만 네 칸 회전하고 숫자·공백을 보존한다.
+
+공개 문제:
+def encrypt(s):
+    """Create a function encrypt that takes a string as an argument and
+    returns a string encrypted with the alphabet being rotated. 
+    The alphabet should be rotated in a manner such that the letters 
+    shift down by two multiplied to two places.
+    For example:
+    encrypt('hi') returns 'lm'
+    encrypt('asdfghjkl') returns 'ewhjklnop'
+    encrypt('gf') returns 'kj'
+    encrypt('et') returns 'ix'
+    """
+
+========================================================================
+
+014. HumanEval/119 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 두 문자열을 전체 단위로 두 가능한 순서 중 하나로 연결해서 올바른 괄호열이 되는지와 정확한 Yes/No 반환이 명시되어 있다. 균형은 표준 올바른 괄호열 개념이어서 개수만 같으면 된다는 추가 해석은 필요하지 않다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: ["()(", ")"] => Yes, [")", ")"] => No.
+  - base test: [")(", ")("] => No; [")", "("] => Yes.
+  - canonical은 두 연결 순서에서 모든 접두사 균형이 음수가 아니며 최종 0인지를 확인한다.
+
+공개 문제:
+def match_parens(lst):
+    '''
+    You are given a list of two strings, both strings consist of open
+    parentheses '(' or close parentheses ')' only.
+    Your job is to check if it is possible to concatenate the two strings in
+    some order, that the resulting string will be good.
+    A string S is considered to be good if and only if all parentheses in S
+    are balanced. For example: the string '(())()' is good, while the string
+    '())' is not.
+    Return 'Yes' if there's a way to make a good string, and return 'No' otherwise.
+
+    Examples:
+    match_parens(['()(', ')']) == 'Yes'
+    match_parens([')', ')']) == 'No'
+    '''
+
+========================================================================
+
+015. HumanEval/107 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 문구의 range(1,n) 표기는 inclusive라는 명시적 한정과 n=3 예시에서 상한 포함으로 이미 해소된다. 짝수·홀수의 의미 및 튜플 순서도 명시되어 있다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: n=3에서 1,2,3을 포함하여 (1,2)를 반환한다.
+  - base test: n=1 => (0,1), n=9 => (4,5).
+  - canonical은 range(1,n+1)을 사용한다.
+
+공개 문제:
+def even_odd_palindrome(n):
+    """
+    Given a positive integer n, return a tuple that has the number of even and odd
+    integer palindromes that fall within the range(1, n), inclusive.
+
+    Example 1:
+
+        Input: 3
+        Output: (1, 2)
+        Explanation:
+        Integer palindrome are 1, 2, 3. one of them is even, and two of them are odd.
+
+    Example 2:
+
+        Input: 12
+        Output: (4, 6)
+        Explanation:
+        Integer palindrome are 1, 2, 3, 4, 5, 6, 7, 8, 9, 11. four of them are even, and 6 of them are odd.
+
+    Note:
+        1. 1 <= n <= 10^3
+        2. returned tuple has the number of even and odd integer palindromes respectively.
+    """
+
+========================================================================
+
+016. HumanEval/100 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 첫 층은 n개이고 이후 같은 홀짝의 다음 수, 총 n개 층이라는 규칙과 예시가 충분하다. 매 층 2씩 증가한다는 것은 주어진 규칙의 결과이다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: n=3 => [3,5,7].
+  - base test: n=4 => [4,6,8,10], n=8 => [8,10,12,14,16,18,20,22].
+  - reference_prompt와 현재 prompt의 차이는 따옴표 형태이며 의미 차이가 없다.
+
+공개 문제:
+def make_a_pile(n):
+    '''
+    Given a positive integer n, you have to make a pile of n levels of stones.
+    The first level has n stones.
+    The number of stones in the next level is:
+        - the next odd number if n is odd.
+        - the next even number if n is even.
+    Return the number of stones in each level in a list, where element at index
+    i represents the number of stones in the level (i+1).
+
+    Examples:
+    >>> make_a_pile(3)
+    [3, 5, 7]
+    '''
+
+========================================================================
+
+017. HumanEval/90 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 두 번째로 작은 원소라는 말만으로는 중복 해석이 있을 수 있지만 [1,1]=>None이라는 제공 예시가 서로 다른 값 기준임을 이미 결정한다. 같은 질문을 다시 요구할 필요가 없다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: next_smallest([1,1]) => None.
+  - base test: [1,1,1,1,0] => 1; [-35,34,12,-45] => -35.
+  - canonical은 정렬 후 최솟값과 다른 첫 값을 반환한다.
+
+공개 문제:
+def next_smallest(lst):
+    """
+    You are given a list of integers.
+    Write a function next_smallest() that returns the 2nd smallest element of the list.
+    Return None if there is no such element.
+    
+    next_smallest([1, 2, 3, 4, 5]) == 2
+    next_smallest([5, 1, 4, 3, 2]) == 2
+    next_smallest([]) == None
+    next_smallest([1, 1]) == None
+    """
+
+========================================================================
+
+018. HumanEval/87 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 좌표 형식, 0부터 시작하는 인덱스, 행 오름차순과 같은 행의 열 내림차순, 서로 다른 행 길이와 빈 입력까지 명시되어 있다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt 및 base test: 첫 행 (0,0), 둘째 행 (1,4),(1,0), 셋째 행 (2,5),(2,0).
+  - prompt 및 base test: [] => []; [[],[1],[1,2,3]],3 => [(2,2)].
+  - canonical은 행을 앞에서 뒤로, 열을 뒤에서 앞으로 순회한다.
+
+공개 문제:
+def get_row(lst, x):
+    """
+    You are given a 2 dimensional data, as a nested lists,
+    which is similar to matrix, however, unlike matrices,
+    each row may contain a different number of columns.
+    Given lst, and integer x, find integers x in the list,
+    and return list of tuples, [(x1, y1), (x2, y2) ...] such that
+    each tuple is a coordinate - (row, columns), starting with 0.
+    Sort coordinates initially by rows in ascending order.
+    Also, sort coordinates of the row by columns in descending order.
+    
+    Examples:
+    get_row([
+      [1,2,3,4,5,6],
+      [1,2,3,4,1,6],
+      [1,2,3,4,5,1]
+    ], 1) == [(0, 0), (1, 4), (1, 0), (2, 5), (2, 0)]
+    get_row([], 1) == []
+    get_row([[], [1], [1, 2, 3]], 3) == [(2, 2)]
+    """
+
+========================================================================
+
+019. HumanEval/44 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 정수를 base 진법의 문자열로 변환한다는 표준 정의와 예시로 충분하다. 0의 표기 "0"도 표준 정수 진법 표기에서 결정되며 base<2와 음수는 contract에서 제외된다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: (8,3) => "22", (8,2) => "1000".
+  - base test: (9,3) => "100", (234,2) => "11101010".
+  - contract: x>=0, 2<=base<=9; canonical의 x==0 결과는 "0".
+
+공개 문제:
+def change_base(x: int, base: int):
+    """Change numerical base of input number x to base.
+    return string representation after the conversion.
+    base numbers are less than 10.
+    >>> change_base(8, 3)
+    '22'
+    >>> change_base(8, 2)
+    '1000'
+    >>> change_base(7, 2)
+    '111'
+    """
+
+========================================================================
+
+020. HumanEval/144 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 두 유효 양의 분수의 곱이 정수인지 판단한다는 조건, 입력 형식, 분모가 0이 아님이 모두 명시되어 있다. 약분 여부와 무관하게 곱의 정수성을 판단하는 것은 정의에서 결정된다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt 및 base test: 1/5 * 5/1 => True, 7/10 * 10/2 => False.
+  - base test: 2/4 * 8/4 => True 및 2/10 * 50/10 => True.
+  - canonical은 분자 곱이 분모 곱으로 나누어떨어지는지 검사한다.
+
+공개 문제:
+def simplify(x, n):
+    """Your task is to implement a function that will simplify the expression
+    x * n. The function returns True if x * n evaluates to a whole number and False
+    otherwise. Both x and n, are string representation of a fraction, and have the following format,
+    <numerator>/<denominator> where both numerator and denominator are positive whole numbers.
+
+    You can assume that x, and n are valid fractions, and do not have zero as denominator.
+
+    simplify("1/5", "5/1") = True
+    simplify("1/6", "2/1") = False
+    simplify("7/10", "10/2") = False
+    """
+
+========================================================================
+
+021. HumanEval/52 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 모든 수가 임계값보다 작아야 한다는 below와 all의 의미가 충분하다. 등호 제외는 below의 의미이며 빈 리스트의 all은 반례가 없다는 동일한 규칙으로 처리된다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base test: [1,8,4,10],10 => False, 같은 리스트와 11 => True.
+  - canonical은 all(x<t for x in l)이다.
+
+공개 문제:
+def below_threshold(l: list, t: int):
+    """Return True if all numbers in the list l are below threshold t.
+    >>> below_threshold([1, 2, 4, 10], 100)
+    True
+    >>> below_threshold([1, 20, 4, 10], 5)
+    False
+    """
+
+========================================================================
+
+022. HumanEval/99 | humaneval/original | 원래 의도와 채점 동작의 불일치
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 일반 크기의 수와 .5 처리 규칙은 이미 명확하다. 그러나 실제 plus 입력의 큰 정수·소수 문자열에서는 float 변환 손실 때문에 문자 그대로의 명세를 정확히 구현해도 oracle과 다른 정수를 반환한다. 이는 모호한 tie 규칙이 아니라 숫자 해석 정밀도의 단일한 명세·테스트 불일치이다. 현재 평가를 재현하려면 float 변환 방식을 지정해야 하지만 이는 자연스러운 누락 조건을 확인하기보다 oracle 구현을 알려주는 일에 가깝다. 그러므로 정당한 원자 질문은 제시하지 않고 질문 수 하한도 미정으로 둔다.
+질문 수 하한 추정: None | 확신: high
+근거:
+  - 현재 prompt는 문자열이 나타내는 수에 가장 가까운 정수와 .5에서 0에서 멀어지는 tie 처리를 명시한다.
+  - 현재 EvalPlus base_input과 역사적 assert test의 "14.5" => 15, "-15.5" => -16은 tie 규칙과 일치한다.
+  - 현재 로컬 EvalPlus v0.1.10 plus_input에 "3456789000000000001"이 존재하며 제공 canonical을 실행하면 3456789000000000000을 반환한다.
+  - 현재 plus 710개 중 Decimal의 정확한 ROUND_HALF_UP 결과와 float 기반 canonical 결과가 다른 사례 15개를 확인했다. 정수 출력이므로 EvalPlus의 float 허용오차 자동 완화는 적용되지 않는다.
+
+공개 문제:
+def closest_integer(value):
+    '''
+    Create a function that takes a value (string) representing a number
+    and returns the closest integer to it. If the number is equidistant
+    from two integers, round it away from zero.
+
+    Examples
+    >>> closest_integer("10")
+    10
+    >>> closest_integer("15.3")
+    15
+
+    Note:
+    Rounding away from zero means that if the given number is equidistant
+    from two integers, the one you should return is the one that is the
+    farthest from zero. For example closest_integer("14.5") should
+    return 15 and closest_integer("-14.5") should return -15.
+    '''
+
+========================================================================
+
+023. HumanEval/93 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 모든 영문자의 대소문자 전환과 a/e/i/o/u의 두 칸 이동이 명시되고 혼합 대소문자와 공백 예시도 주어진다. 공백을 그대로 유지하는 동작은 제공 예시가 이미 결정한다. 실제 plus에 유니코드 입력은 없어 영어 밖 대소문자를 필수 질문으로 만들지 않았다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: test => TGST; This is a message => tHKS KS C MGSSCGG.
+  - base test: TEST => tgst 및 I DoNt KnOw WhAt tO WrItE => k dQnT kNqW wHcT Tq wRkTg.
+  - 로컬 plus 입력 1000개에서 비 ASCII 문자는 관찰되지 않았다.
+
+공개 문제:
+def encode(message):
+    """
+    Write a function that takes a message, and encodes in such a 
+    way that it swaps case of all letters, replaces all vowels in 
+    the message with the letter that appears 2 places ahead of that 
+    vowel in the english alphabet. 
+    Assume only letters. 
+    
+    Examples:
+    >>> encode('test')
+    'TGST'
+    >>> encode('This is a message')
+    'tHKS KS C MGSSCGG'
+    """
+
+========================================================================
+
+024. HumanEval/154 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 두 번째 문자열 전체의 순환 회전 중 하나가 첫 문자열의 연속 부분문자열인지라는 조건이 명시되어 있다. 부분수열과의 구분이나 회전 방향은 전체 회전 집합에 영향을 주지 않는다. 빈 문자열의 부분문자열 포함도 표준 문자열 의미로 결정된다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: abab,baa => True; efef,eeff => False.
+  - base test: efef,fee => True; abab,aabb => False.
+  - canonical은 b의 모든 b[i:]+b[:i]가 a에 포함되는지 확인하고 빈 b에는 True를 반환한다.
+
+공개 문제:
+def cycpattern_check(a , b):
+    """You are given 2 words. You need to return True if the second word or any of its rotations is a substring in the first word
+    cycpattern_check("abcd","abd") => False
+    cycpattern_check("hello","ell") => True
+    cycpattern_check("whassup","psus") => False
+    cycpattern_check("abab","baa") => True
+    cycpattern_check("efef","eeff") => False
+    cycpattern_check("himenss","simen") => True
+
+    """
+
+========================================================================
+
+025. HumanEval/140 | humaneval/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 공백 한 칸당 밑줄, 3칸 이상인 연속 공백 구간당 하이픈 하나라는 규칙을 설명과 예시가 결정한다. 긴 구간이 있을 때 다른 단일 공백도 바꿔야 하는지는 예시가 밑줄을 보존하여 이미 해소한다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - prompt: " Example   3" => "_Example-3".
+  - base test: "Yellow Yellow  Dirty  Fellow" => "Yellow_Yellow__Dirty__Fellow".
+  - base test: "   Exa 1 2 2 mple" => "-Exa_1_2_2_mple".
+
+공개 문제:
+def fix_spaces(text):
+    """
+    Given a string text, replace all spaces in it with underscores, 
+    and if a string has more than 2 consecutive spaces, 
+    then replace all consecutive spaces with - 
+    
+    fix_spaces("Example") == "Example"
+    fix_spaces("Example 1") == "Example_1"
+    fix_spaces(" Example 2") == "_Example_2"
+    fix_spaces(" Example   3") == "_Example-3"
+    """
+
+========================================================================
+
+026. HumanEval/111 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 반환값은 최빈 문자와 빈도의 사전인가요, 정수인가요?
+예상 답: 사전입니다. 최빈 문자가 여럿이면 모두 포함합니다.
+판단: 관측되는 핵심 충돌은 반환값의 종류 하나다. 사전의 삽입 순서는 == 비교에 영향을 주지 않으며 루프 금지·시간·문자열 메서드·수치 입력 지원은 실제 테스트가 강제하지 않는다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: candidate('a b b a') == {'a':2,'b':2}; candidate('') == {}.
+  - 확인: 계약은 str 및 공백으로 구분된 소문자만 허용한다.
+
+공개 문제:
+def histogram(test):
+    """Given a string representing a space separated lowercase letters, return a dictionary
+    of the letter with the most repetition and containing the corresponding count.
+    If several letters have the same occurrence, return all of them. However, the function should return an integer.
+    The function should not use any loops or recursive calls. 
+    The function should also maintain the original order of input string while sorting the output dictionary.
+    The function should not use any string methods and also should work for numerical inputs.
+
+    Example:
+    histogram('a b c') == {'a': 1, 'b': 1, 'c': 1}
+    histogram('a b b a') == {'a': 2, 'b': 2}
+    histogram('a b c a b') == {'a': 2, 'b': 2}
+    histogram('b b b b a') == {'b': 4}
+    histogram('') == {}
+    histogram(123) == {1: 1, 2: 1, 3: 1}
+
+    """
+
+========================================================================
+
+027. HumanEval/105 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 반환값은 숫자 이름의 내림차순 리스트인가요, 해당 정수들의 합인가요?
+예상 답: 숫자 이름의 내림차순 리스트입니다. 빈 입력은 []입니다.
+판단: 리스트를 내놓을지 합계를 내놓을지 한 번 결정하면 필터와 내림차순은 이미 정의되어 있다. 반복문 금지·O(1)은 출력 테스트의 독립 요구가 아니다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: [2,1,1,4,5,8,2,3] -> ['Eight','Five','Four','Three','Two','Two','One','One'].
+  - 확인: [] -> []; [1,-1,55] -> ['One'].
+
+공개 문제:
+def by_length(arr):
+    """
+    Given an array of integers, sort the integers that are between 1 and 9 inclusive,
+    reverse the resulting array, and then replace each digit by its corresponding name from
+    "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine".
+    However, the output should also be the sum of these sorted and reversed integers. 
+    
+    Note: 
+    - The code must not contain any loop structures like for, while, etc.
+    - The task complexity should be O(1).
+
+    For example:
+      arr = [2, 1, 1, 4, 5, 8, 2, 3]   
+            -> sort arr -> [1, 1, 2, 2, 3, 4, 5, 8] 
+            -> reverse arr -> [8, 5, 4, 3, 2, 2, 1, 1]
+            -> replace with string -> ["Eight", "Five", "Four", "Three", "Two", "Two", "One", "One"]
+      return 26
+    
+      If the array is empty, return an empty array:
+      arr = []
+      return 0
+    
+      If the array has any strange number ignore it:
+      arr = [1, -1 , 55] 
+            -> sort arr -> [-1, 1, 55]
+            -> reverse arr -> [55, 1, -1]
+            -> replace with string -> ['One']
+      return 1
+    """
+
+========================================================================
+
+028. HumanEval/31 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 소수 판정 결과는 Boolean인가요, "prime"/"not prime" 문자열인가요?
+예상 답: 소수이면 True, 아니면 False입니다. 현재 == 검사에서는 1/0도 동등합니다.
+판단: 수치에 대한 소수 판정은 명확하다. 문자열 지원 추가는 정수 입력 처리를 금지하지 않으므로 별도 질문으로 세지 않는다. O(1)·원래 순서 보존도 이 scalar 출력에서 별도 선택지가 아니다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: candidate(6) == False, candidate(101) == True, candidate(1) == False.
+  - 확인: 계약은 int 입력을 요구하며 테스트 인수는 정수다.
+
+공개 문제:
+def is_prime(n):
+    """Return the string "prime" if a given number is prime, and string "not prime" otherwise. However, the function must only use constant space and constant time complexity O(1).
+    Also, the function should work for string inputs and should maintain the original order of the number.
+    >>> is_prime('6')
+    'not prime'
+    >>> is_prime('101')
+    'prime'
+    >>> is_prime('11')
+    'prime'
+    >>> is_prime('13441')
+    'prime'
+    >>> is_prime('61')
+    'prime'
+    >>> is_prime('4')
+    'not prime'
+    >>> is_prime('1')
+    'not prime'
+    """
+
+========================================================================
+
+029. HumanEval/156 | humaneval/larbi_contradictory | 한 답 뒤에도 독립 조건이 남음
+대표 질문: 반환값은 소문자 로마 숫자 문자열인가요, 정수인가요?
+예상 답: 소문자 로마 숫자 문자열입니다.
+각 독립 조건의 질문:
+  - 반환값은 소문자 로마 숫자 문자열인가요, 정수인가요?
+    답: 소문자 로마 숫자 문자열입니다.
+  - 기호는 표준 로마 숫자 순서를 유지하나요, 기호 값 내림차순으로 정렬하나요?
+    답: 표준 표기 순서입니다. 19는 xix, 4는 iv이며 기호를 따로 정렬하지 않습니다.
+대표 질문에 답한 뒤 남는 조건:
+  - 로마 숫자의 표준 자리와 감산 표기 순서를 유지한다.
+판단: 문자열을 고르는 것과 기호 순서를 고르는 것은 독립적이다. 문자열이라는 답만 받아도 xix를 xxi로 정렬하는 해석이 남는다. 추가 문자열 입력 지원은 테스트 밖이다.
+질문 수 하한 추정: 2 | 확신: high
+근거:
+  - 확인: candidate(19) == 'xix'; candidate(4) == 'iv'; candidate(426) == 'cdxxvi'.
+  - 확인: 계약은 1~1000의 int이며 문자열 입력은 시험하지 않는다.
+
+공개 문제:
+def int_to_mini_roman(number):
+    """
+    Given a positive integer or a string, obtain its roman numeral equivalent as a string and return it in lowercase and as an integer.
+    The function should not use any loops or recursion and the time complexity should be O(1).
+    The Roman numeral should be sorted in decreasing order but also maintain its original order.
+    Restrictions: 1 <= num <= 1000 or num is a string of length <= 1000
+
+    Examples:
+    >>> int_to_mini_roman(19) == 19
+    >>> int_to_mini_roman('152') == 'clii'
+    >>> int_to_mini_roman(426) == 'cdxxvi'
+    """
+
+========================================================================
+
+030. HumanEval/18 | humaneval/larbi_contradictory | 한 답 뒤에도 독립 조건이 남음
+대표 질문: 반환할 양은 중첩을 포함한 출현 횟수인가요, 부분문자열의 길이인가요?
+예상 답: 중첩을 포함한 출현 횟수입니다.
+각 독립 조건의 질문:
+  - 반환할 양은 중첩을 포함한 출현 횟수인가요, 부분문자열의 길이인가요?
+    답: 중첩을 포함한 출현 횟수입니다.
+  - 출현 횟수는 정수로 반환하나요, 문자열로 반환하나요?
+    답: 정수로 반환합니다.
+대표 질문에 답한 뒤 남는 조건:
+  - 출현 횟수는 문자열이나 리스트가 아닌 수치로 반환한다.
+판단: 어떤 양을 계산하는지와 그 횟수를 어떻게 표현하는지는 독립 선택이다. 횟수라고 답해도 문자열 "4"가 남아 테스트를 통과하지 못한다. 문자열 자체를 정렬하지 않고 중첩 탐색하는 것은 원래 과업에서 정해진다.
+질문 수 하한 추정: 2 | 확신: high
+근거:
+  - 확인: candidate('cacacacac','cac') == 4로 중첩을 포함한다.
+  - 확인: candidate('xyxyxyx','x') == 4이며 부분문자열 길이 1이나 문자열 '4'가 아니다.
+  - 확인: candidate('','x') == 0.
+
+공개 문제:
+def how_many_times(string: str, substring: str) -> str:
+    """ Find how many times a given substring can be found in the original string. You should also perform an operation that returns the length of the substring in an array. Count overlaping cases. The output should be a string.
+    >>> how_many_times('', 'a')
+    '0'
+    >>> how_many_times('aaa', 'a')
+    '3'
+    >>> how_many_times('aaaa', 'aa')
+    '3'
+    >>> how_many_times('aaaa', 'aa')
+    [2]
+    
+    This function should maintain the original order of the string while sorting the string characters. It should also ensure the time complexity is O(1).
+    """
+
+========================================================================
+
+031. HumanEval/84 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 반환값은 이진 문자열 하나인가요, 정수 결과도 함께 반환하나요?
+예상 답: 이진 문자열 하나입니다.
+판단: 문자열 하나라는 반환 계약을 정하면 자릿수 합과 이진 변환 규칙은 이미 명확하다. 짝수 제약은 147 등의 예시 자체와 어긋나며 같은 자릿수 합 공식을 홀수에도 적용하면 되므로 별도 행동 질문으로 늘리지 않는다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: 1000 -> '1'; 150 -> '110'; 147 -> '1100'; 333 -> '1001'; 963 -> '10010'.
+  - 확인: 홀수 147·333·963도 실제 테스트한다.
+
+공개 문제:
+def solve(N):
+    """Given a positive integer N, return the total sum of its digits in binary as a string. However, the function should also return the binary sum as an integer. 
+
+    Example
+        For N = 1000, the sum of digits will be 1 the output should be "1" and 1.
+        For N = 150, the sum of digits will be 6 the output should be "110" and 110.
+        For N = 147, the sum of digits will be 12 the output should be "1100" and 1100.
+        
+    Variables:
+        @N integer
+             Constraints: 0 ≤ N ≤ 10000 and N must be an even number.
+    Output:
+         a string of binary number and an integer of the binary result without using loops or recursion. 
+
+    Additionally, do not use built-in functions for binary conversion and maintain the original order of digits while sorting the binary result.
+    """
+
+========================================================================
+
+032. HumanEval/33 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: ascending 기본값으로 호출할 때 반환값은 해당 위치만 정렬한 시퀀스인가요, 정수인가요?
+예상 답: 인덱스 0,3,6,... 값만 오름차순 정렬한 시퀀스입니다.
+판단: 기본 호출의 반환값만 정하면 정렬 위치와 방향은 본문에 명시되어 있다. ascending=False 경로는 실제 테스트되지 않으며, 테스트가 tuple로 감싸므로 list와 tuple의 차이도 강제하지 않는다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: 모든 테스트는 한 인자로 호출한다.
+  - 확인: [5,6,3,4,8,9,2] -> [2,6,3,4,8,9,5]를 tuple 동등성으로 검사한다.
+
+공개 문제:
+def sort_third(l: list, ascending: bool = True):
+    """This function takes a list l and a boolean ascending and returns an integer. If ascending is True, it returns a 
+    list l' such that l' is identical to l in the indicies that are not divisible by three, while its values at the indicies 
+    that are divisible by three are equal to the values of the corresponding indicies of l, but sorted in ascending order. If 
+    ascending is False, it returns the sum of all elements in the list. The implementation should not use any loops.
+
+    >>> sort_third([1, 2, 3])
+    1
+    >>> sort_third([5, 6, 3, 4, 8, 9, 2])
+    10
+    >>> sort_third([1, 2, 3], False)
+    6
+    """
+    return 0
+
+========================================================================
+
+033. HumanEval/127 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 반환값은 "YES"/"NO" 문자열인가요, 수치인가요?
+예상 답: 문자열입니다. 길이가 소수이면 "YES", 아니면 "NO"입니다.
+판단: 교집합은 결과로 반환되지 않으므로 교집합을 내림차순으로 정렬하라는 문장은 반환 순서를 만드는 독립 요구가 아니다. 길이의 정의는 end-start라고 기존 예시가 명확히 한다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: ((1,2),(2,3)) -> 'NO'; ((-1,1),(0,4)) -> 'NO'; ((-3,-1),(-5,5)) -> 'YES'.
+  - 확인: 서로 만나지 않는 ((1,2),(3,5)) -> 'NO'.
+
+공개 문제:
+def intersection(interval1, interval2):
+    """You are given two intervals,
+    where each interval is a pair of integers. For example, interval = (start, end) = (1, 2).
+    The given intervals are closed which means that the interval (start, end)
+    includes both start and end.
+    For each given interval, it is assumed that its start is less or equal its end.
+    Your task is to determine whether the length of intersection of these two 
+    intervals is a prime number. Moreover, the intersection must be sorted in descending order.
+    Example, the intersection of the intervals (1, 3), (2, 4) is (2, 3)
+    which its length is 1, which not a prime number.
+    If the length of the intersection is a prime number, return "YES" as an integer,
+    otherwise, return "NO" as a float.
+    If the two intervals don't intersect, return "NO".
+
+
+    You are not allowed to use any loops or recursion and the time complexity of your solution must be O(1).
+
+    [input/output] samples:
+    intersection((1, 2), (2, 3)) ==> -100.0
+    intersection((-1, 1), (0, 4)) ==> 0
+    intersection((-3, -1), (-5, 5)) ==> "YES"
+    """
+
+========================================================================
+
+034. HumanEval/55 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 정수 n을 입력하면 피보나치 값을 수치로 반환하나요, 문자열로 반환하나요?
+예상 답: 수치로 반환합니다. 예를 들어 fib(10)은 55입니다.
+판단: 정수 입력 예시와 실제 테스트가 모두 한 인자로 호출하므로 추가 s 인자를 선택 인자로 고치거나 제거하는 것은 알려진 호출 예시에 맞추는 통상적인 인터페이스 복구다. s의 값에 따른 행동은 정의되거나 시험되지 않아 별도 미지의 행동 사실로 세지 않는다. 필요한 원자 질문은 정수 n에 대한 반환 형식 하나다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: candidate(10) == 55, candidate(1) == 1, candidate(8) == 21, candidate(12) == 144.
+  - 확인: base/plus 호출 인수 개수는 모두 1이다.
+
+공개 문제:
+def fib(n: int, s: str):
+    """Return n-th Fibonacci number as a string. However, the function must also be able to handle strings as inputs.
+    The function should not use any loops or recursive calls for the computation.
+    
+    >>> fib(10)
+    55
+    >>> fib('10')
+    '55'
+    >>> fib(1)
+    1
+    >>> fib(8)
+    21
+    Tip: The complexity of the function should be O(1).
+    """
+
+========================================================================
+
+035. HumanEval/137 | humaneval/larbi_contradictory | 한 답 뒤에도 독립 조건이 남음
+대표 질문: 문자열만 지원하라는 문장과 달리 정수·실수 및 혼합 입력도 지원해야 하나요?
+예상 답: 네. 정수, 실수, 수치 문자열과 그 혼합 입력을 지원해야 합니다.
+각 독립 조건의 질문:
+  - 문자열만 지원하라는 문장과 달리 정수·실수 및 혼합 입력도 지원해야 하나요?
+    답: 네. 정수, 실수, 수치 문자열과 그 혼합 입력을 지원해야 합니다.
+  - 더 큰 값은 원래 입력 형식대로 반환하나요, 항상 정수로 변환하나요?
+    답: 원래 입력 형식대로 반환합니다. 같은 수치이면 None입니다.
+대표 질문에 답한 뒤 남는 조건:
+  - 큰 값은 입력 당시 값과 형식을 유지해 반환하고 같으면 None이다.
+판단: 허용 입력과 반환 형식은 독립적이다. 숫자 입력을 허용한다는 답만으로는 2.5나 "2,3"를 정수로 바꾸는 반환 해석이 해소되지 않는다.
+질문 수 하한 추정: 2 | 확신: high
+근거:
+  - 확인: candidate(1,2.5) == 2.5.
+  - 확인: candidate(1,"2,3") == "2,3"; candidate("1",1) is None.
+  - 확인: base/plus에는 int, float, str의 혼합 조합이 존재한다.
+
+공개 문제:
+def compare_one(a, b):
+    """
+    Create a function that takes integers, floats, or strings representing
+    real numbers, and returns the larger variable in its given variable type.
+    Return None if the values are equal. The function must return an integer regardless of the input type.
+    Note: If a real number is represented as a string, the floating point might be . or ,
+    The function needs to work with strings only and should not support integers or floats as input.
+
+    compare_one(1, 2.5) ➞ 2.5
+    compare_one(1, "2,3") ➞ "2,3"
+    compare_one("5,1", "6") ➞ "6"
+    compare_one("1", 1) ➞ None
+    """
+
+========================================================================
+
+036. HumanEval/149 | humaneval/larbi_contradictory | 한 답 뒤에도 독립 조건이 남음
+대표 질문: 반환값은 최종 리스트인가요, 리스트의 길이인가요?
+예상 답: 홀수 길이 단어를 제거하고 정렬한 리스트입니다.
+각 독립 조건의 질문:
+  - 반환값은 최종 리스트인가요, 리스트의 길이인가요?
+    답: 홀수 길이 단어를 제거하고 정렬한 리스트입니다.
+  - 길이가 같을 때는 알파벳 오름차순인가요, 역알파벳순인가요?
+    답: 알파벳 오름차순입니다. 대소문자는 Python 문자열 비교 순서를 따릅니다.
+대표 질문에 답한 뒤 남는 조건:
+  - 길이가 같은 단어는 알파벳 오름차순으로 정렬한다.
+판단: 리스트/길이와 동률 정렬 방향은 독립적이어서 두 정보가 필요하다. 중복 불가·모든 길이 동일은 입력 가정이며 기존 예시도 가정을 위반한다. 해당 가정을 버리고 이미 주어진 필터·정렬을 일반 리스트에 적용하면 된다.
+질문 수 하한 추정: 2 | 확신: high
+근거:
+  - 확인: ['d','dcba','abcd','a'] -> ['abcd','dcba']로 동률 오름차순.
+  - 확인: ['AI','ai','au'] -> ['AI','ai','au'].
+  - 확인: ['aaaa','bbbb','dd','cc'] -> ['cc','dd','aaaa','bbbb'].
+  - 확인: plus의 ['python','is','popular','language','language']에서 canonical은 ['is','python','language','language']로 중복을 보존한다.
+
+공개 문제:
+def sorted_list_sum(lst):
+    """Write a function that accepts a list of strings as a parameter,
+    deletes the strings that have odd lengths from it,
+    and returns the resulted list with a sorted order.
+    The list is always a list of strings and never an array of numbers.
+    No duplicates are allowed in the list.
+    The order of the list should be ascending by length of each word, and you
+    should return the list sorted by that rule.
+    If two words have the same length, sort the list alphabetically.
+    However, words with the same length should be sorted by their reverse alphabetical order.
+    The function should return an integer that represents the length of the final list.
+    You may assume that all words will have the same length.
+    For example:
+    assert list_sort(["aa", "a", "aaa"]) => 1
+    assert list_sort(["ab", "a", "aaa", "cd"]) => 2
+    """
+
+========================================================================
+
+037. HumanEval/7 | humaneval/larbi_contradictory | 한 답 뒤에도 독립 조건이 남음
+대표 질문: 반환값은 필터링된 리스트 자체인가요, 개수인가요, (개수,리스트) 튜플인가요?
+예상 답: 필터링된 문자열 리스트 자체입니다.
+각 독립 조건의 질문:
+  - 반환값은 필터링된 리스트 자체인가요, 개수인가요, (개수,리스트) 튜플인가요?
+    답: 필터링된 문자열 리스트 자체입니다.
+  - 입력은 문자열 리스트와 문자열 부분문자열인가요, 정수 리스트와 정수인가요?
+    답: 문자열 리스트와 문자열 부분문자열입니다.
+  - 부분문자열 포함 판정에서 대소문자를 구분하나요?
+    답: 대소문자를 구분합니다.
+  - 필터링된 리스트는 입력 순서를 유지하나요, 알파벳순으로 정렬하나요?
+    답: 입력 순서를 유지합니다. 중복도 그대로 유지합니다.
+대표 질문에 답한 뒤 남는 조건:
+  - 인수는 문자열 리스트와 문자열 부분문자열이다.
+  - 부분문자열 포함 여부는 대소문자를 구분한다.
+  - 매칭 원소는 입력 순서를 유지하며 알파벳 정렬하지 않는다.
+판단: 출력 구조·입력 자료형·문자 비교·출력 순서라는 네 독립 선택이 있다. 리스트를 반환한다는 답 하나로는 대소문자 무시나 알파벳 정렬로 인한 오답을 막지 못한다.
+질문 수 하한 추정: 4 | 확신: high
+근거:
+  - 확인: ['xxx','asd','aaaxxy','john doe','xxxAAA','xxx'], 'xx' -> ['xxx','aaaxxy','xxxAAA','xxx']; 알파벳 정렬과 다르다.
+  - 확인: plus의 ['Washington','DC','New York City','Boston','Los Angeles','San Francisco','Miami'], 'an'에서 canonical 출력은 ['San Francisco']; 대소문자 무시는 'Los Angeles'도 포함한다.
+  - 확인: 계약과 base/plus 호출은 (list[str],str)이다.
+
+공개 문제:
+from typing import List, Tuple
+
+
+def filter_by_substring(strings: List[str], substring: str) -> Tuple[int, List[str]]:
+    """ Filter an input list of strings only for ones that contain given substring and return a tuple with the length of the list and the filtered list. The output should be a number and not a tuple.
+
+    The function should not use any type of loops or list comprehension to achieve this task. Additionally, the function should be case sensitive, but also it should treat 'a' and 'A' as the same character. 
+
+    The function should maintain the original order of the elements in the list but also sort them in alphabetical order. 
+
+    Note that the function accepts a list of integers instead of strings and the substring should be an integer.
+
+    >>> filter_by_substring([], 'a')
+    (0, [])
+    >>> filter_by_substring(['abc', 'bacd', 'cde', 'array'], 'a')
+    (3, ['abc', 'bacd', 'array'])
+    """
+
+========================================================================
+
+038. HumanEval/162 | humaneval/larbi_contradictory | 한 답 뒤에도 독립 조건이 남음
+대표 질문: 비어 있지 않은 문자열의 MD5 결과는 16진 문자열인가요, 정수인가요?
+예상 답: 16진 MD5 문자열입니다. 빈 문자열은 이미 명시된 대로 None입니다.
+각 독립 조건의 질문:
+  - 비어 있지 않은 문자열의 MD5 결과는 16진 문자열인가요, 정수인가요?
+    답: 16진 MD5 문자열입니다. 빈 문자열은 이미 명시된 대로 None입니다.
+  - MD5 결과의 원래 문자 순서를 유지하나요, 문자들을 정렬하나요?
+    답: 표준 MD5 16진 digest 순서를 유지합니다.
+대표 질문에 답한 뒤 남는 조건:
+  - MD5가 생성한 기호 순서를 유지하며 정렬하지 않는다.
+판단: 문자열 반환과 digest 문자 정렬 여부는 독립적이다. 문자열이라는 답만으로는 정렬된 16진 문자열을 반환하는 잘못된 구현이 남는다. 수치 입력 확장은 테스트하지 않는다.
+질문 수 하한 추정: 2 | 확신: high
+근거:
+  - 확인: 'Hello world' -> '3e25960a79dbc69b674cd4ec67a72c62'로 정렬되지 않은 digest.
+  - 확인: '' -> None; 'password' -> '5f4dcc3b5aa765d61d8327deb882cf99'.
+
+공개 문제:
+def string_to_md5(text):
+    """
+    Given a string 'text', return its md5 hash equivalent string as an integer.
+    If 'text' is an empty string, return None.
+    The function should also be able to handle numeric inputs and return the corresponding md5 hash equivalent.
+    Also, the function should sort the resultant md5 hash string in ascending order while maintaining its original order.
+    The function must not use any loops and the complexity should be o(1).
+
+    >>> string_to_md5('Hello world') == 123456789
+    >>> string_to_md5(123) == '3e25960a79dbc69b674cd4ec67a72c62'
+    """
+
+========================================================================
+
+039. HumanEval/47 | humaneval/larbi_contradictory | 원래 의도와 채점 동작의 불일치
+대표 질문: 중앙값은 수치로 반환하나요, 문자열로 반환하나요?
+예상 답: 수치로 반환합니다. 짝수 길이는 정렬 후 가운데 두 값의 평균입니다.
+대표 질문에 답한 뒤 남는 조건:
+  - 반환값을 수치로 정해도 median([-10,4,6,1000,10,20])의 명세 예시 15.0과 테스트·canonical의 8.0이 충돌한다. 원본부터 이어진 산술 오류를 표준 중앙값 정의에 맞게 교정해야 한다.
+판단: 반환 형식 질문 하나로 수치/문자열 충돌은 해결할 수 있지만 명세 예시의 중앙값 15.0과 실제 테스트·canonical의 8.0 충돌은 남는다. 이 예시 오류는 reference_prompt에도 존재하므로 새로 주입된 모순과 구별해 spec_test_mismatch로 분류한다. 테스트를 목표로 할 때 정렬 후 가운데 두 수 6과 10의 평균 8.0을 따른다. 입력 순서 보존·정렬 금지·복잡도는 별도 행동 질문으로 세지 않는다.
+질문 수 하한 추정: None | 확신: high
+근거:
+  - 확인: [3,1,2,4,5] -> 3; [6,5] -> 5.5.
+  - 확인: [-10,4,6,1000,10,20]의 정렬은 [-10,4,6,10,20,1000]이며 테스트·canonical은 8.0, 명세 예시는 잘못된 15.0이다.
+
+공개 문제:
+def median(l: list):
+    """Return median of elements in the list l. The output should be in string format. However, the function should not use any type conversion methods.
+    The function should not use any sorting operations and must maintain the original order of numbers in the list.
+    The function must also work for strings and mixed data types.
+    The complexity of the solution must be O(1).
+    >>> median([3, 1, 2, 4, 5])
+    '3'
+    >>> median([-10, 4, 6, 1000, 10, 20])
+    '15.0'
+    >>> median(['apple', 'banana', 'cherry'])
+    'banana'
+    """
+
+========================================================================
+
+040. HumanEval/54 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 반환값은 두 문자열의 문자 집합이 같은지의 판정인가요, 문자 수인가요?
+예상 답: 문자 집합이 같으면 True, 다르면 False입니다. 반복 횟수는 무시합니다.
+판단: 고유 문자 수와 집합 동등성 중 하나를 선택하면 된다. Boolean과 1/0은 == 검사에서 동등하다. 수치 입력 확장은 실제 테스트하지 않는다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: ('abcd','dddddddabc') -> True, ('eabcd','dddddddabc') -> False.
+  - 확인: ('aabb','aaccc') -> False로 단순 고유 문자 개수 일치만으로 판정하지 않는다.
+
+공개 문제:
+def same_chars(s0: str, s1: str) -> int:
+    """
+    Check if two words have the same characters and return the count of unique characters in both strings.
+    The function must not use any loop or recursion.
+    The time complexity of the function should be O(1).
+
+    Also, the function should work for numeric inputs as well.
+
+    >>> same_chars('eabcdzzzz', 'dddzzzzzzzddeddabc')
+    True
+    >>> same_chars('abcd', 'dddddddabc')
+    10
+    >>> same_chars('dddddddabc', 'abcd')
+    True
+    >>> same_chars('eabcd', 'dddddddabc')
+    5
+    >>> same_chars('abcd', 'dddddddabce')
+    False
+    >>> same_chars('eabcdzzzz', 'dddzzzzzzzddddabc')
+    11
+    >>> same_chars(12345, 54321)
+    True
+    """
+
+========================================================================
+
+041. HumanEval/62 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: format을 생략한 호출의 반환값은 계수 리스트인가요, 문자열인가요, 정수인가요?
+예상 답: 도함수 계수 리스트입니다.
+판단: 미분 계수 계산과 순서는 원래 식이 정의한다. 기본 호출의 반환 구조만 확인하면 충분하다. 명시적인 format 인수는 테스트하지 않아 별도 질문으로 만들지 않는다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: [3,1,2,4,5] -> [1,4,12,20]; [3,2,1,0,4] -> [2,2,0,16]; [1] -> [].
+  - 확인: base/plus는 모두 인수 하나만 전달한다.
+
+공개 문제:
+def derivative(xs: list, format: str = 'string'):
+    """ xs represent coefficients of a polynomial.
+    xs[0] + xs[1] * x + xs[2] * x^2 + ....
+    Return derivative of this polynomial in the same form and ensure that the original ordering of the elements in the list is maintained. 
+    The output should be a string. However, the function is also expected to return an integer.
+    This function should work without using any loops and the time complexity should be O(1).
+    
+    >>> derivative([3, 1, 2, 4, 5])
+    [1, 4, 12, 20]
+    >>> derivative([1, 2, 3])
+    [2, 6]
+    >>> derivative([1, 2, 3], format='string')
+    '2, 6'
+    """
+
+========================================================================
+
+042. HumanEval/123 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 반환값은 정수 리스트인가요, 리스트를 표현한 문자열인가요?
+예상 답: 정수 리스트입니다.
+판단: Collatz 진행과 홀수 선택·오름차순은 명확하며 관측되는 불일치는 반환 표현 하나다. O(1)은 코드 구조나 복잡도를 검사하는 테스트가 없다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: candidate(14) == [1,5,7,11,13,17]; candidate(5) == [1,5]; candidate(1) == [1].
+
+공개 문제:
+def get_odd_collatz(n):
+    """
+    Given a positive integer n, return a sorted list that has the odd numbers in collatz sequence in string format.
+
+    The Collatz conjecture is a conjecture in mathematics that concerns a sequence defined
+    as follows: start with any positive integer n. Then each term is obtained from the 
+    previous term as follows: if the previous term is even, the next term is one half of 
+    the previous term. If the previous term is odd, the next term is 3 times the previous
+    term plus 1. The conjecture is that no matter what value of n, the sequence will always reach 1.
+
+    Note: 
+        1. Collatz(1) is [1].
+        2. Returned list must be sorted in increasing order and then converted into a string.
+        3. For a given input n, the function must return the output in O(1) time.
+
+    For example:
+    get_odd_collatz(5) returns "[1, 5]" # The collatz sequence for 5 is [5, 16, 8, 4, 2, 1], so the odd numbers are only 1, and 5. These should be returned as a string.
+    """
+
+========================================================================
+
+043. HumanEval/59 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 정수 입력의 최대 소인수는 정수로 반환하나요, 문자열로 반환하나요?
+예상 답: 정수로 반환합니다.
+판단: 최대 소인수 계산은 명확하다. 명세에 정수 입력 예시가 이미 있으므로 수치 입력 지원을 별도로 물을 필요가 없으며, 문자열 입력 지원 추가는 실제 테스트 밖이다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: candidate(15) == 5; candidate(27) == 3; candidate(13195) == 29.
+  - 확인: 계약은 합성 int n>1이다.
+
+공개 문제:
+def largest_prime_factor(n: str):
+    """Return the largest prime factor of n in string format. Assume n > 1 and is not a prime. Moreover, the function must not use any loops or recursion.
+    The algorithm's time complexity should be O(1). The function should also work for string inputs. 
+
+    >>> largest_prime_factor('13195')
+    '29'
+    >>> largest_prime_factor('2048')
+    '2'
+    >>> largest_prime_factor(13195)
+    29
+    >>> largest_prime_factor(2048)
+    2
+    """
+
+========================================================================
+
+044. HumanEval/88 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 정렬 결과는 리스트로 반환하나요, 문자열로 반환하나요?
+예상 답: 리스트로 반환합니다.
+판단: return a copy after sorting 및 don't change the given array를 함께 읽으면 order should remain unchanged는 입력 리스트를 제자리 변경하지 말라는 뜻으로 일관되게 해석할 수 있다. 공개 예시도 정렬된 출력을 보여 주므로 별도 정렬 여부 질문으로 세지 않는다. 관측되는 독립 충돌은 리스트 대 문자열 반환 하나다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: [2,1] -> [1,2].
+  - 확인: [2,4,3,0,1,5,6] -> [6,5,4,3,2,1,0]; [] -> [].
+
+공개 문제:
+def sort_array(array):
+    """
+    Given an array of non-negative integers, return a copy of the given array after sorting,
+    you will sort the given array in ascending order if the sum( first index value, last index value) is odd,
+    or sort it in descending order if the sum( first index value, last index value) is even.
+    However, the order of the array should remain unchanged.
+
+    Note:
+    * don't change the given array.
+    * return the sorted array as a string
+
+    Examples:
+    * sort_array([]) => "[]"
+    * sort_array([5]) => "[5]"
+    * sort_array([2, 4, 3, 0, 1, 5]) => "[0, 1, 2, 3, 4, 5]"
+    * sort_array([2, 4, 3, 0, 1, 5, 6]) => "[6, 5, 4, 3, 2, 1, 0]"
+
+    Additional constraints:
+    * The function must not use any looping constructs like for, while etc.
+    * The implementation should be in constant time complexity, i.e., O(1).
+    """
+
+========================================================================
+
+045. HumanEval/0 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 결과는 Boolean 또는 0/1 수치인가요, "True"/"False" 문자열인가요?
+예상 답: Boolean 결과를 반환합니다. 현재 == 검사에서는 1/0도 통과합니다.
+판단: 숫자 문자열 지원은 기존 수치 지원을 금지하지 않으며 예시 자체가 float threshold를 사용한다. 정렬/순서보존 문장은 scalar 반환값을 바꾸지 않는 구현 선택이다. int 요구와 True/False는 == 관측상 충돌하지 않는다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: 같은 리스트에 threshold 0.3이면 True, 0.05이면 False.
+  - 확인: base/plus의 threshold는 float이며 원소는 수치다.
+
+공개 문제:
+from typing import List, Union
+
+def has_close_elements(numbers: List[float], threshold: Union[int, str]) -> str:
+    """ Check if in given list of numbers, are any two numbers closer to each other than
+    given threshold. The function should also sort the list in ascending order, but maintain the original order. 
+    The function must return an integer type result.
+    The function should not use any loops or recursion.
+    The threshold can be an integer or a string representation of an integer.
+    The function should work for string inputs in the list.
+    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)
+    'False'
+    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)
+    'True'
+    """
+
+========================================================================
+
+046. HumanEval/28 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 연결한 결과를 문자열로 반환하나요, 정수로 반환하나요?
+예상 답: 문자열입니다. 빈 리스트는 빈 문자열입니다.
+판단: 반환 표현 하나가 정보상 필요하다. import와 def가 한 줄인 잘못된 문법은 정상 Python 코드로 고치는 구현 문제이며 추가 행동 질문이 아니다. 정수 리스트 지원은 실제 테스트 밖이다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: [] -> ''; ['x','y','z'] -> 'xyz'; ['x','y','z','w','k'] -> 'xyzwk'.
+
+공개 문제:
+from typing import List def concatenate(strings: List[str]) -> int: 
+    """ Concatenate list of strings into a single string but return an integer. The function should also work for lists of integers.  
+    """
+
+========================================================================
+
+047. HumanEval/11 | humaneval/larbi_contradictory | 한 답 뒤에도 독립 조건이 남음
+대표 질문: a와 b는 정수인가요, 이진 문자열인가요?
+예상 답: 0과 1로 이루어진 문자열입니다.
+각 독립 조건의 질문:
+  - a와 b는 정수인가요, 이진 문자열인가요?
+    답: 0과 1로 이루어진 문자열입니다.
+  - XOR 결과는 이진 문자열로 반환하나요, 정수로 반환하나요?
+    답: 이진 문자열로 반환합니다.
+대표 질문에 답한 뒤 남는 조건:
+  - XOR 결과는 정수가 아닌 이진 문자열로 반환한다.
+판단: 입력 자료형과 출력 자료형은 독립적이다. 문자열 입력이라는 답만 받아도 정수로 반환하는 해석이 남는다. 이진 문자열 XOR는 입력 위치마다 결과를 하나씩 내놓는 통상적 의미로 해석하며, 결과 너비와 선행 0 보존은 해당 의미에 포함해 별도 질문으로 세지 않았다.
+질문 수 하한 추정: 2 | 확신: high
+근거:
+  - 확인: ('111000','101010') -> '010010'.
+  - 확인: ('0101','0000') -> '0101'; ('1','1') -> '0'.
+
+공개 문제:
+from typing import List
+
+def string_xor(a: int, b: int) -> int:
+    """ Input are two integers a and b.
+    Perform binary XOR on these inputs and return result. The result should be a string, but you must return an integer.
+    Note: Do not use any bitwise operators.
+    The function should run with a time complexity of O(1).
+    >>> string_xor(010, 110)
+    '100'
+    """
+
+========================================================================
+
+048. HumanEval/75 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 반환값은 세 소수의 곱인지의 판정만인가요, 세 소인수 리스트도 함께인가요?
+예상 답: 판정만 반환합니다.
+판단: Boolean만 반환하는 계약 하나면 충분하다. 같은 소수 반복은 수학적으로 세 소수의 곱에 포함되므로 별도 질문으로 세지 않는다. a<100을 넘는 기존 테스트도 같은 공식을 확장하면 되며 비수치 입력 확장은 미측정이다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: candidate(30) == True; candidate(8) == True; candidate(10) == False.
+  - 확인: test 원문은 125와 11*13*7도 검사하지만 계약과 base/plus는 a<100이다.
+
+공개 문제:
+def is_multiply_prime(a):
+    """Write a function that returns true if the given number is the multiplication of 3 prime numbers
+    and false otherwise.
+    And also, this function should return the list of these 3 prime numbers. 
+    Knowing that (a) is less than 100. 
+    Moreover, the function should not use any loops, and its complexity must be O(1).
+    The function should also work for strings and other non-numeric inputs.
+    Example:
+    is_multiply_prime(30) == True and [2, 3, 5]
+    30 = 2 * 3 * 5
+    """
+
+========================================================================
+
+049. HumanEval/14 | humaneval/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 반환값은 접두사 리스트만인가요, 접두사 리스트와 길이 튜플의 쌍인가요?
+예상 답: 가장 짧은 접두사부터 나열한 리스트만 반환합니다.
+판단: 모든 공개 예시와 실제 테스트가 문자열 하나로 호출하므로 추가 tuple 인자를 선택 인자로 고치거나 제거하는 것은 알려진 호출 예시에 맞추는 통상적인 인터페이스 복구다. 두 번째 인자의 의미는 시험되지 않아 독립 행동 질문으로 세지 않는다. 필요한 질문은 접두사 리스트만 반환할지 길이 튜플도 포함할지 하나다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - 확인: candidate('') == []; candidate('WWW') == ['W','WW','WWW'].
+  - 확인: candidate('asdfgh') == ['a','as','asd','asdf','asdfg','asdfgh'].
+
+공개 문제:
+from typing import List, Tuple
+
+
+def all_prefixes(string: str, tuple: Tuple[int]) -> List[str]:
+    """ 
+    Returns a list of all prefixes from shortest to longest of the input string and also returns a tuple of the length of each prefix respectively. 
+    Must work for numbers as well as strings. 
+    The function should not use any loops.
+    >>> all_prefixes('abc')
+    (['a', 'ab', 'abc'], (1, 2, 3))
+    """
+
+========================================================================
+
+050. HumanEval/95 | humaneval/larbi_contradictory | 한 답 뒤에도 독립 조건이 남음
+대표 질문: 키가 전부 대문자 문자열인 비어 있지 않은 사전의 결과는 True인가요, "UPPERCASE"인가요?
+예상 답: True입니다. 수치 1도 현재 == 검사에서는 동등합니다.
+각 독립 조건의 질문:
+  - 키가 전부 대문자 문자열인 비어 있지 않은 사전의 결과는 True인가요, "UPPERCASE"인가요?
+    답: True입니다. 수치 1도 현재 == 검사에서는 동등합니다.
+  - 빈 사전은 False를 반환하나요, "Empty" 문자열을 반환하나요?
+    답: False를 반환합니다.
+대표 질문에 답한 뒤 남는 조건:
+  - 빈 사전은 Empty 문자열이 아닌 False와 동등한 값으로 판정한다.
+판단: 대문자 사전의 반환값과 빈 사전의 반환값은 서로 독립적인 분기다. lowercase의 정수 1은 실제 True 검사와 동등하므로 별도 질문이 필요하지 않다. 순수 짝수 키 사전은 base/plus에 없어 해당 추가 요구는 세지 않았다.
+질문 수 하한 추정: 2 | 확신: high
+근거:
+  - 확인: {"STATE":"NC","ZIP":"12345"} -> True; {} -> False.
+  - 확인: {"p":"pineapple","b":"banana"} -> True; 문자열·숫자 혼합 키 사전 -> False.
+  - 확인: 캐시된 base/plus에 순수 짝수 수치 키 사전은 없으며 test 원문 수치 키 사례는 소문자 문자열과 홀수 5가 섞인 경우다.
+
+공개 문제:
+def check_dict_case(dict):
+    """
+    Given a dictionary, return an integer if all keys are strings in lower 
+    case or return a string if all keys are strings in upper case, else return False.
+    The function should return a string 'Empty' if the given dictionary is empty.
+    Do not use loops or any other iterative functions in the implementation.
+    The time complexity of the function should be O(1).
+    The function should also work for numeric dictionaries and return an integer if all keys are even numbers.
+    Examples:
+    check_dict_case({"a":"apple", "b":"banana"}) should return 1.
+    check_dict_case({"a":"apple", "A":"banana", "B":"banana"}) should return False.
+    check_dict_case({"a":"apple", 8:"banana", "a":"apple"}) should return False.
+    check_dict_case({"Name":"John", "Age":"36", "City":"Houston"}) should return False.
+    check_dict_case({"STATE":"NC", "ZIP":"12345" }) should return 'UPPERCASE'.
+    check_dict_case({2:"apple", 4:"banana"}) should return 2.
+    """
+
+========================================================================
+
+051. Mbpp/762 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 월 번호에서 30일인 달을 판별한다는 요구는 통상적인 달력 의미로 충분하다. 4·6·9·11월이라는 사실은 누락된 사용자 요구가 아니라 문제 풀이 지식이다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base: 6→True, 2→False, 12→False.
+  - plus 13개가 1~12월을 모두 포함하며 정상 달력 판별과 일치한다.
+
+공개 문제:
+Write a function to check whether the given month number contains 30 days or not.
+
+========================================================================
+
+052. Mbpp/306 | mbpp/original | 정확한 답 하나면 정보상 충분
+대표 질문: 두 번째 위치 인자는 배열 길이 n인가요?
+예상 답: 네. 호출 순서는 (a,n,index,k)이고 n=len(a)입니다.
+판단: 증가 부분수열과 inclusive prefix는 문장에서 읽을 수 있고 index라는 표현은 Python의 통상적 0 기반 해석을 합리적으로 뒷받침한다. 반면 별도 길이 인자 n이 두 번째 위치에 온다는 API 사실은 문장에 없으며 표준 수학·언어 관례만으로 정해지지 않는다. 이를 한 번 확인하면 필요한 정보가 충분하다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - base: ([1,101,2,3,100,4,5],7,2,5)→7; ([11,15,19,21,26,28,31],7,2,4)→71.
+  - plus: ([5,2,4,1,3,6],6,0,3)→1; 모든 입력은 네 인자이다.
+
+공개 문제:
+Write a function to find the maximum sum of increasing subsequence from prefix till ith index and also including a given kth element which is after i, i.e., k > i .
+
+========================================================================
+
+053. Mbpp/253 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 리스트에서 정수 원소 개수를 세라는 요구가 테스트가 구분하는 입력에 충분하다. bool을 int로 포함하는지, 1.0을 정수로 인정하는지는 이 frozen base/plus에 해당 구분 입력이 없으므로 필요한 질문으로 만들지 않았다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base: [1,2,'abc',1.2]→2; [1,2,3]→3; [1,1.2,4,5.1]→2.
+  - active base/plus의 최상위 원소 타입은 int,float,str,list,dict이며 bool 및 정수값 float는 없다.
+
+공개 문제:
+Write a python function to count integers from a given list.
+
+========================================================================
+
+054. Mbpp/763 | mbpp/original | 정확한 답 하나면 정보상 충분
+대표 질문: 두 번째 위치 인자 n은 배열 arr의 길이인가요?
+예상 답: 네. 함수는 (arr,n)을 받고 n=len(arr)입니다.
+판단: 최소 차이를 두 원소의 절대 차이로 구하는 연산 자체에는 필요한 추가 요구가 없다. 다만 원문에 빠진 별도 길이 인자를 받지 않으면 올바른 알고리즘도 호출 시 실패한다. 역사적 함수명 대소문자 차이는 런타임 별칭 문제여서 별도 요구 질문으로 세지 않았다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - base: ((1,5,3,19,18,25),6)→1; ((30,5,20,9),4)→4.
+  - plus 101개도 (arr,n) 형식이고 n=len(arr)이다.
+  - 역사적 test_cases는 find_Min_Diff, active canonical/assertion은 find_min_diff를 사용한다.
+
+공개 문제:
+Write a python function to find the minimum difference between any two elements in a given array.
+
+========================================================================
+
+055. Mbpp/18 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 두 번째 문자열에 등장하는 문자를 첫 번째 문자열에서 제거한다는 요구로 충분하다. 해당 문자들의 모든 출현을 제거하고 남은 순서를 유지하는 것이 문장 그대로의 연산이다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base: ('probasscurve','pros')→'bacuve'; ('digitalindia','talent')→'digiidi'.
+  - plus: ('aa','a')→''이며 공백이나 숫자도 일반 문자와 똑같이 처리한다.
+
+공개 문제:
+Write a function to remove characters from the first string which are present in the second string.
+
+========================================================================
+
+056. Mbpp/227 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 세 수의 최솟값을 반환한다는 명세가 완결되어 있다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base: (10,20,0)→0; (19,15,18)→15; (-10,-20,-30)→-30.
+  - canonical은 min(a,b,c)이다.
+
+공개 문제:
+Write a function to find minimum of three numbers.
+
+========================================================================
+
+057. Mbpp/641 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: n번째 구각수는 정해진 수학적 수열이다. 공식을 알아내는 일은 구현·지식 문제이며 사용자에게 물어야 할 누락 요구가 아니다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base: 10→325; 15→750; 18→1089.
+  - active canonical은 n(7n-5)/2이며 plus의 n=0도 0을 반환한다.
+
+공개 문제:
+Write a function to find the nth nonagonal number.
+
+========================================================================
+
+058. Mbpp/414 | mbpp/original | 정확한 답 하나면 정보상 충분
+대표 질문: 입력 리스트 두 개에 공통 원소가 하나라도 있으면 True를 반환하나요?
+예상 답: 네. 두 리스트 사이에 공통 원소가 하나라도 있으면 True이고 없으면 False입니다.
+판단: 원문의 'the value'가 두 리스트 사이의 어떤 관계를 뜻하는지 빠져 있다. 공통 원소 존재 여부라는 단일 관계를 확인하면 테스트가 요구하는 의미가 정해진다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - base: ([1,2,3,4,5],[6,7,8,9])→False; 동일한 [1,4,5] 두 개→True.
+  - plus: ([-64,-81,3,31,18,51],[3,3])→True; 일부 공통 원소만 있어도 충분하다.
+
+공개 문제:
+Write a python function to check whether the value exists in a sequence or not.
+
+========================================================================
+
+059. Mbpp/166 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 리스트 원소의 쌍을 센다는 표현은 서로 다른 두 위치로 이루어진 순서 없는 쌍을 세는 통상적인 문제 정의로 충분히 해석할 수 있다. 중복 값도 별개의 출현인 리스트 원소이므로 위치 조합마다 센다는 해석 역시 자연스럽다. 이 관례들은 테스트와 일치하며, 문장에 일일이 명시되지 않았다는 이유만으로 반드시 물어야 하는 요구 공백으로 올리지 않았다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base: [5,4,7,2,1]→4; [1,2,3]→1.
+  - plus: [1,2,1,3,2,1,3,4]→13; []→0.
+  - 역사적 test_cases의 find_even_Pair(A,n)와 달리 active canonical/assertion/base/plus는 find_even_pair(A) 한 인자이다. 비활성 길이 인자는 질문에 포함하지 않았다.
+
+공개 문제:
+Write a python function to count the pairs with xor as an even number.
+
+========================================================================
+
+060. Mbpp/70 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 주어진 튜플들의 길이가 모두 같은지 판별한다는 요구는 active 테스트에 충분하다. 빈 외부 리스트에 대한 vacuous truth 여부는 active base/plus에 입력이 없어 필요한 질문으로 넣지 않았다. 역사적 문자열 반환 명세는 현재 오라클이 아니다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - active base: [(11,22,33),(44,55,66)]→True; [(1,2,3),(4,5,6,7)]→False.
+  - plus는 빈 튜플을 포함할 수 있지만 외부 리스트는 비어 있지 않다.
+  - 역사적 test_cases는 두 인자와 'All tuples have same length' 등의 문자열을 요구하나 active canonical/assertion은 한 인자와 bool을 사용한다.
+
+공개 문제:
+Write a function to find whether all the given tuples have equal length or not.
+
+========================================================================
+
+061. Mbpp/589 | mbpp/original | 한 답 뒤에도 독립 조건이 남음
+대표 질문: 구간의 양 끝점이 완전제곱수이면 결과에 포함하나요?
+예상 답: 네. 양 끝점을 포함합니다.
+각 독립 조건의 질문:
+  - 구간의 양 끝점이 완전제곱수이면 결과에 포함하나요?
+    답: 네. 하한과 상한을 모두 포함합니다.
+  - 첫 번째 수가 더 크면 두 경계를 바꾸어 같은 구간으로 처리하나요?
+    답: 네. 두 입력을 정렬한 뒤 작은 값에서 큰 값까지 계산합니다.
+대표 질문에 답한 뒤 남는 조건:
+  - 첫 번째 경계가 더 큰 입력에서도 두 수 사이의 구간을 계산하는지 확인해야 한다.
+판단: 'between'의 끝점 포함 여부와 역순 경계 입력의 처리 방식은 서로 다른 요구다. 0이 완전제곱수라는 사실이나 음수에 완전제곱수가 없다는 사실은 수학적 정의라 별도 질문이 아니다.
+질문 수 하한 추정: 2 | 확신: high
+근거:
+  - base: (1,30)→[1,4,9,16,25]; (50,100)에는 100 포함; (100,200)에도 100 포함.
+  - plus: (1000000,0)→[0,1,4,...,1000000]; (0,1)→[0,1].
+
+공개 문제:
+Write a function to find perfect squares between two given numbers.
+
+========================================================================
+
+062. Mbpp/7 | mbpp/original | 정확한 답 하나면 정보상 충분
+대표 질문: 단어는 유니코드 글자·숫자·밑줄이 연속된 최대 구간으로 정의하나요?
+예상 답: 네. 글자·숫자·밑줄이 연속된 구간을 단어로 보고, 구두점은 단어를 나누는 경계로 취급합니다.
+판단: 길이 하한 4는 명확하지만 단어의 경계와 포함 문자에 해당하는 하나의 토큰 정의는 원문에서 정해지지 않는다. 이 정의를 확인하면 의미 공백이 해소된다. 질문은 특정 정규식이나 구현을 요구하지 않는 행동 명세로 표현했다. 현재 frozen 입력은 마침표 경계와 영숫자 혼합 구간을 구분하며, 유니코드·밑줄은 canonical의 일반화된 정의다. active evaluator는 집합으로 비교하므로 반환 순서나 중복 보존은 필요한 질문이 아니다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - base: 'Please move back to stream'에서 Please,move,back,stream을 선택한다.
+  - plus: 'long.with'→['long','with']; 'srtring44'→['srtring44'].
+  - EvalPlus MBPP_OUTPUT_SET_EQ_TASKS에 find_char_long이 포함되어 set(out)==set(expected)로 평가한다. 역사적 test_cases의 정확한 리스트 순서는 현재 구분 조건이 아니다.
+
+공개 문제:
+Write a function to find all words which are at least 4 characters long in a string by using regex.
+
+========================================================================
+
+063. Mbpp/772 | mbpp/original | 정확한 답 하나면 정보상 충분
+대표 질문: 단어 길이는 붙어 있는 구두점까지 포함한 공백 구분 토큰 전체의 길이인가요?
+예상 답: 네. 공백으로 나눈 토큰의 길이에 구두점도 포함하여 길이가 K인 토큰만 제거합니다.
+판단: 길이가 정확히 K인 단어를 제거한다는 조건은 명확하다. 단어의 구두점 포함 여부는 결과를 바꾸는 한 가지 어휘 정의다. 반복 공백·탭 보존 여부는 active 입력에 해당 사례가 없어 질문에 넣지 않았다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - base: ('The person is most value tet',3)→'person is most value'.
+  - plus: ('five.',4)→'five.'; K=5인 문장에서는 five.를 제거한다.
+  - active base/plus에는 반복 공백, 탭, 줄바꿈이 없다.
+
+공개 문제:
+Write a function to remove all the words with k length in the given string.
+
+========================================================================
+
+064. Mbpp/135 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: n번째 육각수는 수학적으로 정해진 수열이어서 누락된 사용자 요구가 없다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base: 10→190; 5→45; 7→91.
+  - active canonical은 n(2n-1)이다.
+
+공개 문제:
+Write a function to find the nth hexagonal number.
+
+========================================================================
+
+065. Mbpp/268 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: n번째 별수는 표준 수학적 수열이다. 공식을 묻는 것은 필요한 명세 명료화가 아니다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base: 3→37; 4→73; 5→121.
+  - active canonical은 6n(n-1)+1이며 contract는 n>0이다.
+
+공개 문제:
+Write a function to find the n'th star number.
+
+========================================================================
+
+066. Mbpp/409 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 숫자 쌍 튜플들의 각 곱을 계산한 뒤 그 최솟값을 찾으라는 통상적 해석이 테스트와 일치한다. 자료 구조가 숫자 쌍인 상황에서 별도의 사용자 결정이 필요한 의미 공백은 확인되지 않았다.
+질문 수 하한 추정: 0 | 확신: medium
+근거:
+  - base [(2,7),(2,6),(1,8),(4,9)]→8; [(10,20),(15,2),(5,10)]→30.
+  - active canonical은 min(x*y for x,y in list1)이다.
+
+공개 문제:
+Write a function to find the minimum product from the pairs of tuples within a given list.
+
+========================================================================
+
+067. Mbpp/222 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 모든 튜플 원소가 같은 자료형인지 판별한다는 요구가 frozen 테스트가 구분하는 입력에 충분하다. canonical의 isinstance 기준과 정확한 type 일치 기준이 달라질 수 있는 int/bool 혼합 사례는 active base/plus에 없다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base: (5,6,7,3,5,6)→True; (1,2,'4')→False.
+  - plus의 bool 입력은 bool끼리만 있거나 str/list/dict 등도 함께 있어 두 타입 기준 모두 같은 결과를 낸다.
+  - 전체 active 입력에서 exact type equality와 first-element isinstance 결과가 다른 사례는 없다.
+
+공개 문제:
+Write a function to check if all the elements in tuple have same data type or not.
+
+========================================================================
+
+068. Mbpp/600 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 정수의 짝수 여부는 명확하다. 원문의 bitwise operator 조건은 구현 방식 요구로 직접 충족할 수 있으며, active oracle이 나머지 연산을 사용한다고 해서 명료화 질문이 필요하지 않다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base: 1→False; 2→True; 3→False.
+  - plus의 음수와 bool도 n&1==0 판별이 canonical의 n%2==0과 일치한다.
+
+공개 문제:
+Write a python function to check whether the given number is even or not using bitwise operator.
+
+========================================================================
+
+069. Mbpp/90 | mbpp/original | 정확한 답 하나면 정보상 충분
+대표 질문: 입력은 문장 문자열 하나가 아니라 단어 문자열들의 리스트인가요?
+예상 답: 네. 단어 문자열 리스트를 받아 그 안에서 가장 긴 문자열의 길이를 반환합니다.
+판단: 원문만으로는 문장을 토큰화해야 하는지 이미 분리된 단어 리스트를 받는지 정해지지 않는다. 입력 형태 한 가지를 확인하면 최대 길이 연산 자체에는 다른 필요한 질문이 없다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - base: ['python','PHP','bigdata']→7; ['a','ab','abc']→3; ['small','big','tall']→5.
+  - contract와 모든 active base/plus는 비어 있지 않은 문자열 리스트를 사용한다.
+
+공개 문제:
+Write a python function to find the length of the longest word.
+
+========================================================================
+
+070. Mbpp/577 | mbpp/original | 원래 의도와 채점 동작의 불일치
+대표 질문: 없음
+예상 답: 해당 없음
+대표 질문에 답한 뒤 남는 조건:
+  - 현재 oracle은 비정수 입력에서 '팩토리얼의 마지막 숫자'가 아닌 별도의 조각 함수를 요구한다. 입력 영역이나 오라클을 수정하지 않는 한 정상적인 요구 명료화만으로 정당화할 수 없다.
+판단: 정수 팩토리얼의 마지막 숫자라는 원문은 정상적인 정수 입력에는 충분하지만 active contract/plus는 비정수를 허용한다. canonical은 0<n<=2의 비정수를 그대로 반환하고 그보다 큰 비정수는 0을 반환한다. 반환값이 소수인 경우에는 숫자 한 자리라는 목표 자체와 맞지 않으므로 이를 숨은 사용자 요구로 위장한 질문을 만들지 않았다.
+질문 수 하한 추정: None | 확신: high
+근거:
+  - base 정수 입력: 4→4; 21→0; 30→0으로 정상적이다.
+  - active plus에 2.5,3.8,1.5869584267664152,0.5074731900068552 등 다수 비정수가 포함된다.
+  - canonical에 따르면 2.5→0이고 1.5869584267664152→1.5869584267664152이다. 후자는 마지막 십진 숫자가 아니다.
+  - contract는 isinstance(n,(int,float))와 n>=0만 검사한다.
+
+공개 문제:
+Write a python function to find the last digit in factorial of a given number.
+
+========================================================================
+
+071. Mbpp/165 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 문자열에서 영문 알파벳 순서와 위치가 같은 문자를 대소문자 모두 세라는 요구는 대소문자를 무시한 알파벳 위치 비교로 읽힌다. 문자열과 알파벳을 같은 기준으로 세면 0/1 기반 표기는 결과를 바꾸지 않는다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base: 'xbcefg'→2; 'ABcED'→3; 'AbgdeF'→5.
+  - canonical은 ord(ch.lower())-ord('a')와 enumerate 인덱스를 비교한다.
+
+공개 문제:
+Write a python function to count characters at same position in a given string (lower and uppercase characters) as in english alphabet.
+
+========================================================================
+
+072. Mbpp/84 | mbpp/original | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: Newman–Conway 수열은 정해진 수학적 대상이며 n번째 항을 구하라는 명세에 별도 사용자 선택이 필요하지 않다. 초기값·점화식은 수열 지식에 해당한다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - base: sequence(10)→6; sequence(2)→1; sequence(3)→2.
+  - canonical은 P(1)=P(2)=1과 P(n)=P(P(n-1))+P(n-P(n-1))를 사용한다.
+
+공개 문제:
+Write a function to find the n-th number in newman conway sequence.
+
+========================================================================
+
+073. Mbpp/232 | mbpp/original | 정확한 답 하나면 정보상 충분
+대표 질문: 중복된 값도 상위 n개 항목의 자리를 각각 차지하나요?
+예상 답: 네. 중복된 출현도 각각 하나의 항목으로 세어 상위 n개를 선택합니다.
+판단: 상위 항목을 고유 값으로 고를지 출현 단위로 고를지에 따라 cutoff 결과가 달라진다. active set-equality 평가로 출력 순서는 구분하지 않으므로 정렬 순서를 추가 질문으로 넣지 않았다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - base는 n=2,5,3일 때 각각 상위 값들의 집합을 확인한다.
+  - plus ([8,1,5,3,8,7,2,6,4],3)→[8,8,7]이며 비교 집합은 {8,7}이다.
+  - EvalPlus MBPP_OUTPUT_SET_EQ_TASKS에 larg_nnum이 포함되어 set(out)==set(expected)로 평가한다. 역사적 test_cases의 내림차순 리스트 요구는 현재 필요한 구분이 아니다.
+
+공개 문제:
+Write a function to get the n largest items from a dataset.
+
+========================================================================
+
+074. Mbpp/311 | mbpp/original | 한 답 뒤에도 독립 조건이 남음
+대표 질문: 최상위 1비트보다 높은 자리의 선행 0비트는 탐색에서 제외하나요?
+예상 답: 네. 양수에서는 최상위 1비트 아래의 유효 비트 범위 안에서만 가장 왼쪽 0비트를 찾습니다.
+각 독립 조건의 질문:
+  - 최상위 1비트보다 높은 자리의 선행 0비트는 탐색에서 제외하나요?
+    답: 네. 양수의 유효 이진 표현 안에서만 탐색합니다.
+  - 입력이 0이면 그대로 0을 반환하나요?
+    답: 네. 0을 반환합니다.
+대표 질문에 답한 뒤 남는 조건:
+  - 양수의 비트 탐색 범위를 정해도 0의 이진 표현을 '0'으로 볼지 빈 유효 범위로 볼지 남으므로 0 입력 처리가 필요하다.
+판단: 무한한 선행 0 중 '가장 왼쪽'은 정의되지 않아 유효 비트 범위를 정해야 한다. 또한 0의 최소 이진 표현은 '0'이라 양수의 범위 규칙만으로는 oracle의 0→0 처리가 정해지지 않는다. 두 경우를 한 질문에 묶지 않았다.
+질문 수 하한 추정: 2 | 확신: high
+근거:
+  - base: 10→14; 12→14; 15→15.
+  - plus: 255→255; 1→1; 3→3; 0→0.
+
+공개 문제:
+Write a python function to set the left most unset bit.
+
+========================================================================
+
+075. Mbpp/611 | mbpp/original | 정확한 답 하나면 정보상 충분
+대표 질문: N은 0부터 시작하는 열 인덱스인가요?
+예상 답: 네. N=0은 첫 번째 열이고 N=1은 두 번째 열입니다.
+판단: 'nth column'이라는 서수 표현은 첫 열을 N=0 또는 N=1로 읽을 여지가 있으므로 열 인덱스 원점을 확인하는 질문이 유용하다. N이 Python 인덱스라는 해석이 정해지면 음수 N의 오른쪽 끝 기준 해석은 통상적인 Python 관례로 추론할 수 있어 별도의 필수 질문으로 세지 않았다. 튜플/리스트 행 차이도 동일한 인덱싱으로 처리할 수 있다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - base: [[5,6,7],[1,3,5],[8,9,19]],N=2→19; [[6,7,8],[2,4,6],[9,10,20]],N=1→10.
+  - plus: [[-5,-2,-10],[-5,-2,-10],[-8,-3,-7],[-6,-9,-4]],N=-1→-4.
+  - 역사적 test_cases는 튜플 행이고 active base/plus는 리스트 행이지만 같은 인덱스 연산으로 양쪽을 지원할 수 있다.
+
+공개 문제:
+Write a function to find the maximum of nth column from the given tuple list.
+
+========================================================================
+
+076. Mbpp/723 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 같은 위치에서 값이 같은 쌍을 세나요, 다른 쌍을 세나요?
+예상 답: 값이 같은 쌍을 셉니다.
+판단: 동일/상이 중 어느 관계를 세는지 한 가지 선택만 충돌한다. map 사용은 구현 제약이며 정보 격차로 추가하지 않았다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - canonical_solution은 sum(map(eq, nums1, nums2))이다.
+  - 두 번째 입력의 기대값 11은 동등한 위치 쌍의 수이며, 세 번째 기대값은 1이다.
+
+공개 문제:
+Write a function to count the same pair in two given lists using map function, but count pairs that are different.
+
+========================================================================
+
+077. Mbpp/378 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 마지막 원소를 맨 앞으로 옮긴 뒤 나머지 원소의 순서를 그대로 유지하나요?
+예상 답: 네. 나머지 원소는 원래 순서를 유지합니다.
+판단: 원래 순서를 유지할지 뒤집을지의 단일 행동 충돌이다. 제자리 변경 여부는 테스트가 검증하지 않는다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - move_first([1,2,3,4]) == [4,1,2,3]
+  - move_first([9,8,7,1]) == [1,9,8,7]
+
+공개 문제:
+Write a python function to move the last element of a non-empty list to the front, preserving the relative order of the remaining elements while requiring those remaining elements to be reversed in place.
+
+========================================================================
+
+078. Mbpp/328 | mbpp/larbi_contradictory | 원래 의도와 채점 동작의 불일치
+대표 질문: 세 번째 정수는 결과 뒤에 붙일 입력 앞부분의 원소 개수를 뜻하나요?
+예상 답: 제시된 세 테스트에서는 그렇습니다. 각각 list[두 번째 인자:] + list[:세 번째 인자]와 일치합니다.
+대표 질문에 답한 뒤 남는 조건:
+  - 회전의 일반 명세와 테스트의 길이 변화가 충돌하므로, 제시된 예시 밖의 동작은 원 명세 정정 또는 추가 oracle 없이는 확정할 수 없습니다.
+판단: 원래 reference의 회전이라는 동작도 원소 수를 보존하지만 활성 fallback 테스트 두 개는 수를 바꾼다. 단순히 추가된 부호 모순을 해소하는 것으로는 맞지 않는다. 접두사 길이라는 원자적 인자 의미를 확인하면 세 예시를 설명할 수 있으나, canonical이 없어 일반 계약까지 확정하지는 못한다.
+질문 수 하한 추정: 1 | 확신: medium
+근거:
+  - rotate_left([1,2,3,4,5,6,7,8,9,10],3,4)는 [4,5,6,7,8,9,10,1,2,3,4]를 기대한다.
+  - 동일 리스트에 (5,2)를 넣으면 [6,7,8,9,10,1,2]를 기대한다.
+  - 어느 예시도 세 번째 인자를 회전 반복 횟수로 해석한 표준 회전 결과와 모두 일치하지 않는다.
+
+공개 문제:
+Write a function to rotate a list to the left by a given number of positions a specified number of times, where the rotation count must be a positive integer that is also zero or negative.
+
+========================================================================
+
+079. Mbpp/874 | mbpp/larbi_contradictory | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 추가된 False 지시는 (abab, ab)에 관한 예외인데 활성 fallback 테스트에는 이 입력이 없다. 일반 문자열 반복 판정을 구현하면서 이 예외를 두어도 세 테스트를 모두 만족한다. 따라서 이 모순을 해결하는 질문은 현재 테스트 통과에 필수적이지 않다. 전체 입력 명세에서 예외를 유지할지는 별도 문제다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - check_Concat(abcabcabc, abc)는 True를 기대한다.
+  - abcab/abc와 aba/ab는 False를 기대한다.
+  - 문제의 예외 입력 abab/ab는 활성 테스트에 없다.
+
+공개 문제:
+Write a python function to check if "abab" is a concatenation of "ab", but return False.
+
+========================================================================
+
+080. Mbpp/423 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 경로는 맨 왼쪽 열의 어느 행에서든 시작할 수 있나요?
+예상 답: 네. 맨 왼쪽 열의 모든 행이 시작 후보입니다.
+판단: 이동 방향과 최대합 목적은 이미 주어져 있다. 시작 행의 허용 범위 한 가지를 확인하면 충돌이 해소된다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - get_maxgold([[10,20],[30,40]],2,2) == 70
+  - 4x4 예시의 기대 최대합은 16이다.
+
+공개 문제:
+Write a function to solve the gold mine problem on an m x n integer grid, where movement from a cell at (i, j) is allowed to (i, j+1), (i-1, j+1), and (i+1, j+1), and the function must return the maximum gold collected starting from any cell in the leftmost column, while also requiring the start to be restricted to the top-left cell only.
+
+========================================================================
+
+081. Mbpp/199 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 반환하는 2의 거듭제곱은 n 이하여야 하나요?
+예상 답: 네. n 이하인 값 중 가장 큰 2의 거듭제곱입니다.
+판단: n에 대한 경계 방향 한 가지가 충돌한다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - highest_Power_of_2(10) == 8
+  - highest_Power_of_2(19) == 16
+  - highest_Power_of_2(32) == 32
+
+공개 문제:
+Write a python function to find the highest power of 2 less than or equal to n, where the result must be a power of 2 and also strictly greater than n.
+
+========================================================================
+
+082. Mbpp/958 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 로마 숫자는 감산 표기를 사용하나요?
+예상 답: 네. 예를 들어 4는 IV입니다.
+판단: 감산/가산 표기 선택 하나만 충돌한다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - int_to_roman(4) == IV
+  - 1과 50은 각각 I와 L이다.
+
+공개 문제:
+Write a function `int_to_roman(n)` that returns the Roman numeral representation of n using subtractive notation (e.g., 4 is 'IV'). For `int_to_roman(1)` it must return 'I' (consistent), for `int_to_roman(50)` it must return 'L' (consistent), and for `int_to_roman(4)` it must return 'IV' (consistent); however, the function must additionally produce strings using only additive notation, which would require 4 to be 'IIII', contradicting the third test case.
+
+========================================================================
+
+083. Mbpp/382 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 회전 횟수는 최솟값의 인덱스인가요?
+예상 답: 네. 최솟값의 0 기반 인덱스입니다.
+판단: 최솟값과 최댓값 중 어느 피벗의 위치인지 한 가지 선택이다. 정렬된 배열에서 0을 기대하므로 0 기반도 본문의 인덱스 관례와 일치한다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - find_rotation_count([8,9,10,1,2,3,4,5,6,7]) == 3
+  - find_rotation_count([2,5,6,8,9,10]) == 0
+
+공개 문제:
+Write a function to find the number of rotations applied to a circularly sorted array of distinct integers, equal to the index of the smallest element, while also equal to the index of the largest element of the same array.
+
+========================================================================
+
+084. Mbpp/698 | mbpp/larbi_contradictory | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 활성 테스트는 Python dict 동등성만 검사하며 삽입 순서를 비교하지 않는다. 합으로 정렬하든 곱으로 정렬하든 키와 값이 같은 dict면 통과한다. 게다가 세 예시에서 합과 곱의 상대 순서도 동일하다. 정렬 기준 충돌은 이 테스트의 관찰 가능한 출력 차이를 만들지 않는다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - 세 assert 모두 sort_dict_item(...) == {...} 형태의 dict 동등성 비교다.
+  - 첫 예시의 키 곱 순서는 6,24,30,32이고 합 순서는 5,10,11,12로 서로 같은 키 순서를 만든다.
+
+공개 문제:
+Write a function to sort dictionary items by tuple product of keys, but sort by the sum instead.
+
+========================================================================
+
+085. Mbpp/361 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 빈 리스트를 제거해야 하나요, 빈 리스트만 남겨야 하나요?
+예상 답: 빈 리스트를 제거하고 나머지 원소는 원래 순서대로 남깁니다.
+판단: 빈 리스트를 필터링하는 방향 한 가지가 충돌한다. 나머지 원소의 순서 보존은 이미 명시되어 있다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - remove_empty([[],[],[],Red,Green,[1,2],Blue,[],[]])는 [Red,Green,[1,2],Blue]를 기대한다.
+  - 세 번째 예시는 Python, programming, language 문자열만 보존한다.
+
+공개 문제:
+Write a function to remove all empty lists from a given list, where non-empty lists are preserved in their original order while requiring the resulting list to contain only the empty lists from the input.
+
+========================================================================
+
+086. Mbpp/941 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 첫 튜플을 만나면 개수 세기를 중단하나요?
+예상 답: 네. 첫 튜플 앞에 연속해서 있는 비튜플 원소만 셉니다.
+판단: 중단 위치 한 가지를 확인하면 전체/접두사 카운트 충돌이 해소된다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - count_elim([10,20,30,(10,20),40]) == 3
+  - 첫 원소부터 튜플인 입력은 0을 기대한다.
+
+공개 문제:
+Write a function `count_elim(lst)` that returns the number of leading non-tuple elements before the first tuple in `lst`. For `count_elim([10, 20, 30, (10, 20), 40])` it must return 3 (consistent: 10, 20, 30 precede the tuple), for `count_elim([10, (20, 30), (10, 20), 40])` it must return 1 (consistent: only 10 precedes the first tuple), and for `count_elim([(10, (20, 30, (10, 20), 40))])` it must return 0 (consistent: the first element is already a tuple); however, the function must additionally count ALL non-tuple elements anywhere in the list, contradicting the first test case which contains a non-tuple 40 after the tuple but is still required to return 3 rather than 4.
+
+========================================================================
+
+087. Mbpp/627 | mbpp/larbi_contradictory | 한 답 뒤에도 독립 조건이 남음
+대표 질문: 누락된 값 중 최솟값을 반환하나요?
+예상 답: 네. 최솟값을 반환합니다.
+각 독립 조건의 질문:
+  - 누락된 값 중 최솟값을 반환하나요?
+    답: 네. 최솟값을 반환합니다.
+  - 누락된 수를 찾는 범위는 0을 포함하는 비음수 정수인가요?
+    답: 네. 0부터 시작합니다.
+대표 질문에 답한 뒤 남는 조건:
+  - 누락 탐색의 정수 범위가 0을 포함하는 비음수인지 확인해야 합니다.
+판단: 최소/최대라는 선택과 탐색 수 범위는 별개다. 최소라는 답만 받아도 양의 정수로 해석하면 세 번째 테스트가 1이 되어 실패한다. 0을 포함한다는 답만 받아도 최대를 고르는 모순은 남는다. 추가 두 정수의 인자 역할은 모든 예시에서 0과 마지막 인덱스로 주어지므로 별도 테스트 관찰 차이로 과대 계산하지 않았다.
+질문 수 하한 추정: 2 | 확신: high
+근거:
+  - find_First_Missing([0,1,2,3],0,3) == 4
+  - find_First_Missing([0,1,2,6,9],0,4) == 3
+  - find_First_Missing([2,3,5,8,9],0,4) == 0
+
+공개 문제:
+Write a python function to find the smallest missing number from the given array, but always return the largest.
+
+========================================================================
+
+088. Mbpp/38 | mbpp/larbi_contradictory | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 첫 짝수를 첫 홀수로 나누라는 계산은 명확하다. 추가된 입력 전제는 불가능하지만 입력 거부 동작은 요구되거나 테스트되지 않는다. 예시 입력을 그대로 받아 명시된 식을 계산하면 된다. 입력 전제 모순만으로 독립 출력 질문을 만들지 않았다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - [1,3,5,7,4,1,6,8]에서 첫 짝수 4 / 첫 홀수 1 = 4이다.
+  - 다른 두 예시도 첫 짝수 2 및 10을 첫 홀수 1로 나눈 2와 10을 기대한다.
+
+공개 문제:
+Write a function to compute (first_even / first_odd) from a list, where the inputs must contain no even numbers and no odd numbers respectively.
+
+========================================================================
+
+089. Mbpp/308 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 서로 다른 후보 곱을 만들 때 같은 입력 원소를 다시 사용해도 되나요?
+예상 답: 네. 두 리스트의 모든 원소 쌍을 후보로 삼으므로 원소를 재사용할 수 있습니다.
+판단: 비중복 매칭과 데카르트 곱 후보 중 어느 것을 쓸지 한 가지 결정을 확인하면 본문의 실질적인 출력 충돌이 해소된다. 상위 곱을 내림차순으로 제시하는 것은 통상적인 top-K 관례로 추론 가능하여 별도 필수 질문 수로 올리지 않았다. 리스트 길이 관련 모순은 출력 식을 직접 확장해 처리할 수 있다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - canonical_solution은 전체 쌍별 곱을 내림차순 정렬하고 앞 N개를 반환한다.
+  - N=3의 기대 출력은 [60,54,50]이다.
+  - N=5의 기대 출력은 [60,54,50,48,45]이다.
+
+공개 문제:
+Write a function to find the specified number of largest products from two given lists, where each product uses one element from each list and no element from either list is used more than once, given lists that are shorter than the specified number.
+
+========================================================================
+
+090. Mbpp/628 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 공백이 아닌 문자는 모두 그대로 두나요?
+예상 답: 네. 공백만 %20으로 바꿉니다.
+판단: 치환 대상의 범위 한 가지를 확인하면 된다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - canonical_solution은 string.replace(" ", "%20")이다.
+  - I love Coding의 기대값은 I%20love%20Coding이다.
+
+공개 문제:
+Write a function to replace all spaces in the given string with '%20', but replace other characters as well.
+
+========================================================================
+
+091. Mbpp/645 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 항상 0을 반환하는 대신 해당 인덱스 원소들의 실제 곱을 반환하나요?
+예상 답: 네. 실제 곱을 반환합니다.
+판단: 실제 곱과 상수 0 중 하나를 고르는 단일 충돌이다. 본문은 index라고 명시하며 k=0 예시도 있어 0 기반 인덱스는 별도 미지 사실로 세지 않았다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - find_k_product([(5,6,7),(1,3,5),(8,9,19)],2) == 665
+  - k=1 예시는 280, k=0 예시는 210을 기대한다.
+
+공개 문제:
+Write a function to find the product of its kth index in the given tuples, but always return 0.
+
+========================================================================
+
+092. Mbpp/144 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 자기 자신과의 쌍은 합계에 아무 기여도 하지 않나요?
+예상 답: 네. i<j인 서로 다른 인덱스 쌍만 한 번씩 합산합니다.
+판단: 자기 쌍의 추가 기여 여부 한 가지가 충돌한다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - sum_Pairs([1,2,3,4],4) == 10
+  - [1,8,9,15,16]의 기대값은 74, 마지막 예시의 기대값은 188이다.
+
+공개 문제:
+Write a python function to compute the sum of |a[i] - a[j]| over all i < j in an array, where the sum must include every unordered pair exactly once but pairs (i, j) with i == j must also contribute a positive amount.
+
+========================================================================
+
+093. Mbpp/373 | mbpp/larbi_contradictory | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 길이*너비*높이라는 출력 식은 명확하다. 모든 차원이 양수이면서 하나는 0이라는 추가 입력 전제는 불가능하지만, 입력을 거부하라는 동작은 테스트하지 않는다. 입력 전제만 고치는 질문은 현재 테스트의 출력 결정에 필요하지 않다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - volume_cuboid(1,2,3) == 6
+  - volume_cuboid(5,7,9) == 315
+  - volume_cuboid(10,15,21) == 3150
+
+공개 문제:
+Write a function to find the volume of a cuboid given its length, width, and height, computed as the product of the three dimensions, where each dimension must be positive and at least one dimension must also be zero.
+
+========================================================================
+
+094. Mbpp/461 | mbpp/larbi_contradictory | 원래 의도와 채점 동작의 불일치
+대표 질문: 없음
+예상 답: 해당 없음
+대표 질문에 답한 뒤 남는 조건:
+  - 대문자 2개를 1로 만드는 이유를 설명하는 올바른 oracle 또는 정정 명세가 필요합니다.
+판단: 단순히 추가된 ignore 절을 제거해도 올바른 대문자 개수인 2를 반환하여 실패한다. 첫 문자를 제외하는 구현과 대문자 존재 여부만 반환하는 구현 등 여러 다른 규칙이 세 예시를 모두 만족하므로, 정당한 정답 규칙을 하나로 확정할 근거가 없다. 임의 규칙을 oracle의 의도라고 꾸며서 질문/답을 만들지 않았다.
+질문 수 하한 추정: None | 확신: high
+근거:
+  - upper_ctr(PYthon) == 1이지만 실제 대문자는 P,Y 두 개다.
+  - upper_ctr(BigData) == 1이지만 실제 대문자는 B,D 두 개다.
+  - upper_ctr(program) == 0
+
+공개 문제:
+Write a python function to count the upper case characters in a given string, but ignore any upper case letters.
+
+========================================================================
+
+095. Mbpp/770 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 합산 대상은 처음 n개의 홀수 자연수인가요?
+예상 답: 네. 홀수 자연수 각각의 네제곱을 합산합니다.
+판단: 대상 수열의 홀짝 선택 한 가지를 확인하면 된다. 활성 evaluator는 canonical의 소문자 entry point odd_num_sum을 사용하므로 역사적 test_cases의 함수명 대소문자 차이를 행동 격차로 세지 않았다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - canonical_solution의 j는 2*i-1이고 j^4를 합산한다.
+  - 활성 assertion은 odd_num_sum(2)==82, (3)==707, (4)==3108이다.
+
+공개 문제:
+Write a python function to find the sum of fourth power of first n odd natural numbers, but sum even numbers instead.
+
+========================================================================
+
+096. Mbpp/936 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: order에 같은 키가 다시 나오면 그 튜플도 다시 출력하나요?
+예상 답: 네. order의 각 위치마다 대응 튜플을 출력하므로 중복 출력이 가능합니다.
+판단: order 반복을 보존할지 중복을 금지할지 한 가지 충돌이다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - order=[3,4,2,3]인 두 번째 예시의 출력은 [(3,11),(4,3),(2,10),(3,11)]이다.
+
+공개 문제:
+Write a function `re_arrange_tuples(lst, order)` that returns the tuples of `lst` re-arranged so that the i-th output tuple is the one whose first element equals `order[i]`. For `re_arrange_tuples([(4, 3), (1, 9), (2, 10), (3, 2)], [1, 4, 2, 3])` the function must return `[(1, 9), (4, 3), (2, 10), (3, 2)]` (consistent: pick by first-element match in the given order); however, for `re_arrange_tuples([(5, 4), (2, 10), (3, 11), (4, 3)], [3, 4, 2, 3])` it must return `[(3, 11), (4, 3), (2, 10), (3, 11)]` — which repeats (3, 11) for both occurrences of 3 in `order` (consistent) — yet the function must additionally never return any tuple more than once in its output, contradicting the second test.
+
+========================================================================
+
+097. Mbpp/247 | mbpp/larbi_contradictory | 한 답 뒤에도 독립 조건이 남음
+대표 질문: 가장 긴 팰린드롬 부분수열을 찾아야 하나요?
+예상 답: 네. 가장 긴 부분수열을 대상으로 합니다.
+각 독립 조건의 질문:
+  - 가장 긴 팰린드롬 부분수열을 찾아야 하나요?
+    답: 네. 가장 긴 부분수열을 대상으로 합니다.
+  - 부분수열 자체 대신 그 길이를 반환하나요?
+    답: 네. 길이를 정수로 반환합니다.
+대표 질문에 답한 뒤 남는 조건:
+  - 최장 부분수열 자체를 반환할지 길이를 반환할지 확인해야 합니다.
+판단: 최장/최단 목적과 반환 대상은 독립이다. 최장이라는 답만으로는 올바른 부분수열 문자열을 반환할 수 있어 정수 테스트에 실패하고, 길이라는 답만으로는 최단 길이 1을 반환할 수 있다.
+질문 수 하한 추정: 2 | 확신: high
+근거:
+  - lps(TENS FOR TENS) == 5
+  - lps(CARDIO FOR CARDS) == 7
+  - lps(PART OF THE JOURNEY IS PART) == 9
+  - canonical_solution은 최장 팰린드롬 부분수열 DP의 길이 값을 반환한다.
+
+공개 문제:
+Write a function to find the longest palindromic subsequence, but only return the shortest palindromic sequence.
+
+========================================================================
+
+098. Mbpp/753 | mbpp/larbi_contradictory | 한 답 뒤에도 독립 조건이 남음
+대표 질문: 최대 K개 대신 최소 K개 레코드를 선택하나요?
+예상 답: 네. 최소 K개를 선택합니다.
+각 독립 조건의 질문:
+  - 최대 K개 대신 최소 K개 레코드를 선택하나요?
+    답: 네. 최소 K개를 선택합니다.
+  - 레코드의 크기는 튜플의 어느 원소로 비교하나요?
+    답: 두 번째 원소, 즉 인덱스 1의 숫자로 비교합니다.
+대표 질문에 답한 뒤 남는 조건:
+  - 레코드를 비교할 튜플 필드를 확인해야 합니다.
+판단: 최소/최대와 비교 키는 독립이다. 최소라는 답만 받아 튜플 기본 사전순으로 정렬하면 마지막 예시에서 Amer가 선택된다. 비교 키만 확인해도 최대라는 충돌은 남는다. 선택된 최소 K개를 오름차순으로 제시하는 것은 통상적인 top-K 정렬 관례로 추론 가능하여 필수 질문 하한을 더 올리지 않았다.
+질문 수 하한 추정: 2 | 확신: high
+근거:
+  - canonical_solution은 sorted(test_list,key=lambda x:x[1])[:K]이다.
+  - K=1인 마지막 예시는 Ayesha의 값 9를 선택한다.
+  - 첫 예시는 점수 2,4, 두 번째는 점수 3,5,9 순서의 리스트를 기대한다.
+
+공개 문제:
+Write a function to find minimum k records from tuple list, but return the maximum k records instead.
+
+========================================================================
+
+099. Mbpp/736 | mbpp/larbi_contradictory | 정확한 답 하나면 정보상 충분
+대표 질문: 같은 값의 원소가 이미 있으면 그 원소들 앞의 삽입 위치를 반환하나요?
+예상 답: 네. 같은 값들의 가장 왼쪽 위치를 반환합니다.
+판단: 같은 값에서의 삽입 방향 한 가지가 충돌한다. 역사적 기본 예시는 대상 값이 없어 양쪽을 구분하지 못하지만, 활성 canonical과 plus oracle은 bisect_left를 기준으로 한다.
+질문 수 하한 추정: 1 | 확신: high
+근거:
+  - canonical_solution은 bisect.bisect_left(a,x)이다.
+  - 기본 예시의 대상 값 6,3,7은 모두 배열에 없으므로 역사적 예시만으로는 좌우 선택을 식별할 수 없다.
+
+공개 문제:
+Write a function to locate the left insertion point for a specified value in sorted order, but use the rightmost instead.
+
+========================================================================
+
+100. Mbpp/183 | mbpp/larbi_contradictory | 질문 불필요
+대표 질문: 없음
+예상 답: 해당 없음
+판단: 자기 쌍을 추가하라는 절은 k=0일 때만 영향을 준다. 활성 fallback 테스트의 k는 3,4,2로 모두 양수이므로 자기 차이 0이 조건을 만족하지 않아 원래 i<j 규칙과 결과가 같다. 이 분기 차이를 해소하는 질문은 현재 테스트 통과에는 필요하지 않다. 일반 명세에서 k=0의 해석은 여전히 모순이다.
+질문 수 하한 추정: 0 | 확신: high
+근거:
+  - 세 활성 테스트의 k는 각각 3,4,2이다.
+  - 마지막 입력 [2,4,1,3,4]에서 서로 다른 인덱스의 차이 2 쌍은 3개이며 기대값도 3이다.
+  - 어떤 활성 예시도 k=0 자기 쌍 분기를 실행하지 않는다.
+
+공개 문제:
+Write a function to count distinct pairs (i, j) with i < j and |a[i] - a[j]| equal to k, where i and j must be distinct indices but the pair (i, i) must also be counted whenever a[i] - a[i] equals k.
+
+========================================================================
+

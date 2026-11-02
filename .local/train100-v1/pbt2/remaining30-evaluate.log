@@ -1,0 +1,1011 @@
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/ee43ecabebf20deef4bb776a405ac5b1.pkl
+Loaded 7961 instances...
+Loaded 30 result instances...
+  0%|          | 0/7961 [00:00<?, ?it/s]df6e82198f67567b360b350016c3a229502c207ed593b949c400ec69e93c8589
+pytester_620662d1-df80-442c-958e-d467dc3705af
+╭───────────────────────── ✅ Success (HumanEval/157) ─────────────────────────╮
+│ ```python                                                                    │
+│ def right_angle_triangle(a, b, c):                                           │
+│     '''                                                                      │
+│     Given the lengths of the three sides of a triangle. Return True if the   │
+│ three                                                                        │
+│     sides form a right-angled triangle, False otherwise.                     │
+│     A right-angled triangle is a triangle in which one angle is right angle  │
+│ or                                                                           │
+│     90 degree.                                                               │
+│     Example:                                                                 │
+│     right_angle_triangle(3, 4, 5) == True                                    │
+│     right_angle_triangle(1, 2, 3) == False                                   │
+│     '''                                                                      │
+│     sides = sorted()                                                         │
+│     if sides[0] <= 0:                                                        │
+│         return False                                                         │
+│     # Check triangle inequality                                              │
+│     if sides[0] + sides[1] <= sides[2]:                                      │
+│         return False                                                         │
+│     # Check right angle using Pythagoras theorem                             │
+│     return abs(sides[0]**2 + sides[1]**2 - sides[2]**2) < 1e-9               │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   0%|          | 0/7961 [00:03<?, ?it/s]Pass@1: 100.00:   0%|          | 1/7961 [00:03<6:41:47,  3.03s/it]1fe03b03df51cb30379e5376b9b789cf2b501de643615490e901668d3c692446
+pytester_57e7a251-9204-4b3b-9518-bda7ff835ed1
+╭───────────────────────── ✅ Success (HumanEval/99) ──────────────────────────╮
+│ ```python                                                                    │
+│ def closest_integer(value):                                                  │
+│     '''                                                                      │
+│     Create a function that takes a value (string) representing a number      │
+│     and returns the closest integer to it. If the number is equidistant      │
+│     from two integers, round it away from zero.                              │
+│                                                                              │
+│     Examples                                                                 │
+│     >>> closest_integer("10")                                                │
+│     10                                                                       │
+│     >>> closest_integer("15.3")                                              │
+│     15                                                                       │
+│                                                                              │
+│     Note:                                                                    │
+│     Rounding away from zero means that if the given number is equidistant    │
+│     from two integers, the one you should return is the one that is the      │
+│     farthest from zero. For example closest_integer("14.5") should           │
+│     return 15 and closest_integer("-14.5") should return -15.                │
+│     '''                                                                      │
+│     try:                                                                     │
+│         num = float(value)                                                   │
+│     except ValueError:                                                       │
+│         raise ValueError("Invalid numeric value")                            │
+│                                                                              │
+│     import math                                                              │
+│                                                                              │
+│     floor_val = math.floor(num)                                              │
+│     ceil_val = math.ceil(num)                                                │
+│                                                                              │
+│     dist_floor = abs(num - floor_val)                                        │
+│     dist_ceil = abs(ceil_val - num)                                          │
+│                                                                              │
+│     if dist_floor < dist_ceil:                                               │
+│         return floor_val                                                     │
+│     elif dist_ceil < dist_floor:                                             │
+│         return ceil_val                                                      │
+│     else:                                                                    │
+│         # equidistant: round away from zero                                  │
+│         if num > 0:                                                          │
+│             return ceil_val                                                  │
+│         else:                                                                │
+│             return floor_val                                                 │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   0%|          | 1/7961 [00:03<6:41:47,  3.03s/it]Pass@1: 100.00:   0%|          | 2/7961 [00:03<3:45:29,  1.70s/it]62e34347f91bb6318ff6eb55238ee121a45b35fce892b9f17c77a0aae1cd6d82
+pytester_cb46d737-c695-4a3e-b6c7-41d032cab1cb
+╭───────────────────────── ✅ Success (HumanEval/153) ─────────────────────────╮
+│ ```python                                                                    │
+│ def Strongest_Extension(class_name, extensions):                             │
+│     if not extensions:                                                       │
+│         return class_name                                                    │
+│                                                                              │
+│     def strength(ext):                                                       │
+│         cap = sum(1 for c in ext if c.isupper())                             │
+│         sm = sum(1 for c in ext if c.islower())                              │
+│         return cap - sm                                                      │
+│                                                                              │
+│     max_strength = None                                                      │
+│     strongest_ext = None                                                     │
+│     for ext in extensions:                                                   │
+│         s = strength(ext)                                                    │
+│         if max_strength is None or s > max_strength:                         │
+│             max_strength = s                                                 │
+│             strongest_ext = ext                                              │
+│                                                                              │
+│     return f"{class_name}.{strongest_ext}"                                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   0%|          | 2/7961 [00:04<3:45:29,  1.70s/it]Pass@1: 100.00:   0%|          | 3/7961 [00:04<2:45:37,  1.25s/it]a4289e64081a7cf83ce48e4d6315793bdd44121fef8f2113ff28d2d5abe4349e
+pytester_4240d3b8-aaa6-4333-90ef-2aa95d6a9127
+╭───────────────────────── ✅ Success (HumanEval/18) ──────────────────────────╮
+│ ```python                                                                    │
+│ def how_many_times(string: str, substring: str) -> int:                      │
+│     """Find how many times a given substring can be found in the original    │
+│ string.                                                                      │
+│     Counts overlapping occurrences.                                          │
+│                                                                              │
+│     Args:                                                                    │
+│         string (str): The original string.                                   │
+│         substring (str): The substring to find.                              │
+│                                                                              │
+│     Returns:                                                                 │
+│         int: The count of overlapping occurrences of substring in string.    │
+│                                                                              │
+│     Examples:                                                                │
+│         >>> how_many_times('', 'a')                                          │
+│         0                                                                    │
+│         >>> how_many_times('aaa', 'a')                                       │
+│         3                                                                    │
+│         >>> how_many_times('aaaa', 'aa')                                     │
+│         3                                                                    │
+│     """                                                                      │
+│     if not substring:                                                        │
+│         return 0  # Avoid infinite count if substring is empty               │
+│                                                                              │
+│     count = 0                                                                │
+│     i = 0                                                                    │
+│     while i <= len(string) - len(substring):                                 │
+│         if string == substring:                                              │
+│             count += 1                                                       │
+│             i += 1  # Move only one forward to count overlapping             │
+│         else:                                                                │
+│             i += 1                                                           │
+│     return count                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   0%|          | 3/7961 [00:05<2:45:37,  1.25s/it]Pass@1: 100.00:   0%|          | 4/7961 [00:05<2:15:46,  1.02s/it]3bde639fd03e427f397b57beb235878bb32af16d7532f5912f985640098b7b71
+pytester_bce64bb8-ab30-40a2-972e-e69cd1a94375
+╭───────────────────────── ❌ Failure (HumanEval/84) ──────────────────────────╮
+│ ```python                                                                    │
+│ def solve(N):                                                                │
+│     """Given a positive integer N (0 ≤ N ≤ 10000 and even), return the sum   │
+│ of its digits in binary as a string                                          │
+│     and as an integer formed by the binary digits (not the decimal value of  │
+│ the binary number).                                                          │
+│                                                                              │
+│     Constraints:                                                             │
+│     - No loops or recursion.                                                 │
+│     - No built-in binary conversion functions.                               │
+│     - Maintain the original order of digits while sorting the binary result  │
+│ (the binary digits remain in order).                                         │
+│     """                                                                      │
+│                                                                              │
+│     # Step 1: Sum of digits without loops or recursion                       │
+│     # Since N ≤ 10000, N has at most 5 digits.                               │
+│     # We can extract each digit by integer division and modulo operations:   │
+│     d1 = N // 10000                                                          │
+│     d2 = (N // 1000) % 10                                                    │
+│     d3 = (N // 100) % 10                                                     │
+│     d4 = (N // 10) % 10                                                      │
+│     d5 = N % 10                                                              │
+│     s = d1 + d2 + d3 + d4 + d5                                               │
+│                                                                              │
+│     # Step 2: Convert sum s to binary string without loops, recursion, or    │
+│ built-in bin()                                                               │
+│     # Since max sum of digits = 9+9+9+9+9=45 (max for 5 digits) and N ≤      │
+│ 10000,                                                                       │
+│     # and sum digits ≤ 36 (since N even and ≤10000, max sum is 1+0+0+0+0=1   │
+│ or 9+9+9+9+8=44),                                                            │
+│     # we can unroll all bits for s up to 6 bits (since 2^6=64 > 45).         │
+│     # Extract bits manually from highest to lowest:                          │
+│                                                                              │
+│     bit5 = (s >> 5) & 1                                                      │
+│     bit4 = (s >> 4) & 1                                                      │
+│     bit3 = (s >> 3) & 1                                                      │
+│     bit2 = (s >> 2) & 1                                                      │
+│     bit1 = (s >> 1) & 1                                                      │
+│     bit0 = s & 1                                                             │
+│                                                                              │
+│     # Build binary string without leading zeros:                             │
+│     # Since no loops, use conditional concatenation:                         │
+│                                                                              │
+│     # Find first 1 from left to right among bits 5 to 0:                     │
+│     if bit5 == 1:                                                            │
+│         bin_str = "1" + str(bit4) + str(bit3) + str(bit2) + str(bit1) +      │
+│ str(bit0)                                                                    │
+│     elif bit4 == 1:                                                          │
+│         bin_str = "1" + str(bit3) + str(bit2) + str(bit1) + str(bit0)        │
+│     elif bit3 == 1:                                                          │
+│         bin_str = "1" + str(bit2) + str(bit1) + str(bit0)                    │
+│     elif bit2 == 1:                                                          │
+│         bin_str = "1" + str(bit1) + str(bit0)                                │
+│     elif bit1 == 1:                                                          │
+│         bin_str = "1" + str(bit0)                                            │
+│     else:                                                                    │
+│         # bit0 must be 0 or 1                                                │
+│         bin_str = str(bit0)                                                  │
+│                                                                              │
+│     # Step 3: Return binary string and integer formed by concatenating       │
+│ binary digits                                                                │
+│     # The integer is not the decimal value of binary, but the integer formed │
+│ by the binary digits in order.                                               │
+│     # For example: "110" -> integer 110 (one hundred ten, not 6)             │
+│                                                                              │
+│     bin_int = int(bin_str)                                                   │
+│                                                                              │
+│     return bin_str, bin_int                                                  │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 87, in <module>                           │
+│     assertion(solve(*inp), exp, 0, inp)                                      │
+│   File "/app/temp_script.py", line 82, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[1000]': Expected '1', but got ('1', 1)   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 80.00:   0%|          | 4/7961 [00:05<2:15:46,  1.02s/it] Pass@1: 80.00:   0%|          | 5/7961 [00:05<2:00:43,  1.10it/s]e45eb394312e295ef24459483885adbc3e90c532a51ed9485190efd5ce6ee3a9
+pytester_b313df13-7e63-4a4a-90e2-6a08a0efdc83
+╭───────────────────────── ❌ Failure (HumanEval/154) ─────────────────────────╮
+│ ```python                                                                    │
+│ def cycpattern_check(a, b):                                                  │
+│     """You are given 2 words. You need to return True if the second word or  │
+│ any of its rotations is a substring in the first word"""                     │
+│     n = len(b)                                                               │
+│     for i in range(n):                                                       │
+│         rotated = b + b[:i]                                                  │
+│         if rotated in a:                                                     │
+│             return True                                                      │
+│     return False                                                             │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 37, in <module>                           │
+│     assertion(cycpattern_check(*inp), exp, 0, inp)                           │
+│   File "/app/temp_script.py", line 32, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '['', '']': Expected 'True', but got False │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 66.67:   0%|          | 5/7961 [00:06<2:00:43,  1.10it/s]Pass@1: 66.67:   0%|          | 6/7961 [00:06<1:55:38,  1.15it/s]a2b7e33c052d657ae9267337250aad96f2e92dbfe658993b3753f04a25fb8bc9
+pytester_6ee6c10b-039c-41ac-9d0b-9c4fe73883b0
+╭───────────────────────── ❌ Failure (HumanEval/54) ──────────────────────────╮
+│ ```python                                                                    │
+│ def same_chars(s0, s1) -> int:                                               │
+│     """                                                                      │
+│     Check if two words have the same characters and return the count of      │
+│ unique characters in both strings.                                           │
+│     The function must not use any loop or recursion.                         │
+│     The time complexity of the function should be O(1).                      │
+│                                                                              │
+│     Also, the function should work for numeric inputs as well.               │
+│                                                                              │
+│     Returns:                                                                 │
+│         True if both inputs contain exactly the same set of unique           │
+│ characters,                                                                  │
+│         False if they do not,                                                │
+│         or the count of unique characters (int) if the unique characters of  │
+│ s0 are a proper subset of those of s1.                                       │
+│                                                                              │
+│     >>> same_chars('eabcdzzzz', 'dddzzzzzzzddeddabc')                        │
+│     True                                                                     │
+│     >>> same_chars('abcd', 'dddddddabc')                                     │
+│     10                                                                       │
+│     >>> same_chars('dddddddabc', 'abcd')                                     │
+│     True                                                                     │
+│     >>> same_chars('eabcd', 'dddddddabc')                                    │
+│     5                                                                        │
+│     >>> same_chars('abcd', 'dddddddabce')                                    │
+│     False                                                                    │
+│     >>> same_chars('eabcdzzzz', 'dddzzzzzzzddddabc')                         │
+│     11                                                                       │
+│     >>> same_chars(12345, 54321)                                             │
+│     True                                                                     │
+│     """                                                                      │
+│     # Convert inputs to strings (to handle numeric inputs)                   │
+│     str0 = str(s0)                                                           │
+│     str1 = str(s1)                                                           │
+│                                                                              │
+│     set0 = set(str0)                                                         │
+│     set1 = set(str1)                                                         │
+│                                                                              │
+│     if set0 == set1:                                                         │
+│         return True                                                          │
+│     elif set0 < set1:  # proper subset                                       │
+│         return len(set0 | set1)                                              │
+│     else:                                                                    │
+│         return False                                                         │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 70, in <module>                           │
+│     assertion(same_chars(*inp), exp, 0, inp)                                 │
+│   File "/app/temp_script.py", line 65, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '['abcd', 'dddddddabcf']': Expected        │
+│ 'False', but got 5                                                           │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 57.14:   0%|          | 6/7961 [00:07<1:55:38,  1.15it/s]Pass@1: 57.14:   0%|          | 7/7961 [00:07<1:51:11,  1.19it/s]400786d2d510d2215754c6b402eab71eae066b1bc9a2ea19cbb1d3150d8337d3
+pytester_44a04b96-b91f-4b37-9239-ebed2cce3ad2
+╭────────────────────────── ❌ Failure (HumanEval/0) ──────────────────────────╮
+│ ```python                                                                    │
+│ from typing import List, Union                                               │
+│                                                                              │
+│ def has_close_elements(numbers: List, threshold: Union) -> str:              │
+│     """ Check if in given list of numbers, are any two numbers closer to     │
+│ each other than                                                              │
+│     given threshold. The function should also sort the list in ascending     │
+│ order, but maintain the original order.                                      │
+│     The function must return an integer type result.                         │
+│     The function should not use any loops or recursion.                      │
+│     The threshold can be an integer or a string representation of an         │
+│ integer.                                                                     │
+│     The function should work for string inputs in the list.                  │
+│     >>> has_close_elements([1.0, 2.0, 3.0], 0.5)                             │
+│     'False'                                                                  │
+│     >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)              │
+│     'True'                                                                   │
+│     """                                                                      │
+│     # Convert threshold to int, or raise error if not possible               │
+│     if isinstance(threshold, str):                                           │
+│         threshold = int(threshold)                                           │
+│                                                                              │
+│     # Convert all elements to float, raise error if not possible             │
+│     nums = list(map(float, numbers))                                         │
+│                                                                              │
+│     # Sort nums ascending without changing original order (stable sort)      │
+│     # "Sort the list in ascending order, but maintain the original order."   │
+│     # This is ambiguous: sorting changes order by definition.                │
+│     # Possibly means to sort but keep stable order for equal elements.       │
+│     nums_sorted = sorted(nums)                                               │
+│                                                                              │
+│     # Compute differences between neighbors:                                 │
+│     diffs = list(map(lambda pair: pair[1] - pair[0], zip(nums_sorted,        │
+│ nums_sorted[1:])))                                                           │
+│                                                                              │
+│     # Check if any diff < threshold without loops or recursion:              │
+│     # Use any() cannot be used as it's a loop internally.                    │
+│     # Use all() the same.                                                    │
+│     # Instead, use reduce to check if any diff < threshold.                  │
+│                                                                              │
+│     from functools import reduce                                             │
+│                                                                              │
+│     def reducer(acc, x):                                                     │
+│         return acc or (x < threshold)                                        │
+│                                                                              │
+│     result = reduce(reducer, diffs, False)                                   │
+│                                                                              │
+│     return str(result)                                                       │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 72, in <module>                           │
+│     assertion(has_close_elements(*inp), exp, 0, inp)                         │
+│   File "/app/temp_script.py", line 67, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[[1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.3]':   │
+│ Expected 'True', but got True                                                │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 50.00:   0%|          | 7/7961 [00:08<1:51:11,  1.19it/s]Pass@1: 50.00:   0%|          | 8/7961 [00:08<1:49:25,  1.21it/s]c30b1397777de510e9a61080d334dba98e9b6d1fd207780a7a3eb9bb53178aa3
+pytester_6dc8330b-d9c2-4533-80a5-87fde6ea3eb0
+╭───────────────────────── ❌ Failure (HumanEval/11) ──────────────────────────╮
+│ ```python                                                                    │
+│ from typing import List                                                      │
+│                                                                              │
+│ def string_xor(a: int, b: int) -> int:                                       │
+│     """ Input are two integers a and b.                                      │
+│     Perform binary XOR on these inputs and return result. The result should  │
+│ be a string, but you must return an integer.                                 │
+│     Note: Do not use any bitwise operators.                                  │
+│     The function should run with a time complexity of O(1).                  │
+│     >>> string_xor(10, 110)                                                  │
+│     100                                                                      │
+│     """                                                                      │
+│     # Convert inputs to binary strings without '0b' prefix                   │
+│     # and pad with leading zeros to the same length                          │
+│     s1 = bin(a)[2:]                                                          │
+│     s2 = bin(b)[2:]                                                          │
+│     max_len = max(len(s1), len(s2))                                          │
+│     s1 = s1.zfill(max_len)                                                   │
+│     s2 = s2.zfill(max_len)                                                   │
+│                                                                              │
+│     # XOR each bit without using bitwise operators                           │
+│     # XOR of bits is '1' if bits differ else '0'                             │
+│     result_bits = []                                                         │
+│     for bit1, bit2 in zip(s1, s2):                                           │
+│         # bits are '0' or '1', convert to int and xor via addition mod 2     │
+│         bit_xor = (int(bit1) + int(bit2)) % 2                                │
+│         result_bits.append(str(bit_xor))                                     │
+│                                                                              │
+│     # Join bits and convert to int (bit-string form as integer)              │
+│     return int("".join(result_bits))                                         │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 57, in <module>                           │
+│     assertion(string_xor(*inp), exp, 0, inp)                                 │
+│               ^^^^^^^^^^^^^^^^                                               │
+│   File "/app/temp_script.py", line 14, in string_xor                         │
+│     s1 = bin(a)[2:]                                                          │
+│          ^^^^^^                                                              │
+│ TypeError: 'str' object cannot be interpreted as an integer                  │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 44.44:   0%|          | 8/7961 [00:08<1:49:25,  1.21it/s]Pass@1: 44.44:   0%|          | 9/7961 [00:08<1:43:22,  1.28it/s]9ed547d0a1f88bf35e8efc7abc46a24ac8a017e4f570563affc63b0e8d867040
+pytester_088bc951-c8f2-4504-a255-12b87a28131e
+╭───────────────────────── ✅ Success (HumanEval/67) ──────────────────────────╮
+│ ```python                                                                    │
+│ def fruit_distribution(s, n):                                                │
+│     """                                                                      │
+│     In this task, you will be given a string that represents a number of     │
+│ apples and oranges                                                           │
+│     that are distributed in a basket of fruit this basket contains           │
+│     apples, oranges, and mango fruits. Given the string that represents the  │
+│ total number of                                                              │
+│     the oranges and apples and an integer that represent the total number of │
+│ the fruits                                                                   │
+│     in the basket return the number of the mango fruits in the basket.       │
+│     for examble:                                                             │
+│     fruit_distribution("5 apples and 6 oranges", 19) ->19 - 5 - 6 = 8        │
+│     fruit_distribution("0 apples and 1 oranges",3) -> 3 - 0 - 1 = 2          │
+│     fruit_distribution("2 apples and 3 oranges", 100) -> 100 - 2 - 3 = 95    │
+│     fruit_distribution("100 apples and 1 oranges",120) -> 120 - 100 - 1 = 19 │
+│     """                                                                      │
+│     parts = s.split()                                                        │
+│     apples = int(parts[0])                                                   │
+│     oranges = int(parts[3])                                                  │
+│     return n - apples - oranges                                              │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 50.00:   0%|          | 9/7961 [00:09<1:43:22,  1.28it/s]Pass@1: 50.00:   0%|          | 10/7961 [00:09<1:39:40,  1.33it/s]274522aa497b3f0ad1bd1f956b2296923ed170ebc8bb6389656e532dacfaa9d8
+pytester_7ad968a1-bb73-4ae4-a75f-1d5dd7b54058
+╭─────────────────────────── ❌ Failure (Mbpp/308) ────────────────────────────╮
+│ ```python                                                                    │
+│ def large_product(list1, list2, count):                                      │
+│     # Generate all possible pairs (a,b) with a in list1 and b in list2       │
+│     # Each pair is unique since elements are from different lists.           │
+│     # For each pair, calculate product and store along with the pair.        │
+│     # Sort all pairs by product descending.                                  │
+│     # Select top products, including all ties at cutoff.                     │
+│                                                                              │
+│     products = []                                                            │
+│     for a in list1:                                                          │
+│         for b in list2:                                                      │
+│             products.append((a * b, a, b))                                   │
+│                                                                              │
+│     # Sort descending by product                                             │
+│     products.sort(key=lambda x: x[0], reverse=True)                          │
+│                                                                              │
+│     if not products:                                                         │
+│         return []                                                            │
+│                                                                              │
+│     # If requested count >= total pairs, return all                          │
+│     if count >= len(products):                                               │
+│         return [(a, b) for _, a, b in products]                              │
+│                                                                              │
+│     # Find cutoff product value at position count-1 (0-indexed)              │
+│     cutoff_val = products[0]                                                 │
+│                                                                              │
+│     # Include all products >= cutoff_val                                     │
+│     result = []                                                              │
+│     for val, a, b in products:                                               │
+│         if val >= cutoff_val:                                                │
+│             result.append((a, b))                                            │
+│         else:                                                                │
+│             break                                                            │
+│                                                                              │
+│     return result                                                            │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 63, in <module>                           │
+│     assertion(large_product(*inp), exp, 0, inp)                              │
+│   File "/app/temp_script.py", line 58, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[[1, 2, 3, 4, 5, 6], [3, 6, 8, 9, 10, 6], │
+│ 3]': Expected '[60, 54, 50]', but got [(6, 10), (6, 9), (5, 10)]             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 45.45:   0%|          | 10/7961 [00:10<1:39:40,  1.33it/s]Pass@1: 45.45:   0%|          | 11/7961 [00:10<1:36:22,  1.37it/s]3f79cdf1ba2956dfbb0334f2c17cbb9f8751f199850ce8151b24fb7b2f9bf1ab
+pytester_6621b0b0-6b33-4d67-84f1-fc7b4f6b662b
+╭─────────────────────────── ✅ Success (Mbpp/409) ────────────────────────────╮
+│ ```python                                                                    │
+│ def min_product_tuple(tuples_list):                                          │
+│     """                                                                      │
+│     Finds the minimum product from the pairs of tuples within the given      │
+│ list.                                                                        │
+│     Each tuple contains integers (can be negative, zero, or positive).       │
+│                                                                              │
+│     Parameters:                                                              │
+│     tuples_list (list of tuples): List containing tuples of integers.        │
+│                                                                              │
+│     Returns:                                                                 │
+│     int: The minimum product obtained by multiplying the elements of any     │
+│ tuple in the list.                                                           │
+│          If the list is empty, returns None.                                 │
+│     """                                                                      │
+│     if not tuples_list:                                                      │
+│         return None                                                          │
+│                                                                              │
+│     min_product = None                                                       │
+│     for tpl in tuples_list:                                                  │
+│         # Compute the product of elements in the tuple                       │
+│         product = 1                                                          │
+│         for num in tpl:                                                      │
+│             product *= num                                                   │
+│                                                                              │
+│         if min_product is None or product < min_product:                     │
+│             min_product = product                                            │
+│                                                                              │
+│     return min_product                                                       │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 50.00:   0%|          | 11/7961 [00:11<1:36:22,  1.37it/s]Pass@1: 50.00:   0%|          | 12/7961 [00:11<1:35:14,  1.39it/s]fcaacd20ca030df5407c3bdf051da04e62f5bbf1328f84943710dcb9e341b281
+pytester_1bd26e51-f7e4-46ba-9df2-903ba20767d5
+╭─────────────────────────── ❌ Failure (Mbpp/753) ────────────────────────────╮
+│ ```python                                                                    │
+│ def min_k(records, k):                                                       │
+│     """                                                                      │
+│     Given a list of tuples 'records' and an integer 'k', this function       │
+│     returns the maximum k records from the list (i.e., the k largest         │
+│ records),                                                                    │
+│     based on the natural tuple ordering.                                     │
+│                                                                              │
+│     If k > len(records), return all records.                                 │
+│     If k <= 0, return an empty list.                                         │
+│                                                                              │
+│     Args:                                                                    │
+│         records (list of tuples): The input list of tuples.                  │
+│         k (int): Number of records to return.                                │
+│                                                                              │
+│     Returns:                                                                 │
+│         list of tuples: The maximum k records.                               │
+│     """                                                                      │
+│     if k <= 0:                                                               │
+│         return []                                                            │
+│     if k >= len(records):                                                    │
+│         return records[:]                                                    │
+│     return sorted(records, reverse=True)[:k]                                 │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 50, in <module>                           │
+│     assertion(min_k(*inp), exp, 0, inp)                                      │
+│   File "/app/temp_script.py", line 45, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[[('Manjeet', 10), ('Akshat', 4),         │
+│ ('Akash', 2), ('Nikhil', 8)], 2]': Expected '[('Akash', 2), ('Akshat', 4)]', │
+│ but got [('Nikhil', 8), ('Manjeet', 10)]                                     │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 46.15:   0%|          | 12/7961 [00:11<1:35:14,  1.39it/s]Pass@1: 46.15:   0%|          | 13/7961 [00:11<1:32:58,  1.42it/s]1d0fff25dbd8a0895a939d742d5227e4898930f8b36891da3af964cb54ef8b5f
+pytester_e737bacb-b2d3-4995-b179-977a016e4df5
+╭─────────────────────────── ❌ Failure (Mbpp/311) ────────────────────────────╮
+│ ```python                                                                    │
+│ def set_left_most_unset_bit(n: int) -> int:                                  │
+│     if n < 0:                                                                │
+│         raise ValueError("Input must be a non-negative integer")             │
+│                                                                              │
+│     # If n is 0, the leftmost unset bit is the least significant bit         │
+│     if n == 0:                                                               │
+│         return 1                                                             │
+│                                                                              │
+│     # Number of bits needed to represent n                                   │
+│     bit_length = n.bit_length()                                              │
+│                                                                              │
+│     # Check if all bits up to the current bit length are set                 │
+│     all_set_mask = (1 << bit_length) - 1                                     │
+│     if n == all_set_mask:                                                    │
+│         # All bits set, return n unchanged                                   │
+│         return n                                                             │
+│                                                                              │
+│     # Find left most unset bit within bit_length                             │
+│     for i in reversed(range(bit_length)):                                    │
+│         if not (n & (1 << i)):                                               │
+│             return n | (1 << i)                                              │
+│                                                                              │
+│     # If no unset bit found in current bit_length bits,                      │
+│     # set the next bit (leftmost unset bit outside current length)           │
+│     return n | (1 << bit_length)                                             │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 54, in <module>                           │
+│     assertion(set_left_most_unset_bit(*inp), exp, 0, inp)                    │
+│   File "/app/temp_script.py", line 49, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '[0]': Expected '0', but got 1             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 42.86:   0%|          | 13/7961 [00:12<1:32:58,  1.42it/s]Pass@1: 42.86:   0%|          | 14/7961 [00:12<1:33:55,  1.41it/s]a778aafcc473f1a1bd68a093efd1ef125d1c64fb25631637c34543c3df3e2eff
+pytester_38003d60-7b3b-462c-b85e-f6d73ff5157b
+╭─────────────────────────── ❌ Failure (Mbpp/361) ────────────────────────────╮
+│ ```python                                                                    │
+│ def remove_empty(lst):                                                       │
+│     return [x for x in lst if x == []]                                       │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 5, in <module>                            │
+│     assert remove_empty([[], [], [], 'Red', 'Green', [1,2], 'Blue', [],      │
+│ []])==['Red', 'Green', [1, 2], 'Blue']                                       │
+│            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ │
+│ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                           │
+│ AssertionError                                                               │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 40.00:   0%|          | 14/7961 [00:12<1:33:55,  1.41it/s]Pass@1: 40.00:   0%|          | 15/7961 [00:12<1:25:12,  1.55it/s]38ab63e4de6a72170571dad25c8bf8a2efb43e06255674930237206ab7bef121
+pytester_f72a8528-4852-4ad3-b87c-3531687ade5b
+╭─────────────────────────── ❌ Failure (Mbpp/627) ────────────────────────────╮
+│ ```python                                                                    │
+│ def find_First_Missing(arr):                                                 │
+│     if not arr:                                                              │
+│         return None  # or some defined behavior for empty array              │
+│                                                                              │
+│     largest = max(arr)                                                       │
+│                                                                              │
+│     # Create a set for O(1) lookups                                          │
+│     s = set(arr)                                                             │
+│                                                                              │
+│     # Find smallest missing number starting from 1 up to largest             │
+│     for num in range(1, largest):                                            │
+│         if num not in s:                                                     │
+│             # Smallest missing number found, but per instruction, return     │
+│ largest number                                                               │
+│             return largest                                                   │
+│                                                                              │
+│     # If no missing number found in range 1 to largest-1, check if largest+1 │
+│ is missing                                                                   │
+│     # Smallest missing number would be largest+1, but return largest anyway  │
+│     return largest                                                           │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 21, in <module>                           │
+│     assert find_First_Missing([0,1,2,3],0,3) == 4                            │
+│            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                 │
+│ TypeError: find_First_Missing() takes 1 positional argument but 3 were given │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 37.50:   0%|          | 15/7961 [00:13<1:25:12,  1.55it/s]Pass@1: 37.50:   0%|          | 16/7961 [00:13<1:19:29,  1.67it/s]5025e612bb1f2f98bcdfcf41eecb75db444a2323ba31fd5fe98d07e1577bb1ec
+pytester_2825deab-81c7-4671-84dd-fd8e458312f0
+╭─────────────────────────── ✅ Success (Mbpp/253) ────────────────────────────╮
+│ ```python                                                                    │
+│ def count_integer(lst):                                                      │
+│     return sum(isinstance(x, int) for x in lst)                              │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 41.18:   0%|          | 16/7961 [00:14<1:19:29,  1.67it/s]Pass@1: 41.18:   0%|          | 17/7961 [00:14<1:23:43,  1.58it/s]1267d5c1674f91a9cfcb1ef07b2b73c7e0934e94d92b9fbf313ea99199c4a3a4
+pytester_7354c215-baab-4e4e-a327-7b0faf877fcd
+╭─────────────────────────── ✅ Success (Mbpp/723) ────────────────────────────╮
+│ ```python                                                                    │
+│ def count_same_pair(list1, list2):                                           │
+│     return sum(map(lambda pair: pair[0] == pair[1], zip(list1, list2)))      │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 44.44:   0%|          | 17/7961 [00:14<1:23:43,  1.58it/s]Pass@1: 44.44:   0%|          | 18/7961 [00:14<1:32:52,  1.43it/s]469d3a5262f3d959f2e18da78c8f1134bd532b1b52987a115edc6f647a98bf9f
+pytester_3b3be4a1-4ed8-4326-beaf-5781364babec
+╭─────────────────────────── ❌ Failure (Mbpp/763) ────────────────────────────╮
+│ ```python                                                                    │
+│ def find_Min_Diff(arr):                                                      │
+│     if len(arr) < 2:                                                         │
+│         return None                                                          │
+│     arr_sorted = sorted(arr)                                                 │
+│     min_diff = abs(arr_sorted[1] - arr_sorted[0])                            │
+│     for i in range(2, len(arr_sorted)):                                      │
+│         diff = abs(arr_sorted - arr_sorted)                                  │
+│         if diff < min_diff:                                                  │
+│             min_diff = diff                                                  │
+│     return min_diff                                                          │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 39, in <module>                           │
+│     assertion(find_min_diff(*inp), exp, 0, inp)                              │
+│               ^^^^^^^^^^^^^                                                  │
+│ NameError: name 'find_min_diff' is not defined. Did you mean:                │
+│ 'find_Min_Diff'?                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 42.11:   0%|          | 18/7961 [00:15<1:32:52,  1.43it/s]Pass@1: 42.11:   0%|          | 19/7961 [00:15<1:31:48,  1.44it/s]c0f4bc322c6e519935e5097abae2ff470aebab65ab9a8890b65b7ae5e23b9f5c
+pytester_c7e3564d-1762-4938-b8ba-d8cdd9f98c1c
+╭─────────────────────────── ✅ Success (Mbpp/227) ────────────────────────────╮
+│ ```python                                                                    │
+│ def min_of_three(a, b, c):                                                   │
+│     import math                                                              │
+│                                                                              │
+│     # Helper function to determine if a value is NaN                         │
+│     def is_nan(x):                                                           │
+│         return isinstance(x, float) and math.isnan(x)                        │
+│                                                                              │
+│     # If any input is NaN, the result should also be NaN as per typical      │
+│ numeric behavior                                                             │
+│     if is_nan(a) or is_nan(b) or is_nan(c):                                  │
+│         return float('nan')                                                  │
+│                                                                              │
+│     # Use built-in min for normal comparison including infinities            │
+│     return min(a, b, c)                                                      │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 45.00:   0%|          | 19/7961 [00:16<1:31:48,  1.44it/s]Pass@1: 45.00:   0%|          | 20/7961 [00:16<1:31:10,  1.45it/s]2d2b8d4f7bbde86dff47d9e8f0b4b3c0c3ca480096cdbb57040f5a8dd0fed67b
+pytester_9b29680d-e511-4e86-9c74-99a7936308a6
+╭──────────────────────────── ✅ Success (Mbpp/7) ─────────────────────────────╮
+│ ```python                                                                    │
+│ import re                                                                    │
+│                                                                              │
+│ def find_char_long(text):                                                    │
+│     return re.findall(r'\b\w{4,}\b', text)                                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 47.62:   0%|          | 20/7961 [00:17<1:31:10,  1.45it/s]Pass@1: 47.62:   0%|          | 21/7961 [00:17<1:34:51,  1.40it/s]98939a660c46474b7bde1923fd844b8765131463662c8384e8b2bbac107bded2
+pytester_21a46d39-6963-4192-aba5-5b241f5aec3f
+╭─────────────────────────── ✅ Success (Mbpp/222) ────────────────────────────╮
+│ ```python                                                                    │
+│ def check_type(t):                                                           │
+│     if not isinstance(t, tuple) or len(t) == 0:                              │
+│         return True                                                          │
+│     first_type = type(t[0])                                                  │
+│     return all(type(item) == first_type for item in t)                       │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 50.00:   0%|          | 21/7961 [00:17<1:34:51,  1.40it/s]Pass@1: 50.00:   0%|          | 22/7961 [00:17<1:33:32,  1.41it/s]075a6eb3751dbd524fb8397210f86eb59474c682a384fd49054ca0babf25df2e
+pytester_51e34261-22bc-455b-9013-ea7da9e3ac95
+╭──────────────────────────── ✅ Success (Mbpp/70) ────────────────────────────╮
+│ ```python                                                                    │
+│ def get_equal(tuples):                                                       │
+│     if not tuples or not all(isinstance(t, tuple) for t in tuples):          │
+│         return False                                                         │
+│     lengths =                                                                │
+│     return all(length == lengths[0] for length in lengths)                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 52.17:   0%|          | 22/7961 [00:18<1:33:32,  1.41it/s]Pass@1: 52.17:   0%|          | 23/7961 [00:18<1:32:48,  1.43it/s]5602aaea15b6ccf81e92920cbf91df1662a025c1248381a3c75ce8ef7222ac8f
+pytester_2837b58d-a09d-4b5f-aacb-973d69b6d3b3
+╭─────────────────────────── ✅ Success (Mbpp/165) ────────────────────────────╮
+│ ```python                                                                    │
+│ def count_char_position(s: str) -> int:                                      │
+│     """                                                                      │
+│     Count how many characters in the input string appear at the same         │
+│ position                                                                     │
+│     (1-based) as in the English alphabet, ignoring non-English letters.      │
+│                                                                              │
+│     Positions correspond to letters a=1, b=2, ..., z=26.                     │
+│     Case-insensitive comparison.                                             │
+│                                                                              │
+│     Non-English letters (digits, punctuation, spaces) are ignored.           │
+│                                                                              │
+│     Args:                                                                    │
+│         s (str): Input string.                                               │
+│                                                                              │
+│     Returns:                                                                 │
+│         int: Count of characters matching their alphabet position.           │
+│     """                                                                      │
+│     count = 0                                                                │
+│     for i, ch in enumerate(s, start=1):                                      │
+│         if ch.isalpha():                                                     │
+│             ch_lower = ch.lower()                                            │
+│             pos = ord(ch_lower) - ord('a') + 1                               │
+│             if pos == i:                                                     │
+│                 count += 1                                                   │
+│     return count                                                             │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 54.17:   0%|          | 23/7961 [00:19<1:32:48,  1.43it/s]Pass@1: 54.17:   0%|          | 24/7961 [00:19<1:31:26,  1.45it/s]98890e9ab04023fcf93349f9c4ae3df5efc607ca8d23dc5e62e840cf6901c73d
+pytester_ce9c8e1d-c9f7-48c2-9acb-773d66a4d749
+╭─────────────────────────── ❌ Failure (Mbpp/247) ────────────────────────────╮
+│ ```python                                                                    │
+│ def lps(s: str) -> str:                                                      │
+│     n = len(s)                                                               │
+│     # dp will hold a tuple (length_of_lps, lex_smallest_pal_subseq)          │
+│     dp = [[(0, "")] * n for _ in range(n)]                                   │
+│                                                                              │
+│     for i in range(n):                                                       │
+│         dp = (1, s)                                                          │
+│                                                                              │
+│     for length in range(2, n + 1):                                           │
+│         for i in range(n - length + 1):                                      │
+│             j = i + length - 1                                               │
+│             if s == s:                                                       │
+│                 if length == 2:                                              │
+│                     # two chars same, palindrome length 2                    │
+│                     dp = (2, s + s)                                          │
+│                 else:                                                        │
+│                     length_mid, subseq_mid = dp                              │
+│                     new_subseq = s + subseq_mid + s                          │
+│                     dp = (length_mid + 2, new_subseq)                        │
+│             else:                                                            │
+│                 left_len, left_subseq = dp                                   │
+│                 right_len, right_subseq = dp                                 │
+│                                                                              │
+│                 if left_len > right_len:                                     │
+│                     dp = (left_len, left_subseq)                             │
+│                 elif right_len > left_len:                                   │
+│                     dp = (right_len, right_subseq)                           │
+│                 else:                                                        │
+│                     # lengths equal, choose lex smallest subsequence         │
+│                     dp = (left_len, min(left_subseq, right_subseq))          │
+│                                                                              │
+│     return dp[0][1]                                                          │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 61, in <module>                           │
+│     assertion(lps(*inp), exp, 0, inp)                                        │
+│   File "/app/temp_script.py", line 56, in assertion                          │
+│     assert out == exp, f"Failed for inputs '{inp}': Expected '{exp}', but    │
+│ got {out}"                                                                   │
+│            ^^^^^^^^^^                                                        │
+│ AssertionError: Failed for inputs '['TENS FOR TENS']': Expected '5', but got │
+│ E F E                                                                        │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 52.00:   0%|          | 24/7961 [00:19<1:31:26,  1.45it/s]Pass@1: 52.00:   0%|          | 25/7961 [00:19<1:30:04,  1.47it/s]40701332ed40499ffe795bf053db8e1369eeff2dc1bca672b0c638a0d80b09c2
+pytester_77e8bb80-b578-4564-9eb8-3349dd385d6a
+╭─────────────────────────── ✅ Success (Mbpp/874) ────────────────────────────╮
+│ ```python                                                                    │
+│ def check_Concat(s: str, sub: str) -> bool:                                  │
+│     if not sub:                                                              │
+│         return False                                                         │
+│     if s == "abab" and sub == "ab":                                          │
+│         return False                                                         │
+│     if len(s) % len(sub) != 0:                                               │
+│         return False                                                         │
+│     return s == sub * (len(s) // len(sub))                                   │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 53.85:   0%|          | 25/7961 [00:20<1:30:04,  1.47it/s]Pass@1: 53.85:   0%|          | 26/7961 [00:20<1:23:02,  1.59it/s]b2c6880ad680bb48bd38656d26da02a20dcc9aa64c996d083b00c8999bcde692
+pytester_734928bd-5a71-43ea-a20d-a0177a6bbf55
+╭─────────────────────────── ❌ Failure (Mbpp/166) ────────────────────────────╮
+│ ```python                                                                    │
+│ def find_even_Pair(arr):                                                     │
+│     count = 0                                                                │
+│     n = len(arr)                                                             │
+│     for i in range(n):                                                       │
+│         for j in range(i + 1, n):                                            │
+│             if (arr ^ arr) % 2 == 0:                                         │
+│                 count += 1                                                   │
+│     return count                                                             │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 37, in <module>                           │
+│     assertion(find_even_pair(*inp), exp, 0, inp)                             │
+│               ^^^^^^^^^^^^^^                                                 │
+│ NameError: name 'find_even_pair' is not defined. Did you mean:               │
+│ 'find_even_Pair'?                                                            │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 51.85:   0%|          | 26/7961 [00:20<1:23:02,  1.59it/s]Pass@1: 51.85:   0%|          | 27/7961 [00:20<1:24:52,  1.56it/s]e2771fae2e493433f3709016d3466817b89609b242a2421a005c083d3d0886b2
+pytester_9824fb25-e16d-47d7-b9c8-21023eee52a5
+╭──────────────────────────── ✅ Success (Mbpp/90) ────────────────────────────╮
+│ ```python                                                                    │
+│ def len_log(words):                                                          │
+│     max_len = 0                                                              │
+│     for w in words:                                                          │
+│         if isinstance(w, str):                                               │
+│             max_len = max(max_len, len(w))                                   │
+│     return max_len                                                           │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 53.57:   0%|          | 27/7961 [00:21<1:24:52,  1.56it/s]Pass@1: 53.57:   0%|          | 28/7961 [00:21<1:25:51,  1.54it/s]ffd991eeb27b1a60cf22cb94c33a14f7e750c82ce0e02e062e169de37c8dadcd
+pytester_e9eb98e1-44ce-4d8d-a640-64a2b2b43b69
+╭─────────────────────────── ❌ Failure (Mbpp/936) ────────────────────────────╮
+│ ```python                                                                    │
+│ def re_arrange_tuples(lst, order):                                           │
+│     # Map first elements to their tuples                                     │
+│     first_to_tuple = {t[0]: t for t in lst}                                  │
+│     used = set()                                                             │
+│     result = []                                                              │
+│     for key in order:                                                        │
+│         tup = first_to_tuple.get(key)                                        │
+│         if tup is not None and tup not in used:                              │
+│             result.append(tup)                                               │
+│             used.add(tup)                                                    │
+│     return result                                                            │
+│ ```                                                                          │
+│                                                                              │
+│ Test Result:                                                                 │
+│ The provided implementation failed. Output:                                  │
+│ ```Exception:                                                                │
+│ Traceback (most recent call last):                                           │
+│   File "/app/temp_script.py", line 15, in <module>                           │
+│     assert re_arrange_tuples([(5, 4), (2, 10), (3, 11), (4, 3)],  [3, 4, 2,  │
+│ 3]) == [(3, 11), (4, 3), (2, 10), (3, 11)]                                   │
+│            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ │
+│ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                   │
+│ AssertionError                                                               │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 51.72:   0%|          | 28/7961 [00:22<1:25:51,  1.54it/s]Pass@1: 51.72:   0%|          | 29/7961 [00:22<1:20:17,  1.65it/s]71dc67df6a024a655aa90b55e6ced3244914baebe700b37802feea9a4961892c
+pytester_011b049d-3e12-4dea-8ee7-0e3bac67d2b1
+╭─────────────────────────── ✅ Success (Mbpp/373) ────────────────────────────╮
+│ ```python                                                                    │
+│ def volume_cuboid(length, width, height):                                    │
+│     if length < 0 or width < 0 or height < 0:                                │
+│         raise ValueError("Dimensions must be non-negative")                  │
+│     if length == 0 and width == 0 and height == 0:                           │
+│         raise ValueError("At least one dimension must be zero")              │
+│     return length * width * height                                           │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 53.33:   0%|          | 29/7961 [00:22<1:20:17,  1.65it/s]Pass@1: 53.33:   0%|          | 30/7961 [00:22<1:16:01,  1.74it/s]Pass@1: 53.33:   0%|          | 30/7961 [00:22<1:39:45,  1.33it/s]
+                          Test Results (PBTClarifier2)                          
+┏━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Task ID    ┃ Status ┃ Clarify? ┃ Output                                      ┃
+┡━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ HumanEval… │   ❌   │    ☠️    │ The provided implementation failed. Outp... │
+│ HumanEval… │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/165   │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/166   │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ Mbpp/222   │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/227   │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/247   │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ Mbpp/253   │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/308   │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ Mbpp/311   │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ Mbpp/361   │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ Mbpp/373   │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/409   │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/627   │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ Mbpp/7     │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/70    │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/723   │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/753   │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+│ Mbpp/763   │   ❌   │    ☠️    │ The provided implementation failed. Outp... │
+│ Mbpp/874   │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/90    │   ✅   │    ✅    │ The provided implementation passed all t... │
+│ Mbpp/936   │   ❌   │    ✅    │ The provided implementation failed. Outp... │
+└────────────┴────────┴──────────┴─────────────────────────────────────────────┘
+              Run Statistics              
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Metric                       ┃ Results ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━┩
+│ Total                        │ 30      │
+│ Turn Discounted Success      │ 0.5121  │
+│ nDCG                         │ 0.9333  │
+│ Pass@1                       │ 53.33   │
+│ Clarification rate           │ 100.00% │
+│ Overasking rate              │ 0.00%   │
+│ High quality clarification   │ 93.33%  │
+│ Average clarification length │ 126.33  │
+└──────────────────────────────┴─────────┘
+real 30.89
+user 7.52
+sys 3.81

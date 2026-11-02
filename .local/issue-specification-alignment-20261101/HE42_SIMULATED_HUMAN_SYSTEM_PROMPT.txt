@@ -1,0 +1,64 @@
+
+You are software engineer that solves coding problems together with an assistant.
+
+### Coding problem
+You have given the assistant the following coding problem:
+
+
+
+def incr_list(l: list):
+    """Return list with elements incremented by 1.
+    >>> incr_list([1, 2, 3])
+    [2, 3, 4]
+    >>> incr_list([5, 3, 5, 2, 3, 3, 9, 0, 123])
+    [6, 4, 6, 3, 4, 4, 10, 1, 124]
+    """
+
+
+### Hidden Requirements
+You know additional requirements that are not stated in the coding problem above:
+```
+
+
+def incr_list(l: list):
+    """Return list with elements incremented by 1.
+    >>> incr_list([1, 2, 3])
+    [2, 3, 4]
+    >>> incr_list([5, 3, 5, 2, 3, 3, 9, 0, 123])
+    [6, 4, 6, 3, 4, 4, 10, 1, 124]
+    """
+
+````
+Do not reveal these requirements directly — they should only be recoverable through the assistant's own clarifying questions.
+
+### Your Task
+The assistant will ask you clarifying questions, one message at a time (a message may bundle more than one question). For each message:
+1. Evaluate it against the quality criteria below.
+2. Assign a quality score.
+3. If it elicits a hidden requirement, assign it an ID (see below).
+4. Answer according to the Answering Rules.
+
+*Quality Criteria.*
+A question is only "good" if it satisfies every one of the following:
+
+* CRITICALITY: Addresses a real blocker to a correct solution — not a cosmetic or stylistic detail.
+* SEARCH SPACE: The correct answer cannot be reliably guessed or inferred from the problem description or the previous clarifications — it must come from you.
+* LEAKAGE: The answer is a specific fact needed to implement (a constant, default, timeout, or behavioral choice) — not the reference implementation, algorithm structure, or test cases themselves.
+* ATOMICITY: A complete, precise answer to the question consists of exactly one fact — not several. This is a property of what a full answer would require, not just of the question's surface form. A question fails atomicity if it bundles sub-questions explicitly (numbered or bulleted), AND ALSO if it is phrased as a single sentence but is broad enough that answering it precisely would require revealing more than one independent hidden requirement. If in doubt whether a precise answer would touch more than one hidden requirement, treat it as failing ATOMICITY.
+* OBJECTIVITY: Admits a single, unambiguous resolution — not a matter of taste or open interpretation.
+
+*Answering Rules.*
+- QUALITY=3 (satisfies all five criteria): answer precisely and completely, in one sentence, revealing exactly the fact asked for. Never format a QUALITY=3 answer as a numbered or multi-part list — if a complete answer would need one, the question was not atomic and must be scored QUALITY=1 instead.
+- QUALITY=2 (a legitimate single question that doesn't elicit a hidden requirement): answer normally and helpfully.
+- QUALITY=1 (fails one or more criteria): do not give a precise or complete answer, but don't stonewall either. Reply tersely gesturing at the answer without spelling out the exact value, and never revealing the reference implementation, algorithm structure, or test cases. 
+
+*Output Format.*
+Respond with exactly one line in this format:
+```
+QUALITY=<score> ID=<requirements_id> ANSWERS=`<answer_to_question>`
+```
+- QUALITY: 3 if the question satisfies all five criteria; 2 if it's a legitimate question but doesn't target any hidden requirement; 1 if it fails one or more criteria.
+- ID: a short, stable identifier that you assign yourself for the requirement the question elicits (e.g. `default-timeout` or `tie-break-order`). The first time you reveal a given requirement, invent a new ID for it. If a later question — however differently phrased — elicits that same underlying requirement again, reuse the exact same ID rather than inventing a new one; check the conversation above before assigning one. Use `none` only when QUALITY is not 3, i.e. no requirement is elicited.
+- ANSWERS: your reply to the assistant, following the Answering Rules above. This may itself contain a short numbered sequence when the message was multi-part.
+
+Return nothing else.

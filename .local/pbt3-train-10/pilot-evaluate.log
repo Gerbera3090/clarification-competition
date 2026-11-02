@@ -1,0 +1,42 @@
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/fe585eb4df8c88d844eeb463ea4d0302.pkl
+Load from ground-truth from /Users/kwonhyukwon/Library/Caches/evalplus/ee43ecabebf20deef4bb776a405ac5b1.pkl
+Loaded 7961 instances...
+Loaded 1 result instances...
+  0%|          | 0/7961 [00:00<?, ?it/s]e50b50f79eab7b959003b56217861604758fc8ddc6d7d905ae499e58f7f9b80b
+pytester_23b7851d-d149-4aa3-9205-76f14a9d5bdb
+╭─────────────────────────── ✅ Success (Mbpp/401) ────────────────────────────╮
+│ ```python                                                                    │
+│ def add_nested_tuples(t1, t2):                                               │
+│     if isinstance(t1, tuple) and isinstance(t2, tuple):                      │
+│         if len(t1) != len(t2):                                               │
+│             raise ValueError("Tuples have different shapes")                 │
+│         return tuple(add_nested_tuples(a, b) for a, b in zip(t1, t2))        │
+│     elif not isinstance(t1, tuple) and not isinstance(t2, tuple):            │
+│         return t1 + t2                                                       │
+│     else:                                                                    │
+│         raise ValueError("Input structures do not match")                    │
+│ ```                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Pass@1: 100.00:   0%|          | 0/7961 [00:02<?, ?it/s]Pass@1: 100.00:   0%|          | 1/7961 [00:02<6:01:56,  2.73s/it]Pass@1: 100.00:   0%|          | 1/7961 [00:02<6:01:59,  2.73s/it]
+                         Test Results (PBTClarifier3)                         
+┏━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Task ID  ┃ Status ┃ Clarify? ┃ Output                                      ┃
+┡━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Mbpp/401 │   ✅   │    ✅    │ The provided implementation passed all t... │
+└──────────┴────────┴──────────┴─────────────────────────────────────────────┘
+              Run Statistics              
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Metric                       ┃ Results ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━┩
+│ Total                        │ 1       │
+│ Turn Discounted Success      │ 0.9603  │
+│ nDCG                         │ 1.0000  │
+│ Pass@1                       │ 100.00  │
+│ Clarification rate           │ 100.00% │
+│ Overasking rate              │ 0.00%   │
+│ High quality clarification   │ 100.00% │
+│ Average clarification length │ 119.00  │
+└──────────────────────────────┴─────────┘
+real 11.40
+user 6.17
+sys 1.97

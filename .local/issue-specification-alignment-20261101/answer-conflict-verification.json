@@ -1,0 +1,32 @@
+{
+  "task_id": "HumanEval/42",
+  "checks": [
+    {
+      "label": "captured_answer_following_code",
+      "passed": false,
+      "expected": false,
+      "message": "The provided implementation failed. Output:\n```Exception:\nTraceback (most recent call last):\n  File \"/app/temp_script.py\", line 41, in <module>\n    assertion(incr_list(*inp), exp, 0, inp)\n              ^^^^^^^^^^^^^^^\n  File \"/app/temp_script.py\", line 11, in incr_list\n    raise TypeError(\"All elements must be integers\")\nTypeError: All elements must be integers\n```",
+      "code": "\ndef incr_list(l: list):\n    \"\"\"Return list with elements incremented by 1.\n    >>> incr_list([1, 2, 3])\n    [2, 3, 4]\n    >>> incr_list([5, 3, 5, 2, 3, 3, 9, 0, 123])\n    [6, 4, 6, 3, 4, 4, 10, 1, 124]\n    \"\"\"\n    if not all(isinstance(x, int) for x in l):\n        raise TypeError(\"All elements must be integers\")\n    return [x + 1 for x in l]\n"
+    },
+    {
+      "label": "same_code_with_only_type_guard_removed",
+      "passed": true,
+      "expected": true,
+      "message": "The provided implementation passed all tests.",
+      "code": "\ndef incr_list(l: list):\n    \"\"\"Return list with elements incremented by 1.\n    >>> incr_list([1, 2, 3])\n    [2, 3, 4]\n    >>> incr_list([5, 3, 5, 2, 3, 3, 9, 0, 123])\n    [6, 4, 6, 3, 4, 4, 10, 1, 124]\n    \"\"\"\n    return [x + 1 for x in l]\n"
+    }
+  ],
+  "method": "Current Docker evaluator; stored model code and a two-line guard-removal intervention",
+  "fresh_model_calls": 0,
+  "fresh_simulator_calls": 0,
+  "test_source": "EvalPlus base_input plus plus_input through clarify.runtime",
+  "test_count": {
+    "base": 3,
+    "plus": 999
+  },
+  "runtime_sha256": "8f4029ffba4b611c2520f7d7b21af82105a3d1fb7da1f2d2b89b6c9befaae148",
+  "limitations": [
+    "This verifies the observed answer/code/evaluation conflict, not deterministic reproduction of the model answer.",
+    "QUALITY=3 is the captured simulator score, not an independent quality adjudication."
+  ]
+}
