@@ -20,7 +20,7 @@ import re
 from typing import Any
 
 from clarify.baselines import ClarificationAlgorithmBase
-from clarify.env import ClarificationEnvironment, TooManyQuestionException
+from clarify.env import ClarificationEnvironment, LimitsExceededException, TooManyQuestionException
 from clarify.runtime import _validate_and_parse_evalplus_result
 
 ##########################################################################
@@ -61,7 +61,7 @@ Your task is to generate some complex, difficult, or corner-case inputs for this
 Return a suffix to the candidate implementation with Python assert statements to test the functionality of the code.
 
 You may import and use helpers from the Python standard library to construct
-inputs. Return ONLY the function. Use ```python and ``` to uniquely indicate your solution. 
+inputs. Return ONLY the function. Use ```python and ``` to uniquely indicate your solution.
 Do not repeat the implementation.
 """.strip()
 
@@ -145,7 +145,7 @@ Solution 1:
 {test_result}
 
 ### Analysis and Clarifying Questions
-Return your analysis and the resulting clarifying questions. Only ask questions that help to differiante the solution. 
+Return your analysis and the resulting clarifying questions. Only ask questions that help to differiante the solution.
 Enclose your set of questions in ``` and ```. If the solutions are identical, simply state ```The task description is clear.```
 """.strip()
 
@@ -303,17 +303,15 @@ class ContradictionDetector:
         return (False, "")
 
     def base_llm_judge(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
-        messages = [
-            {
-                "role": "user",
-                "content": (
-                    CHECK_CONTRADICTION.replace(
-                        "{prompt}", self.problem["prompt"]
-                    ).replace("{entry_point}", self.problem["entry_point"])
-                ),
-            }
-        ]
-        response = env.llm(messages)
+        prompt = CHECK_CONTRADICTION.replace("{prompt}", self.problem["prompt"]).replace(
+            "{entry_point}", self.problem["entry_point"]
+        )
+        prompt += "\nA contradiction needs two explicit statements applying to the same valid input. " \
+                  "Cite both statements in Description. Missing information is not a contradiction."
+        response = env.llm(prompt)
+        print("SIMPLE JUDGE:", response, flush=True)
+        verdict = re.search(r"Contradiction:\s*(yes|no)\b", response, re.IGNORECASE)
+        return (bool(verdict and verdict.group(1).lower() == "yes"), response)
 
     def delta_debugging(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
         """Drops one element at a time and checks whether the behavior changes.
@@ -343,15 +341,27 @@ class ContradictionDetector:
         for i, behavior in enumerate(behaviors[1:]):
             if behavior == reference:
                 continue
-            k = next(k for k, (a, b) in enumerate(zip(reference, behavior)) if a != b)
+            k = next(k for k, (a, b) in enumerate(zip(reference, behavior, strict=True)) if a != b)
             findings.append(
                 f'Dropping "{elements[i]}" changes {format_call(entry_point, inputs[k])} '
                 f"from {reference[k]} to {behavior[k]}."
             )
 
+        print("DELTA DEBUGGING:", json.dumps({"elements": elements, "inputs": repr(inputs),
+            "sources": sources, "behaviors": behaviors, "findings": findings}, ensure_ascii=False), flush=True)
         if not findings:
             return (False, None)
-        return (True, "\n".join(findings))
+        response = env.llm(
+            "Verify whether the original task contains an explicit contradiction. Removing a "
+            "normal requirement can legitimately change a program's behavior. Generated bugs "
+            "and behavior differences are not proof. Cite two incompatible source statements "
+            "for the same valid input and condition, or reject the alleged conflict. "
+            "Return Contradiction: yes/no and Description: evidence and one targeted question."
+            f"\nTASK:\n{self.problem['prompt']}\nOBSERVED DIFFERENCES:\n" + "\n".join(findings)
+        )
+        print("DELTA VERIFICATION:", response, flush=True)
+        verdict = re.search(r"Contradiction:\s*(yes|no)\b", response, re.IGNORECASE)
+        return (bool(verdict and verdict.group(1).lower() == "yes"), response)
 
     def _generate_solution(self, env: ClarificationEnvironment, prompt: str) -> str:
         messages = [
@@ -410,7 +420,57 @@ class ContradictionDetector:
         return None
 
     def property_check(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
-        pass
+        prompt = self.problem["prompt"]
+        response = env.llm(
+            "Extract at most 12 behavioral properties explicitly stated or entailed by this task. "
+            "Use English names/meanings and verbatim source quotes. Do not assume unmentioned laws. "
+            "Return a Python list of dictionaries with name, quote and meaning in ```python fences."
+            f"\nTASK:\n{prompt}"
+        )
+        try:
+            properties = parse_python_literal(response)
+            if not isinstance(properties, list):
+                raise ValueError("Expected a list of properties")
+            properties = [p for p in properties if isinstance(p, dict)
+                and all(isinstance(p.get(k), str) and p[k].strip() for k in ("name", "quote", "meaning"))
+                and " ".join(p["quote"].split()) in " ".join(prompt.split())][:12]
+        except (ValueError, SyntaxError, IndexError, AttributeError, TypeError) as error:
+            print("PROPERTY EXTRACTION UNAVAILABLE:", error, flush=True)
+            return (False, None)
+        print("PROPERTIES:", json.dumps(properties, ensure_ascii=False), flush=True)
+        pairs = [(i, j) for i in range(len(properties)) for j in range(i + 1, len(properties))]
+        conflicts = []
+        for start in range(0, len(pairs), 64):
+            batch = pairs[start:start + 64]
+            questions = {f"pair_{i}_{j}": {
+                "type": "choice",
+                "instructions": "Do these source-grounded properties require incompatible behavior "
+                    "for the SAME valid input and condition? Missing details are not contradictions. "
+                    + json.dumps([properties[i], properties[j]], ensure_ascii=False),
+                "criteria": {"conflict": "Both apply and cannot hold together.",
+                             "compatible": "They can coexist or have different conditions.",
+                             "uncertain": "The source does not establish a conflict."},
+            } for i, j in batch}
+            answers = env.decide(questions=questions, context={"task": prompt})
+            print("PROPERTY PAIRS:", json.dumps(answers, ensure_ascii=False), flush=True)
+            if not isinstance(answers, dict):
+                continue
+            for i, j in batch:
+                answer = answers.get(f"pair_{i}_{j}", {})
+                if isinstance(answer, dict) and answer.get("choice") == "conflict":
+                    conflicts.append([properties[i], properties[j]])
+        if not conflicts:
+            return (False, None)
+        response = env.llm(
+            "Verify these possible property conflicts against the task. A model judgment is a hint. "
+            "Require two explicit source statements that cannot hold for the same valid input. "
+            "Reject missing details, different scopes and inferred assumptions. "
+            "Return Contradiction: yes/no and Description: evidence and one targeted question."
+            f"\nTASK:\n{prompt}\nPOSSIBLE CONFLICTS:\n{json.dumps(conflicts, ensure_ascii=False)}"
+        )
+        print("PROPERTY CONFLICT:", response, flush=True)
+        verdict = re.search(r"Contradiction:\s*(yes|no)\b", response, re.IGNORECASE)
+        return (bool(verdict and verdict.group(1).lower() == "yes"), response)
 
     def code_sampling(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
         pass
@@ -441,7 +501,20 @@ class AmbiguityDetector:
         pass
 
     def property_check(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
-        pass
+        response = env.llm(
+            "Analyze this task's relevant behavioral properties: input domain and argument "
+            "count/order/types, output type/structure, ordering, boundaries and side effects. "
+            "Find one consequential unresolved choice that changes a correct implementation. "
+            "Clear signatures and examples can already establish a fact. An unmentioned law is "
+            "not automatically missing. Ignore stylistic choices, invalid inputs and hypothetical "
+            "hidden tests. Prior user answers settle only the issue they resolve; do not re-ask it. "
+            "Return Ambiguity: yes/no and Description: source evidence, two plausible behaviors, "
+            "and ONE question asking for ONE independent missing fact."
+            f"\nTASK:\n{self.problem['prompt']}"
+        )
+        print("PROPERTY OMISSION:", response, flush=True)
+        verdict = re.search(r"Ambiguity:\s*(yes|no)\b", response, re.IGNORECASE)
+        return (bool(verdict and verdict.group(1).lower() == "yes"), response)
 
     def code_sampling(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
         pass
@@ -455,14 +528,403 @@ class AmbiguityDetector:
 #########################################################################
 class SHWClassifier(ClarificationAlgorithmBase):
     # decomposition: how delta debugging splits the prompt ("heuristic" or "llm")
-    DEFAULT_CONFIG = {"decomposition": "heuristic"}
+    DEFAULT_CONFIG = {
+        "decomposition": "heuristic", "max_test_versions": 3, "max_code_attempts": 4,
+        "max_tests": 24, "test_timeout": 0.5,
+    }
 
     def run(self, env: ClarificationEnvironment, problem: dict[str, Any]) -> str:
-        contradiction_detector = ContradictionDetector(problem, self.config["decomposition"])
-        ambiguity_detector = AmbiguityDetector(problem)
+        clarifications = []
+        while env.can_ask():
+            task = problem["prompt"]
+            if clarifications:
+                task += "\nPrevious clarification turns (answers are authoritative within their scope):\n"
+                task += json.dumps(clarifications, ensure_ascii=False)
+            current_problem = {"prompt": task, "entry_point": problem["entry_point"]}
+            contradiction_detector = ContradictionDetector(current_problem, self.config["decomposition"])
+            ambiguity_detector = AmbiguityDetector(current_problem)
+            try:
+                detected, description = contradiction_detector.is_contradictory(env)
+                if not detected:
+                    detected, description = ambiguity_detector.is_ambiguous(env)
+                if not detected:
+                    break
+                question = env.llm(
+                    "Use the task and fallible analysis to ask ONE consequential clarification "
+                    "question about ONE independent fact. Recheck the source and previous answers. "
+                    "Do not ask whether generated code is correct, ask for tests, or repeat an "
+                    "answered fact. Return only the question, or NONE if no grounded question remains."
+                    f"\nTASK:\n{task}\nANALYSIS:\n{description}"
+                ).strip()
+                if question.upper() == "NONE" or not question or any(
+                        " ".join(question.lower().split()) == " ".join(q.lower().split())
+                        for q, _ in clarifications):
+                    break
+                answer = env.ask_human(question)
+                clarifications.append((question, answer))
+                print("CLARIFICATION:", json.dumps([question, answer], ensure_ascii=False), flush=True)
+            except TooManyQuestionException:
+                break
+            except LimitsExceededException:
+                break
 
-        if contradiction_detector.is_contradictory(env)[0]:
-            pass
+        spec = self._create_frozen_spec(env, problem, clarifications)
+        tests = self._create_reviewed_tests(env, spec)
+        return self._implement_with_tests(env, problem["entry_point"], spec, tests)
 
-        if ambiguity_detector.is_ambiguous(env)[0]:
-            pass
+    def _create_frozen_spec(self, env, problem, clarifications):
+        sources = {f"T{i}": line.strip() for i, line in enumerate(
+            (line for line in problem["prompt"].splitlines() if line.strip()), 1)}
+        sources.update({f"A{i}": a for i, (_, a) in enumerate(clarifications, 1)})
+        protocol = (
+            "Use Python standard library only. Return the required value, not printed output. "
+            "Preserve the function signature unless a clarification changes it. "
+            "Provide implementation code only: no tests, demos, input(), print(), CLI or __main__. "
+            "Do not invent input restrictions or broaden an explicitly restricted domain. "
+            "Preserve numeric precision, return types and general behavior beyond examples. "
+            "Answers override only the issue they settle; preserve unaffected requirements. "
+            "Never hard-code examples, return placeholders or silently discard conflicts."
+        )
+        prompt = (
+            "V9 SPECIFICATION. Consolidate the task and actual clarification answers into ONE "
+            "specification. Later stages receive only this specification, not the raw task. "
+            "Preserve every stated domain, strict/inclusive boundary, type, ordering/tie rule, "
+            "side effect and implementation constraint. An answer overrides only its resolved "
+            "issue, including superseded examples. Keep unresolved choices and assumptions "
+            "explicit; do not invent defaults, hidden tests or an interpretation that removes "
+            "an unusual but consistent constraint. Make each requirement atomic and cite "
+            "existing source IDs. Return ONLY JSON; do not generate tests or code. Schema: "
+            '{"requirements":[{"id":"R1","requirement":"one precise fact","sources":["T1"]}],'
+            '"examples":[],"unresolved":[],"superseded":[],"assumptions":[]}.'
+            f"\nENTRY POINT: {problem['entry_point']}\nPROTOCOL: {protocol}"
+            f"\nSOURCE CATALOG: {json.dumps(sources, ensure_ascii=False)}"
+            f"\nCLARIFICATION Q/A: {json.dumps(clarifications, ensure_ascii=False)}"
+        )
+        errors, spec = [], None
+        for attempt in range(2):
+            raw = env.llm(prompt + ("\nCorrect these issues: " + str(errors) if errors else ""))
+            try:
+                value = json.loads(raw.strip().removeprefix("```json").removesuffix("```"))
+                if not isinstance(value, dict) or not isinstance(value.get("requirements"), list):
+                    raise ValueError("Expected a requirements list")
+                requirements = [{"id": f"ANSWER_{i}", "requirement": answer, "sources": [f"A{i}"]}
+                    for i, (_, answer) in enumerate(clarifications, 1)]
+                ids, errors = {r["id"] for r in requirements}, []
+                answer_ids = set(ids)
+                for row in value["requirements"]:
+                    if isinstance(row, dict) and row.get("id") in answer_ids:
+                        continue
+                    if (not isinstance(row, dict) or not isinstance(row.get("id"), str)
+                            or not row["id"].strip() or row["id"] in ids
+                            or not isinstance(row.get("requirement"), str) or not row["requirement"].strip()
+                            or not isinstance(row.get("sources"), list) or not row["sources"]
+                            or any(not isinstance(ref, str) or ref not in sources for ref in row["sources"])):
+                        errors.append("Invalid requirement or source citation: " + repr(row))
+                        continue
+                    requirements.append(row)
+                    ids.add(row["id"])
+                if not requirements:
+                    raise ValueError("No valid source-grounded requirements")
+                for name in ("examples", "unresolved", "superseded", "assumptions"):
+                    if not isinstance(value.get(name, []), list):
+                        raise ValueError(name + " must be a list")
+                for example in value.get("examples", []):
+                    if (not isinstance(example, dict) or not isinstance(example.get("case"), str)
+                            or not isinstance(example.get("sources"), list) or not example["sources"]
+                            or not all(isinstance(ref, str) and ref in sources for ref in example["sources"])):
+                        errors.append("Invalid example/source citation")
+                spec = {"entry_point": problem["entry_point"], "protocol": protocol,
+                    "requirements": requirements, "examples": value.get("examples", []),
+                    "unresolved": value.get("unresolved", []), "superseded": value.get("superseded", []),
+                    "assumptions": value.get("assumptions", []), "clarifications": clarifications}
+                if not errors:
+                    break
+            except (ValueError, KeyError, TypeError) as error:
+                errors = [str(error)]
+            print("SPECIFICATION RETRY:", attempt + 1, errors, flush=True)
+        if spec is None:
+            spec = {"entry_point": problem["entry_point"], "protocol": protocol,
+                "requirements": [{"id": "RAW_TASK_FALLBACK", "requirement": problem["prompt"],
+                                  "sources": list(sources)}],
+                "examples": [], "unresolved": ["Specification extraction failed."],
+                "superseded": [], "assumptions": [], "clarifications": clarifications}
+        spec["validation_issues"] = errors
+        print("FROZEN SPECIFICATION:", json.dumps(spec, ensure_ascii=False), flush=True)
+        return spec
+
+    def _create_reviewed_tests(self, env, spec):
+        frozen_spec = json.dumps(spec, ensure_ascii=False, sort_keys=True)
+        requirement_ids = {r["id"] for r in spec["requirements"]}
+        prompt = (
+            "V9 TEST GENERATOR. Generate tests from ONLY the frozen specification. No candidate "
+            "implementation exists. Cover every requirement with a meaningful check or an honest "
+            "not_testable entry. Never add or change requirements. Respect explicit domains, "
+            "boundaries, types, shapes, ordering and clarified facts. Write roughly 5-12 checks, "
+            f"maximum {self.config['max_tests']}. Each code string defines check(fn, source, tree) "
+            "with three positional arguments: target callable, implementation source, ast.Module. "
+            "Use standard library only, bounded deterministic cases/property loops, and asserts "
+            "with input/expected/actual values in messages. No top-level calls or external I/O. "
+            "Do not invent expected values for unresolved behavior. Return ONLY JSON: "
+            '{"tests":[{"id":"test_1","requirement_ids":["R1"],"kind":"functional",'
+            '"description":"what is checked","code":"def check(fn, source, tree): ..."}],'
+            '"not_testable":[{"requirement_ids":["R2"],"reason":"precise limitation"}]}.'
+            " kind may be functional, property or static. Do not return a requirements field."
+            f"\nFROZEN SPECIFICATION:\n{frozen_spec}"
+        )
+        best, previous, review = None, "", ""
+        for version in range(1, self.config["max_test_versions"] + 1):
+            raw = env.llm(prompt + (f"\nPREVIOUS TEST PLAN:\n{previous}\nFIX THESE REVIEW ISSUES:\n{review}"
+                                   if previous else ""))
+            issues, tests, not_testable, test_ids = [], [], [], set()
+            try:
+                value = json.loads(raw.strip().removeprefix("```json").removesuffix("```"))
+                if not isinstance(value, dict) or not isinstance(value.get("tests"), list):
+                    raise ValueError("Expected a tests list")
+                for row in value["tests"][:self.config["max_tests"]]:
+                    try:
+                        if (not isinstance(row, dict) or not isinstance(row.get("id"), str)
+                                or not row["id"] or row["id"] in test_ids
+                                or not isinstance(row.get("requirement_ids"), list) or not row["requirement_ids"]
+                                or not all(isinstance(r, str) and r in requirement_ids for r in row["requirement_ids"])
+                                or row.get("kind") not in {"functional", "property", "static"}
+                                or not isinstance(row.get("code"), str) or len(row["code"]) > 14000):
+                            raise ValueError("Invalid test fields")
+                        tree = ast.parse(row["code"])
+                        compile(tree, "<generated-test>", "exec")
+                        check = next((n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "check"), None)
+                        if (check is None or len(check.args.args) != 3 or check.args.vararg or check.args.kwarg
+                                or not any(isinstance(n, ast.Assert) and not (
+                                    isinstance(n.test, ast.Constant) and n.test.value is True) for n in ast.walk(check))
+                                or any(isinstance(n, ast.Expr) and isinstance(n.value, ast.Call) for n in tree.body)):
+                            raise ValueError("Define check(fn, source, tree) with a nontrivial assert and no top-level calls")
+                        tests.append(row)
+                        test_ids.add(row["id"])
+                    except (ValueError, TypeError, SyntaxError) as error:
+                        issues.append(str(error) + ": " + repr(row)[:200])
+                for row in value.get("not_testable", []):
+                    if (isinstance(row, dict) and isinstance(row.get("requirement_ids"), list)
+                            and row["requirement_ids"] and all(isinstance(r, str) and r in requirement_ids
+                                for r in row["requirement_ids"])
+                            and isinstance(row.get("reason"), str) and row["reason"].strip()):
+                        not_testable.append(row)
+                    else:
+                        issues.append("Invalid not_testable entry")
+                if len(value["tests"]) > self.config["max_tests"]:
+                    issues.append("Test count limit exceeded")
+            except (ValueError, TypeError) as error:
+                issues.append(str(error))
+            covered = {r for row in tests + not_testable for r in row["requirement_ids"]}
+            missing = sorted(requirement_ids - covered)
+            if missing:
+                issues.append("Uncovered requirements: " + ", ".join(missing))
+            if not tests:
+                issues.append("No executable generated tests")
+            suite = {"tests": tests, "not_testable": not_testable, "uncovered_requirement_ids": missing}
+            review = env.llm(
+                "V9 TEST REVIEW. Compare ONLY the frozen specification and proposed tests; no "
+                "candidate implementation exists. Independently recompute expected values. "
+                "Check domains, strict/inclusive boundaries, types, shapes, clarified facts, "
+                "test consistency, coverage and unsupported assumptions. Do not change the spec. "
+                "REVISE only for a concrete wrong expectation, out-of-domain input, contradictory "
+                "assertion, invalid checker, specific missing testable behavior or mechanical issue. "
+                "Cite test/requirement IDs and corrections. Optional examples or style changes are "
+                "nonblocking. Honest untestable constraints are permitted. Never approve an empty "
+                "test plan. Start with VERDICT: PASS or VERDICT: REVISE, then plain-text reasons."
+                f"\nFROZEN SPECIFICATION:\n{frozen_spec}\nTEST PLAN:\n{json.dumps(suite, ensure_ascii=False)}"
+                f"\nMECHANICAL ISSUES:\n{json.dumps(issues)}"
+            ).strip()
+            verdicts = set(re.findall(r"^\s*[*`# -]*(?:VERDICT\s*:\s*)?(PASS|REVISE)\b",
+                                      "\n".join(review.splitlines()[:5]), re.IGNORECASE | re.MULTILINE))
+            approved = {v.lower() for v in verdicts} == {"pass"} and not issues
+            suite.update(review_approved=approved, review=review, validation_issues=issues,
+                         selected_test_version=version)
+            print("TEST REVIEW:", version, json.dumps(suite, ensure_ascii=False), flush=True)
+            rank = (not approved, len(missing), len(issues), -len(tests), -version)
+            if best is None or rank < best[0]:
+                best = (rank, suite)
+            previous = raw
+            if approved:
+                break
+        if json.dumps(spec, ensure_ascii=False, sort_keys=True) != frozen_spec:
+            raise RuntimeError("Frozen specification changed during test review")
+        print("FROZEN TESTS:", json.dumps(best[1], ensure_ascii=False), flush=True)
+        return best[1]
+
+    def _implement_with_tests(self, env, entry_point, spec, tests):
+        frozen_spec = json.dumps(spec, ensure_ascii=False, sort_keys=True)
+        frozen_tests = json.dumps(tests, ensure_ascii=False, sort_keys=True)
+        best, feedback, previous, seen = None, "", "", set()
+        for attempt in range(1, self.config["max_code_attempts"] + 1):
+            try:
+                raw = env.llm(
+                    f"V9 CODE GENERATOR. Implement `{entry_point}` in ONE complete ```python block "
+                    "without surrounding prose. Follow the frozen specification and clarified "
+                    "facts in their exact scope. Tests are an executable interpretation, not "
+                    "permission to hard-code examples or ignore the specification. Preserve "
+                    "already-passed checks. Do not edit tests or disable assertions. "
+                    f"\nPROTOCOL:\n{spec['protocol']}\nSPECIFICATION:\n{frozen_spec}"
+                    f"\nFROZEN TEST PLAN:\n{frozen_tests}\nPREVIOUS BEST CODE:\n{previous}"
+                    f"\nACTUAL FAILURES AND FEEDBACK:\n{feedback}"
+                )
+            except LimitsExceededException:
+                if best is None:
+                    raise
+                break
+            try:
+                code = _validate_and_parse_evalplus_result(raw)
+                format_issue = "" if raw.strip().startswith("```python") and raw.strip().endswith("```") \
+                    and raw.count("```") == 2 else "Return one complete Python block only."
+            except ValueError:
+                code, format_issue = raw, "Missing Python fenced block."
+            execution = _execute_suite(env, code, entry_point, tests["tests"],
+                                       self.config["test_timeout"], format_issue)
+            passed = {r["id"] for r in execution["checks"] if r["status"] == "passed"}
+            eligible = execution["status"] == "ok"
+            if best is None or eligible and (not best["eligible"] or passed > best["passed"]):
+                best = {"raw": raw, "code": code, "execution": execution, "passed": passed,
+                        "eligible": eligible, "attempt": attempt}
+            print("CODE ATTEMPT:", attempt, json.dumps(execution, ensure_ascii=False), flush=True)
+            if eligible and execution["checks"] and all(r["status"] == "passed" for r in execution["checks"]):
+                break
+            if code in seen or not eligible or attempt == self.config["max_code_attempts"]:
+                break
+            seen.add(code)
+            failures = [r for r in best["execution"]["checks"] if r["status"] != "passed"]
+            try:
+                feedback = env.llm(
+                    "V9 FAILURE ANALYST. Explain actual failing checks and give actionable "
+                    "code-repair advice. The runner determines pass/fail, not your opinion. "
+                    "Preserve passed checks and do not modify the frozen spec or tests. "
+                    "Distinguish code defects from invalid tests, unresolved spec conflicts "
+                    "or runtime problems. Cite observed values and tracebacks. Return plain text."
+                    f"\nSPECIFICATION:\n{frozen_spec}\nFROZEN TESTS:\n{frozen_tests}"
+                    f"\nBEST CODE:\n{best['code']}\nFAILURES:\n{json.dumps(failures, ensure_ascii=False)}"
+                    f"\nPASSED CHECKS TO PRESERVE:\n{sorted(best['passed'])}"
+                    f"\nLATEST TRIAL:\n{json.dumps(execution, ensure_ascii=False)}"
+                )
+            except LimitsExceededException:
+                break
+            previous = best["raw"]
+            print("CODE FEEDBACK:", feedback, flush=True)
+        if best is None:
+            raise RuntimeError("No implementation generated")
+        print("SELECTED CODE:", json.dumps({"attempt": best["attempt"], "passed": sorted(best["passed"]),
+            "tests_review_approved": tests["review_approved"], "uncovered": tests["uncovered_requirement_ids"]}), flush=True)
+        return best["raw"]
+
+
+# Execute generated checks with the existing v9 harness through the SDK sandbox.
+_V8_HARNESS = r'''
+import ast as _ast, builtins as _builtins, contextlib as _contextlib
+import io as _io, json as _json, signal as _signal, sys as _sys, traceback as _traceback
+
+_checks = []
+def _result(_id, _status, _detail, _kind='static'):
+    _checks.append({'id': _id, 'status': _status, 'detail': str(_detail)[-5000:], 'kind': _kind})
+def _timed_out(_signum, _frame):
+    raise TimeoutError('Fixed checker time limit exceeded')
+_signal.signal(_signal.SIGALRM, _timed_out)
+def _arm(_seconds):
+    _signal.setitimer(_signal.ITIMER_REAL, _seconds)
+
+_result('S_FORMAT', 'failed' if _payload['format_issue'] else 'passed', _payload['format_issue'] or 'One Python block.')
+try:
+    _tree = _ast.parse(_payload['source'])
+    _compiled = compile(_tree, '<candidate>', 'exec')
+    _result('S_SYNTAX', 'passed', 'Python source compiled.')
+except BaseException as _error:
+    _tree = None
+    _result('S_SYNTAX', 'failed', type(_error).__name__ + ': ' + str(_error))
+
+if _tree is not None:
+    _names = {n.name for n in _tree.body if isinstance(n, (_ast.FunctionDef, _ast.AsyncFunctionDef))}
+    _result('S_ENTRY_POINT', 'passed' if _payload['entry_point'] in _names else 'failed', 'Required function: ' + _payload['entry_point'])
+    _external = []
+    for _node in _ast.walk(_tree):
+        _mods = [a.name for a in _node.names] if isinstance(_node, _ast.Import) else ([_node.module or ''] if isinstance(_node, _ast.ImportFrom) else [])
+        for _mod in _mods:
+            if _mod.split('.')[0] not in _sys.stdlib_module_names and _mod.split('.')[0] not in _sys.builtin_module_names:
+                _external.append(_mod)
+    _result('S_STDLIB', 'failed' if _external else 'passed', 'Non-standard imports: ' + repr(_external))
+    _io_calls = [n.lineno for n in _ast.walk(_tree) if isinstance(n, _ast.Call) and (
+        isinstance(n.func, _ast.Name) and n.func.id in {'print', 'input'}
+        or isinstance(n.func, _ast.Attribute) and isinstance(n.func.value, _ast.Attribute)
+        and isinstance(n.func.value.value, _ast.Name) and n.func.value.value.id == 'sys'
+        and n.func.value.attr in {'stdin', 'stdout', 'stderr'})]
+    _result('S_NO_IO', 'failed' if _io_calls else 'passed', 'Input/output calls at lines: ' + repr(_io_calls))
+    _top_calls = [n.lineno for n in _tree.body if isinstance(n, _ast.Expr) and isinstance(n.value, _ast.Call)]
+    _main_blocks = [n.lineno for n in _tree.body if isinstance(n, _ast.If) and any(
+        isinstance(v, _ast.Constant) and v.value == '__main__' for v in _ast.walk(n.test))]
+    _result('S_NO_HARNESS', 'failed' if _top_calls or _main_blocks else 'passed',
+            'Top-level calls/main blocks: ' + repr(_top_calls + _main_blocks))
+    try:
+        _arm(1.0)
+        _capture, _initial = _io.StringIO(), {'__name__': 'candidate'}
+        with _contextlib.redirect_stdout(_capture), _contextlib.redirect_stderr(_capture):
+            exec(_compiled, _initial)
+        if not callable(_initial.get(_payload['entry_point'])):
+            raise TypeError('Required function is not callable after module load')
+        if _capture.getvalue():
+            raise AssertionError('Module load produced output: ' + _capture.getvalue()[-1000:])
+        _result('S_LOAD', 'passed', 'Candidate module loaded and function is callable.')
+    except BaseException as _error:
+        _result('S_LOAD', 'failed', type(_error).__name__ + ': ' + str(_error))
+    finally:
+        _arm(0)
+    for _test in _payload['tests']:
+        _capture, _ns, _tns = _io.StringIO(), {'__name__': 'candidate'}, {'__name__': 'generated_test'}
+        _phase = 'load'
+        try:
+            _arm(_payload['timeout'])
+            with _contextlib.redirect_stdout(_capture), _contextlib.redirect_stderr(_capture):
+                exec(_compiled, _ns)
+                _fn = _ns.get(_payload['entry_point'])
+                if not callable(_fn):
+                    raise TypeError('Required entry point is not callable')
+                _phase = 'test_definition'
+                exec(compile(_test['code'], '<test:' + _test['id'] + '>', 'exec'), _tns)
+                _phase = 'test_execution'
+                _outcome = _tns['check'](_fn, _payload['source'], _tree)
+                if _outcome is False:
+                    raise AssertionError('Checker returned False')
+            if _capture.getvalue():
+                _result(_test['id'], 'failed', 'Unexpected output: ' + _capture.getvalue()[-1000:], _test['kind'])
+            else:
+                _result(_test['id'], 'passed', 'Checker completed.', _test['kind'])
+        except BaseException as _error:
+            _frames = _traceback.extract_tb(_error.__traceback__)
+            _candidate_frame = any(f.filename == '<candidate>' for f in _frames)
+            _is_test_error = (_phase == 'test_definition' or (
+                not _candidate_frame and isinstance(_error, (NameError, UnboundLocalError, ImportError, SyntaxError))))
+            _detail = ''.join(_traceback.format_exception(type(_error), _error, _error.__traceback__))
+            _result(_test['id'], 'test_error' if _is_test_error else 'failed', _detail, _test['kind'])
+        finally:
+            _arm(0)
+else:
+    for _test in _payload['tests']:
+        _result(_test['id'], 'failed', 'Cannot run checker: candidate syntax invalid.', _test['kind'])
+print('V8_RUN_RESULT=' + _json.dumps({'status': 'ok', 'checks': _checks}, ensure_ascii=True))
+'''
+
+
+def _execute_suite(env, code, entry_point, tests, timeout, format_issue=""):
+    payload = json.dumps({"source": code, "entry_point": entry_point, "tests": tests,
+                          "timeout": timeout, "format_issue": format_issue}, ensure_ascii=True)
+    script = "import json\n_payload = json.loads(" + repr(payload) + ")\n" + _V8_HARNESS
+    output = ""
+    for _ in range(2):
+        try:
+            output = env.exec_code(script)
+        except Exception as error:
+            output = type(error).__name__ + ": " + str(error)
+        for line in reversed(output.splitlines()):
+            if line.startswith("V8_RUN_RESULT="):
+                try:
+                    result = json.loads(line.split("=", 1)[1])
+                    expected = {r["id"] for r in tests} | {"S_FORMAT", "S_SYNTAX"}
+                    if (result.get("status") == "ok" and isinstance(result.get("checks"), list)
+                            and expected <= {r["id"] for r in result["checks"]}):
+                        return result
+                except (ValueError, KeyError, TypeError):
+                    pass
+    return {"status": "execution_unavailable", "checks": [], "output_excerpt": output[-4000:]}
