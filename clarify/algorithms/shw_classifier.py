@@ -19,6 +19,7 @@ Main Contact: gerbera3090@kaist.ac.kr (Hyukwon Kwon)
 from __future__ import annotations
 
 import ast
+import difflib
 import json
 import re
 import time
@@ -175,8 +176,14 @@ CLARIFICATION_HISTORY = (
 QUESTION_PROMPT = (
     "Use the task and fallible analysis to ask ONE consequential clarification "
     "question about ONE independent fact. Recheck the source and previous answers. "
+    "Prefer what the task leaves most open among the number, types and shape of the "
+    "arguments, the exact type and format of the result, and the core rule; ask about "
+    "empty, zero, negative or invalid inputs only when those are settled. State the "
+    "behavior you would otherwise implement, with one small example call and its "
+    "result, and ask whether it is intended or the most plausible alternative is. "
     "Do not ask whether generated code is correct, ask for tests, or repeat an "
-    "answered fact. Return only the question, or NONE if no grounded question remains."
+    "answered fact. Write plain text without backticks. Return only the question, "
+    "or NONE if no grounded question remains."
     "\nTASK:\n{task}\nANALYSIS:\n{analysis}"
 )
 
@@ -208,6 +215,17 @@ SPEC_PROMPT = (
 )
 
 SPEC_CORRECTION = "\nCorrect these issues: {errors}"
+
+PRECLEAN = (
+    "The task below may contain one sentence or clause that cannot be reconciled with "
+    "the rest: an impossible performance or implementation limit, a demand to return "
+    "numbers or booleans as text, a kind of input the rest never uses, or a trailing "
+    "clause that reverses the main statement. If it does, return the task with only "
+    "that text removed in one ```text block, changing nothing else. Missing details, "
+    "vague wording and unusual but consistent demands are not such text. Otherwise "
+    "return NONE."
+    "\nTASK:\n{task}"
+)
 
 SPEC_REWRITE = (
     "Rewrite the task description for `{entry_point}` into one complete and consistent "
@@ -408,6 +426,58 @@ else:
 print('V8_RUN_RESULT=' + _json.dumps({'status': 'ok', 'checks': _checks}, ensure_ascii=True))
 """
 
+# Appended to the final code: accepts calls that pass one collection instead of
+# several values (or the reverse) or extra trailing arguments, plus name variants.
+CALL_ADAPTER = r"""
+
+
+def _shw_adapt(_target):
+    import functools as _functools
+    import inspect as _inspect
+
+    try:
+        _signature = _inspect.signature(_target)
+    except (TypeError, ValueError):
+        return _target
+    _globals = _target.__globals__
+
+    def _binds(args):
+        try:
+            _signature.bind(*args)
+            return True
+        except TypeError:
+            return False
+
+    def _alternatives(args):
+        yield (list(args),)
+        if len(args) == 1 and isinstance(args[0], (list, tuple)):
+            yield tuple(args[0])
+        for size in range(len(args) - 1, 0, -1):
+            yield args[:size]
+
+    @_functools.wraps(_target)
+    def _adapted(*args, **kwargs):
+        # Recursive calls inside the target go straight to it
+        previous = _globals.get(_target.__name__)
+        _globals[_target.__name__] = _target
+        try:
+            if kwargs or _binds(args):
+                return _target(*args, **kwargs)
+            for alternative in _alternatives(args):
+                if _binds(alternative):
+                    return _target(*alternative)
+            return _target(*args, **kwargs)
+        finally:
+            _globals[_target.__name__] = previous
+
+    return _adapted
+
+
+{entry_point} = _shw_adapt({entry_point})
+for _alias in {aliases}:
+    globals().setdefault(_alias, {entry_point})
+"""
+
 ########################################################################
 # Auxiliary Functions
 ########################################################################
@@ -485,6 +555,122 @@ def cites(refs: Any, known: Collection[str]) -> bool:
 
 def format_call(entry_point: str, args: tuple) -> str:
     return f"{entry_point}({', '.join(repr(arg) for arg in args)})"
+
+
+EXAMPLE_RESULT = re.compile(
+    r"\s*(?:==|->|=>|\u279e|\u2192|returns?|should (?:return|be))\s*:?\s*",
+    re.IGNORECASE,
+)
+
+
+def _split_call(text: str) -> tuple[str, str] | None:
+    """Splits `name(...) rest` after the parenthesis that closes the call."""
+    depth, quote = 0, None
+    for i, char in enumerate(text):
+        if quote:
+            if char == quote and text[i - 1] != "\\":
+                quote = None
+        elif char in "'\"":
+            quote = char
+        elif char in "([{":
+            depth += 1
+        elif char in ")]}":
+            depth -= 1
+            if depth == 0:
+                return text[: i + 1], text[i + 1 :]
+    return None
+
+
+def _literal(text: str) -> tuple[bool, Any]:
+    try:
+        value = ast.literal_eval(text.strip().rstrip(".,;").strip())
+        ast.literal_eval(repr(value))  # must also be writable into a test
+        return True, value
+    except (ValueError, SyntaxError, TypeError, MemoryError, RecursionError):
+        return False, None
+
+
+def parse_examples(text: str, entry_point: str) -> list[tuple[tuple, Any]]:
+    """Calls of the entry point with literal arguments and a stated literal result,
+    written as doctests or as `f(...) == / -> / returns <result>`."""
+    examples = []
+    lines = text.splitlines()
+    for i, raw in enumerate(lines):
+        line = raw.strip().removeprefix("assert ").strip()
+        doctest = line.startswith(">>>")
+        line = line.removeprefix(">>>").strip()
+        if not line.startswith(entry_point + "("):
+            continue
+        split = _split_call(line)
+        if split is None:
+            continue
+        call, rest = split
+        if doctest and not rest.strip():
+            following = lines[i + 1].strip() if i + 1 < len(lines) else ""
+            if not following or following.startswith(">>>"):
+                continue
+            ok, expected = _literal(following)
+        else:
+            match = EXAMPLE_RESULT.match(rest)
+            if not match or not match.end():
+                continue
+            ok, expected = _literal(rest[match.end() :])
+        try:
+            node = ast.parse(call, mode="eval").body
+            if not isinstance(node, ast.Call) or node.keywords:
+                continue
+            args = tuple(ast.literal_eval(arg) for arg in node.args)
+            ast.literal_eval(repr(args))
+        except (ValueError, SyntaxError, TypeError, MemoryError, RecursionError):
+            continue
+        if ok and (args, expected) not in examples:
+            examples.append((args, expected))
+    return examples[:8]
+
+
+def is_pure_deletion(original: str, edited: str, entry_point: str) -> bool:
+    """True if `edited` only removes text, at most half of it, and keeps every
+    example, definition line and mention of the entry point."""
+    removed = 0
+    matcher = difflib.SequenceMatcher(a=original, b=edited, autojunk=False)
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag == "delete":
+            removed += i2 - i1
+        elif tag != "equal" and (original[i1:i2].strip() or edited[j1:j2].strip()):
+            return False
+    kept = {line.strip() for line in edited.splitlines()}
+    essential = [
+        line.strip()
+        for line in original.splitlines()
+        if line.strip().startswith((">>>", "def ", "assert "))
+    ]
+    return (
+        0 < removed <= len(original) / 2
+        and all(line in kept for line in essential)
+        and parse_examples(edited, entry_point) == parse_examples(original, entry_point)
+        and (entry_point not in original or entry_point in edited)
+    )
+
+
+def with_call_adapter(response: str, entry_point: str) -> str:
+    """The final answer with CALL_ADAPTER appended, if it defines the entry point."""
+    try:
+        code = _validate_and_parse_evalplus_result(response)
+        tree = ast.parse(code)
+    except (ValueError, SyntaxError):
+        return response
+    if not any(
+        isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and node.name == entry_point
+        for node in tree.body
+    ):
+        return response
+    snake = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", "_", entry_point).lower()
+    aliases = sorted({entry_point.lower(), snake} - {entry_point})
+    adapter = CALL_ADAPTER.replace("{entry_point}", entry_point).replace(
+        "{aliases}", repr(aliases)
+    )
+    return "```python\n" + code.rstrip() + "\n" + adapter + "```"
 
 
 def decompose_prompt(
@@ -582,6 +768,7 @@ class SharedMemory:
     tests: dict[str, Any] | None = None
     code: str | None = None
     clean_task: str | None = None
+    spec_task: str | None = None
     trace: list[dict[str, str]] = field(default_factory=list)
     started: float = field(default_factory=time.monotonic)
 
@@ -1120,10 +1307,11 @@ class SpecWriter(Agent):
 
     def write(self, memory: SharedMemory) -> dict[str, Any]:
         problem, clarifications = memory.problem, memory.clarifications
+        task = memory.spec_task or problem["prompt"]
         sources = {
             f"T{i}": line.strip()
             for i, line in enumerate(
-                (line for line in problem["prompt"].splitlines() if line.strip()), 1
+                (line for line in task.splitlines() if line.strip()), 1
             )
         }
         sources.update({f"A{i}": a for i, (_, a) in enumerate(clarifications, 1)})
@@ -1202,7 +1390,7 @@ class SpecWriter(Agent):
                 "requirements": [
                     {
                         "id": "RAW_TASK_FALLBACK",
-                        "requirement": problem["prompt"],
+                        "requirement": task,
                         "sources": list(sources),
                     }
                 ],
@@ -1221,12 +1409,27 @@ class SpecWriter(Agent):
         task = self.llm(
             self.fill(
                 SPEC_REWRITE,
-                task=memory.problem["prompt"],
+                task=memory.spec_task or memory.problem["prompt"],
                 clarifications=to_json(memory.clarifications),
             )
         ).strip()
         print("REWRITTEN TASK:", task, flush=True)
         return task
+
+    def preclean(self, memory: SharedMemory) -> str | None:
+        """The task without a sentence that cannot hold with the rest, if the LLM
+        finds one and its edit is a verified pure deletion."""
+        task = memory.problem["prompt"]
+        response = self.llm(self.fill(PRECLEAN, task=task))
+        match = re.search(r"```(?:text)?[ \t]*\n(.*?)```", response, re.DOTALL)
+        if not match:
+            return None
+        cleaned = match.group(1).strip("\n")
+        if not is_pure_deletion(task, cleaned, self.entry_point):
+            print("PRECLEAN REJECTED:", cleaned, flush=True)
+            return None
+        print("PRECLEANED TASK:", cleaned, flush=True)
+        return cleaned
 
 
 class TestDesigner(Agent):
@@ -1234,6 +1437,32 @@ class TestDesigner(Agent):
     Also provides oracle-free probe inputs to the DefectDetector."""
 
     name = "test_designer"
+
+    def example_tests(self, memory: SharedMemory) -> list[dict[str, Any]]:
+        """Checks for the examples stated in the (rewritten) task."""
+        task = memory.clean_task or memory.spec_task or memory.problem["prompt"]
+        tests = []
+        for i, (args, expected) in enumerate(parse_examples(task, self.entry_point), 1):
+            call = format_call(self.entry_point, args)
+            code = (
+                "def check(fn, source, tree):\n"
+                f"    args, expected = {args!r}, {expected!r}\n"
+                "    result = fn(*args)\n"
+                "    close = isinstance(expected, float) and isinstance(result, (int, float))\n"
+                "    assert result == expected or close and abs(result - expected) <= 1e-6 * max(1.0, abs(expected)), "
+                f"{call + ' should return ' + repr(expected) + ', got '!r} + repr(result)\n"
+            )
+            tests.append(
+                {
+                    "id": f"example_{i}",
+                    "requirement_ids": ["EXAMPLES"],
+                    "kind": "functional",
+                    "description": f"Stated example: {call} == {expected!r}",
+                    "code": code,
+                }
+            )
+        print("EXAMPLE CHECKS:", to_json([t["description"] for t in tests]), flush=True)
+        return tests
 
     def generate_inputs(
         self, problem: dict[str, Any], num_inputs: int = 10
@@ -1581,6 +1810,8 @@ class Orchestrator:
             self.mode = MODE_DETECT if asked else MODE_SPECIFY
 
         elif self.mode == MODE_SPECIFY:
+            if self.config["preclean"]:
+                self.memory.spec_task = self.spec_writer.preclean(self.memory)
             self.memory.spec = self.spec_writer.write(self.memory)
             if self.config["spec_rewrite"] and self.memory.clarifications:
                 self.memory.clean_task = self.spec_writer.rewrite(self.memory)
@@ -1588,10 +1819,18 @@ class Orchestrator:
 
         elif self.mode == MODE_TEST:
             self.memory.tests = self.test_designer.design(self.memory)
+            if self.config["example_checks"]:
+                self.memory.tests["tests"] += self.test_designer.example_tests(
+                    self.memory
+                )
             self.mode = MODE_CODE
 
         elif self.mode == MODE_CODE:
             self.memory.code = self.coder.implement(self.memory)
+            if self.config["call_adapter"]:
+                self.memory.code = with_call_adapter(
+                    self.memory.code, self.memory.problem["entry_point"]
+                )
             self.mode = MODE_DONE
 
 
@@ -1610,6 +1849,12 @@ class SHWClassifier(ClarificationAlgorithmBase):
         "omission_check": "single",
         # Rewrite the task with the answers for the test designer and coder
         "spec_rewrite": True,
+        # Remove a sentence that cannot hold with the rest before the spec stage
+        "preclean": True,
+        # Add the task's stated examples to the coder's checks
+        "example_checks": True,
+        # Let the final code accept alternative calling conventions and name variants
+        "call_adapter": True,
         "max_test_versions": 3,
         "max_code_attempts": 4,
         "max_tests": 24,
