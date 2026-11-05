@@ -764,14 +764,33 @@ class SharedMemory:
 
     @property
     def task(self) -> str:
-        """The task with the clarification turns so far."""
-        task = self.problem["prompt"]
+        """The latest specification, or original task, with clarification history."""
+        task = self.render_spec_task() if self.spec is not None else self.problem["prompt"]
         if self.clarifications:
             task += fill(
                 CLARIFICATION_HISTORY,
                 clarifications=to_json(self.clarifications),
             )
         return task
+
+    def render_spec_task(self) -> str:
+        """Render the spec as task text while preserving the original code context."""
+        context, _ = decompose_prompt(self.problem)
+        if any(row["id"] == "RAW_TASK_FALLBACK" for row in self.spec["requirements"]):
+            context = DOCSTRING_SLOT
+        elements = [f"Function: {self.problem['entry_point']}"]
+        elements.extend(row["requirement"] for row in self.spec["requirements"])
+        elements.extend(
+            example["case"]
+            for example in self.spec["examples"]
+            if isinstance(example, dict) and isinstance(example.get("case"), str)
+        )
+        for name in ("unresolved", "assumptions"):
+            if self.spec[name]:
+                elements.append(
+                    f"{name.upper()} (not established requirements): " + to_json(self.spec[name])
+                )
+        return compose_prompt(context, elements)
 
     @property
     def current_problem(self) -> dict[str, Any]:
@@ -1671,7 +1690,7 @@ MODE_DETECT, MODE_ASK, MODE_SPECIFY, MODE_TEST, MODE_CODE, MODE_DONE = (
 class Orchestrator:
     """Runs the agents as a state machine over a shared memory.
 
-    DETECT -> ASK -> DETECT ... (while questions remain)
+    DETECT -> ASK -> refresh spec -> DETECT ... (while questions remain)
            -> SPECIFY -> TEST -> CODE -> DONE
     """
 
@@ -1721,6 +1740,8 @@ class Orchestrator:
             """
             try:
                 asked = self.questioner.ask(self.memory)
+                if asked and self.env.can_ask():
+                    self.memory.spec = self.spec_writer.write(self.memory)
             except (TooManyQuestionException, LimitsExceededException):
                 asked = False
             self.mode = MODE_DETECT if asked else MODE_SPECIFY
