@@ -2,10 +2,14 @@
 #
 # SPDX-License-Identifier: MIT
 
-"""Algorithm name.
+"""SHW: a multi-agent system for clarifying underspecified coding tasks.
 
-Short description of the main mechanism of the implemented algorithm.
-This does not need to go into details, but should capture the core idea.
+Role agents share a memory and act on the environment only through tools
+(llm, decide, ask_human, run_candidates, run_tests). An orchestrator runs them as
+a state machine: a defect detector (contradiction -> ambiguity -> final gate)
+finds a defect, a questioner asks the user about it, and a spec writer, test
+designer and coder turn the clarified task into code that is repaired with real
+test failures.
 
 Team: SHW
 Team Members: Sihyun Ahn (KAIST), Hyukwon Kwon (KAIST)
@@ -17,7 +21,9 @@ from __future__ import annotations
 import ast
 import json
 import re
-from typing import Any
+import time
+from dataclasses import dataclass, field
+from typing import Any, Callable, Collection
 
 from clarify.baselines import ClarificationAlgorithmBase
 from clarify.env import (
@@ -27,9 +33,9 @@ from clarify.env import (
 )
 from clarify.runtime import _validate_and_parse_evalplus_result
 
-##########################################################################
+########################################################################
 # Prompts (`{name}` slots are filled by `fill`)
-##########################################################################
+########################################################################
 
 # From ClarifyGPT
 DEFAULT_MBPP_TEMPLATE = """
@@ -38,39 +44,6 @@ Please provide a self-contained Python script implementing `{entry_point}` that 
 {prompt}
 
 Enclose your solution in ```python and ```.
-""".strip()
-
-CHECK_CONTRADICTION = """
-Following is the problem description of function `{entry_point}`. Does the description itself contain contradictory content? Your answer should contain <yes/no>, <what should be asked to the user>.
-
-{prompt}
-
-Your answer format (fill part within <>):
-Contradiction: <yes/no>
-Description: <what should be asked to the user (e.g., The first and second sentence contradicts each other)>
-A contradiction needs two explicit statements applying to the same valid input. Cite both statements in Description. Missing information is not a contradiction.
-""".strip()
-
-CLARIFICATION_PROMPT = """
-You will be given a user requirement and its candidate solutions. Your task is to clarify this requirement by asking clarifying questions.
-Specifically, you will first analyze the functionality of each solution. Then, by comparing their differences, you can determine which parts in the requirement are ambiguous and ask ONE targeted clarification question.
-
-### User Requirement:
-
-{prompt}
-
-### Inconsistent Solutions
-Solution 0:
-{target}
-Solution 1:
-{alternative}
-
-### Test Result
-{test_result}
-
-### Analysis and Clarifying Questions
-Return your analysis and the resulting clarifying questions. Only ask questions that help to differiante the solution.
-Enclose your set of questions in ``` and ```. If the solutions are identical, simply state ```The task description is clear.```
 """.strip()
 
 # Delta debugging
@@ -106,9 +79,14 @@ DELTA_VERIFICATION = (
 
 # Property check
 PROPERTY_EXTRACTION = (
-    "Extract at most 12 behavioral properties explicitly stated or entailed by this task. "
-    "Use English names/meanings and verbatim source quotes. Do not assume unmentioned laws. "
-    "Return a Python list of dictionaries with name, quote and meaning in ```python fences."
+    "Extract the behavioral properties of this task in two groups. "
+    "(1) At most 12 properties explicitly stated or entailed by the task, each with a "
+    "verbatim source quote. Do not assume unmentioned laws. "
+    "(2) At most 8 properties a correct implementation must settle that the task may "
+    "leave open (e.g. input domain, boundaries, empty inputs, ties, output type and "
+    "order), each with an empty quote. "
+    "Use English names/meanings. Return a single Python list of dictionaries with "
+    "name, quote and meaning in ```python fences."
     "\nTASK:\n{task}"
 )
 
@@ -132,6 +110,30 @@ PROPERTY_CONFLICT_VERIFICATION = (
     "\nTASK:\n{task}\nPOSSIBLE CONFLICTS:\n{conflicts}"
 )
 
+PROPERTY_DETERMINED = (
+    "Do the task text, signature and examples fix this property for every valid input, "
+    "so that all correct implementations agree on it? Conventions any reasonable "
+    "programmer would follow count as fixed. {property}"
+)
+
+PROPERTY_DETERMINED_CRITERIA = {
+    "determined": "The task fixes the behavior for every valid input.",
+    "undetermined": "Correct implementations can return different outputs.",
+    "irrelevant": "The property does not affect outputs on valid inputs.",
+}
+
+OMISSION_SELECTION = (
+    "A model judged these properties of the task undetermined; the judgment is a hint. "
+    "Pick the ONE whose resolution most changes the outputs of a correct implementation "
+    "on valid inputs. Ignore performance, style, invalid inputs and facts the source, "
+    "signature or examples already settle. Prior user answers settle only the issue "
+    "they resolve; do not re-ask it. "
+    "Return Ambiguity: yes/no and Description: source evidence, two plausible behaviors, "
+    "and ONE question asking for ONE independent missing fact."
+    "\nTASK:\n{task}\nUNDETERMINED PROPERTIES:\n{properties}"
+)
+
+# Fallback without properties or decision model
 AMBIGUITY_CHECK = (
     "Analyze this task's relevant behavioral properties: input domain and argument "
     "count/order/types, output type/structure, ordering, boundaries and side effects. "
@@ -141,6 +143,20 @@ AMBIGUITY_CHECK = (
     "hidden tests. Prior user answers settle only the issue they resolve; do not re-ask it. "
     "Return Ambiguity: yes/no and Description: source evidence, two plausible behaviors, "
     "and ONE question asking for ONE independent missing fact."
+    "\nTASK:\n{task}"
+)
+
+# Final gate
+BASE_LLM_JUDGE = (
+    "Automated checks found no contradiction or ambiguity in this task, so it will be "
+    "implemented without asking the user. Double-check that it truly has no defect. "
+    "A defect is a contradiction (two explicit statements that cannot both hold for the "
+    "same valid input), an ambiguity (a statement whose plausible readings give different "
+    "outputs), or an omission (a fact a correct implementation needs that the description, "
+    "signature and examples do not establish). Ignore stylistic choices, invalid inputs "
+    "and details any reasonable programmer would settle the same way. Are you sure there "
+    "is no defect? Return Defect: yes/no and Description: source evidence and ONE question "
+    "asking for ONE missing fact."
     "\nTASK:\n{task}"
 )
 
@@ -170,7 +186,7 @@ CODE_PROTOCOL = (
 )
 
 SPEC_PROMPT = (
-    "V9 SPECIFICATION. Consolidate the task and actual clarification answers into ONE "
+    "SPECIFICATION. Consolidate the task and actual clarification answers into ONE "
     "specification. Later stages receive only this specification, not the raw task. "
     "Preserve every stated domain, strict/inclusive boundary, type, ordering/tie rule, "
     "side effect and implementation constraint. An answer overrides only its resolved "
@@ -189,7 +205,7 @@ SPEC_CORRECTION = "\nCorrect these issues: {errors}"
 
 # Tests
 TEST_GENERATOR = (
-    "V9 TEST GENERATOR. Generate tests from ONLY the frozen specification. No candidate "
+    "Generate tests from ONLY the frozen specification. No candidate "
     "implementation exists. Cover every requirement with a meaningful check or an honest "
     "not_testable entry. Never add or change requirements. Respect explicit domains, "
     "boundaries, types, shapes, ordering and clarified facts. Write roughly 5-12 checks, "
@@ -208,7 +224,7 @@ TEST_GENERATOR = (
 TEST_REVISION = "\nPREVIOUS TEST PLAN:\n{previous}\nFIX THESE REVIEW ISSUES:\n{review}"
 
 TEST_REVIEW = (
-    "V9 TEST REVIEW. Compare ONLY the frozen specification and proposed tests; no "
+    "Compare ONLY the frozen specification and proposed tests; no "
     "candidate implementation exists. Independently recompute expected values. "
     "Check domains, strict/inclusive boundaries, types, shapes, clarified facts, "
     "test consistency, coverage and unsupported assumptions. Do not change the spec. "
@@ -222,7 +238,7 @@ TEST_REVIEW = (
 
 # Code
 CODE_GENERATOR = (
-    "V9 CODE GENERATOR. Implement `{entry_point}` in ONE complete ```python block "
+    "Implement `{entry_point}` in ONE complete ```python block "
     "without surrounding prose. Follow the frozen specification and clarified "
     "facts in their exact scope. Tests are an executable interpretation, not "
     "permission to hard-code examples or ignore the specification. Preserve "
@@ -238,9 +254,9 @@ CODE_FEEDBACK = (
 
 CODE_FEEDBACK_LATEST = "\nFAILURES OF LATEST REJECTED TRIAL:\n{failures}"
 
-##########################################################################
+########################################################################
 # Execution harnesses
-##########################################################################
+########################################################################
 
 # Runs every candidate on every input and prints the outputs as JSON.
 # Expects `_sources`, `_inputs` and `_entry_point`.
@@ -376,9 +392,9 @@ else:
 print('V8_RUN_RESULT=' + _json.dumps({'status': 'ok', 'checks': _checks}, ensure_ascii=True))
 """
 
-#########################################################################
+########################################################################
 # Auxiliary Functions
-#########################################################################
+########################################################################
 
 DOCSTRING_PATTERN = re.compile(r"(\"\"\"|''')(.*?)\1", re.DOTALL)
 DOCSTRING_SLOT = "<<DESCRIPTION>>"
@@ -394,6 +410,15 @@ CLAUSE_BOUNDARY = re.compile(
 EXAMPLE_HEADER = re.compile(r"^(for )?examples?\s*:?$", re.IGNORECASE)
 DECOMPOSITION_METHODS = ("heuristic", "llm")
 PLACEHOLDER = re.compile(r"\{(\w+)\}")
+CLEAN_SPEC_FIELDS = (
+    "entry_point",
+    "protocol",
+    "requirements",
+    "examples",
+    "unresolved",
+    "assumptions",
+)
+LITERAL_ERRORS = (ValueError, SyntaxError, IndexError, AttributeError, TypeError)
 
 
 def fill(template: str, **values: Any) -> str:
@@ -410,6 +435,15 @@ def parse_python_literal(response: str) -> Any:
     return ast.literal_eval(ast.parse(code.strip()).body[0].value)
 
 
+def parse_python_list(response: str) -> list:
+    """Like `parse_python_literal`, but [] unless the response holds a list."""
+    try:
+        value = parse_python_literal(response)
+    except LITERAL_ERRORS:
+        return []
+    return value if isinstance(value, list) else []
+
+
 def parse_json(response: str) -> Any:
     return json.loads(response.strip().removeprefix("```json").removesuffix("```"))
 
@@ -420,6 +454,19 @@ def parse_verdict(response: str, label: str) -> bool:
     return bool(verdict and verdict.group(1).lower() == "yes")
 
 
+def to_json(value: Any, **kwargs: Any) -> str:
+    return json.dumps(value, ensure_ascii=False, **kwargs)
+
+
+def cites(refs: Any, known: Collection[str]) -> bool:
+    """True if `refs` is a nonempty list of known IDs."""
+    return (
+        isinstance(refs, list)
+        and bool(refs)
+        and all(isinstance(ref, str) and ref in known for ref in refs)
+    )
+
+
 def format_call(entry_point: str, args: tuple) -> str:
     return f"{entry_point}({', '.join(repr(arg) for arg in args)})"
 
@@ -427,7 +474,7 @@ def format_call(entry_point: str, args: tuple) -> str:
 def decompose_prompt(
     problem: dict[str, Any],
     method: str = "heuristic",
-    env: ClarificationEnvironment | None = None,
+    llm: Callable[[str], str] | None = None,
 ) -> tuple[str, list[str]]:
     """Splits the prompt into a context with DOCSTRING_SLOT and droppable elements."""
     if method not in DECOMPOSITION_METHODS:
@@ -442,9 +489,9 @@ def decompose_prompt(
         context, description = DOCSTRING_SLOT, prompt
 
     if method == "llm":
-        if env is None:
-            raise ValueError("LLM decomposition requires an environment")
-        elements = _decompose_with_llm(description, problem["entry_point"], env)
+        if llm is None:
+            raise ValueError("LLM decomposition requires an llm")
+        elements = _decompose_with_llm(description, problem["entry_point"], llm)
         if elements:
             return context, elements
 
@@ -452,18 +499,12 @@ def decompose_prompt(
 
 
 def _decompose_with_llm(
-    description: str, entry_point: str, env: ClarificationEnvironment
+    description: str, entry_point: str, llm: Callable[[str], str]
 ) -> list[str]:
-    response = env.llm(
+    response = llm(
         fill(DECOMPOSE_PROMPT, prompt=description.strip(), entry_point=entry_point)
     )
-    try:
-        elements = parse_python_literal(response)
-    except (ValueError, SyntaxError, IndexError, AttributeError, TypeError):
-        return []
-
-    if not isinstance(elements, list):
-        return []
+    elements = parse_python_list(response)
     return [e.strip() for e in elements if isinstance(e, str) and e.strip()]
 
 
@@ -509,64 +550,289 @@ def compose_prompt(context: str, elements: list[str]) -> str:
     return context.replace(DOCSTRING_SLOT, f'"""\n{indented}\n    """')
 
 
-#########################################################################
-# Detectors
-#########################################################################
+########################################################################
+# Multi-agent infrastructure
+########################################################################
 
 
-class ContradictionDetector:
-    def __init__(
-        self,
-        problem: dict[str, Any],
-        decomposition: str = "heuristic",
-        max_dropped_elements: int = 6,
-    ):
-        self.problem = problem
-        self.decomposition = decomposition
-        self.max_dropped_elements = max_dropped_elements
+@dataclass
+class SharedMemory:
+    """Shared memory that all agents read from and write to."""
 
-    def is_contradictory(
-        self, env: ClarificationEnvironment
-    ) -> tuple[bool, str | None]:
-        checks = (
-            self.base_llm_judge,
-            self.delta_debugging,
-            self.property_check,
-            self.code_sampling,
-            self.testcase_sampling,
+    problem: dict[str, Any]
+    clarifications: list[tuple[str, str]] = field(default_factory=list)
+    finding: str | None = None
+    spec: dict[str, Any] | None = None
+    tests: dict[str, Any] | None = None
+    code: str | None = None
+    trace: list[dict[str, str]] = field(default_factory=list)
+    started: float = field(default_factory=time.monotonic)
+
+    @property
+    def task(self) -> str:
+        """The task with the clarification turns so far."""
+        task = self.problem["prompt"]
+        if self.clarifications:
+            task += fill(
+                CLARIFICATION_HISTORY,
+                clarifications=to_json(self.clarifications),
+            )
+        return task
+
+    @property
+    def current_problem(self) -> dict[str, Any]:
+        return {"prompt": self.task, "entry_point": self.problem["entry_point"]}
+
+    @property
+    def clean_spec(self) -> dict[str, Any]:
+        """The spec without traces of the resolved defect (superseded statements,
+        raw Q/A, validation issues); answers remain as ANSWER_n requirements."""
+        return {key: self.spec[key] for key in CLEAN_SPEC_FIELDS}
+
+
+@dataclass(frozen=True)
+class Tool:
+    name: str
+    description: str
+    parameters: dict[str, Any]
+    function: Callable[..., Any]
+
+    @property
+    def definition(self) -> dict[str, Any]:
+        """The tool in the OpenAI function-calling format."""
+        return {
+            "type": "function",
+            "function": {
+                "name": self.name,
+                "description": self.description,
+                "parameters": {
+                    "type": "object",
+                    "properties": self.parameters,
+                    "required": list(self.parameters),
+                },
+            },
+        }
+
+
+def run_candidates(
+    exec_code: Callable[[str], str],
+    sources: list[str],
+    inputs: list[tuple],
+    entry_point: str,
+) -> list[list[str]] | None:
+    """Outputs of every candidate on every input, or None if the sandbox failed."""
+    script = (
+        f"_sources = {sources!r}\n"
+        f"_inputs = {inputs!r}\n"
+        f"_entry_point = {entry_point!r}\n"
+        f"{BEHAVIOR_HARNESS}"
+    )
+    output = exec_code(script)
+    for line in output.splitlines():
+        if line.startswith("__BEHAVIORS__"):
+            return json.loads(line[len("__BEHAVIORS__") :])
+    return None
+
+
+def run_tests(
+    exec_code: Callable[[str], str],
+    code: str,
+    entry_point: str,
+    tests: list[dict[str, Any]],
+    timeout: float,
+    format_issue: str = "",
+) -> dict[str, Any]:
+    """Static checks and generated tests on one candidate, retried once."""
+    payload = json.dumps(
+        {
+            "source": code,
+            "entry_point": entry_point,
+            "tests": tests,
+            "timeout": timeout,
+            "format_issue": format_issue,
+        },
+        ensure_ascii=True,
+    )
+    script = (
+        "import json\n_payload = json.loads(" + repr(payload) + ")\n" + TEST_HARNESS
+    )
+    output = ""
+    for _ in range(2):
+        try:
+            output = exec_code(script)
+        except Exception as error:
+            output = type(error).__name__ + ": " + str(error)
+        for line in reversed(output.splitlines()):
+            if line.startswith("V8_RUN_RESULT="):
+                try:
+                    result = json.loads(line.split("=", 1)[1])
+                    expected = {r["id"] for r in tests} | {"S_FORMAT", "S_SYNTAX"}
+                    if (
+                        result.get("status") == "ok"
+                        and isinstance(result.get("checks"), list)
+                        and expected <= {r["id"] for r in result["checks"]}
+                    ):
+                        return result
+                except (ValueError, KeyError, TypeError):
+                    pass
+    return {
+        "status": "execution_unavailable",
+        "checks": [],
+        "output_excerpt": output[-4000:],
+    }
+
+
+class ToolBox:
+    """Environment capabilities exposed to agents as tools; every call is traced."""
+
+    def __init__(self, env: ClarificationEnvironment, memory: SharedMemory):
+        self.memory = memory
+        entry_point = memory.problem["entry_point"]
+        tools = (
+            Tool(
+                "llm",
+                "Query the language model.",
+                {"prompt": {"type": "string"}},
+                lambda prompt: env.llm(prompt),
+            ),
+            Tool(
+                "decide",
+                "Answer structured choice questions with the decision model.",
+                {"questions": {"type": "object"}, "context": {"type": "object"}},
+                lambda questions, context: env.decide(
+                    questions=questions, context=context
+                ),
+            ),
+            Tool(
+                "ask_human",
+                "Ask the user one clarification question and return the answer.",
+                {"question": {"type": "string"}},
+                lambda question: env.ask_human(question),
+            ),
+            Tool(
+                "run_candidates",
+                "Run candidate solutions on test inputs in the sandbox and return "
+                "the output of each candidate on each input.",
+                {
+                    "sources": {"type": "array", "items": {"type": "string"}},
+                    "inputs": {"type": "array", "items": {"type": "array"}},
+                },
+                lambda sources, inputs: run_candidates(
+                    env.exec_code, sources, inputs, entry_point
+                ),
+            ),
+            Tool(
+                "run_tests",
+                "Run static checks and generated tests on a candidate in the "
+                "sandbox and return the result of each check.",
+                {
+                    "code": {"type": "string"},
+                    "tests": {"type": "array", "items": {"type": "object"}},
+                    "timeout": {"type": "number"},
+                    "format_issue": {"type": "string"},
+                },
+                lambda code, tests, timeout, format_issue: run_tests(
+                    env.exec_code, code, entry_point, tests, timeout, format_issue
+                ),
+            ),
         )
-        for check in checks:
-            result = check(env)
+        self.tools = {tool.name: tool for tool in tools}
+
+    @property
+    def definitions(self) -> list[dict[str, Any]]:
+        return [tool.definition for tool in self.tools.values()]
+
+    def call(self, agent: str, name: str, **arguments: Any) -> Any:
+        self.memory.trace.append({"agent": agent, "tool": name})
+        return self.tools[name].function(**arguments)
+
+
+class Agent:
+    """An agent with one role that acts on the world only through tools."""
+
+    name = "agent"
+
+    def __init__(self, tools: ToolBox, config: dict[str, Any]):
+        self.tools = tools
+        self.config = config
+
+    def call(self, tool: str, **arguments: Any) -> Any:
+        return self.tools.call(self.name, tool, **arguments)
+
+    def llm(self, prompt: str) -> str:
+        return self.call("llm", prompt=prompt)
+
+    def out_of_time(self, limit: str) -> bool:
+        """True once the task has run longer than `config[limit]` seconds."""
+        elapsed = time.monotonic() - self.tools.memory.started
+        if elapsed <= self.config[limit]:
+            return False
+        print(f"TIME LIMIT: {limit} ({elapsed:.0f}s)", flush=True)
+        return True
+
+    @property
+    def entry_point(self) -> str:
+        return self.tools.memory.problem["entry_point"]
+
+    def fill(self, template: str, **values: Any) -> str:
+        """Fills a prompt template; `{entry_point}` is always available."""
+        return fill(template, entry_point=self.entry_point, **values)
+
+
+########################################################################
+# Agents: defect detection
+########################################################################
+
+
+class DefectDetector(Agent):
+    """Finds a defect of the task (contradiction, ambiguity or omission)."""
+
+    name = "defect_detector"
+
+    def __init__(
+        self, tools: ToolBox, config: dict[str, Any], test_designer: TestDesigner
+    ):
+        super().__init__(tools, config)
+        self.test_designer = test_designer
+        self.properties: dict[str, list[dict[str, str]] | None] = {}
+
+    def detect(self, problem: dict[str, Any]) -> tuple[bool, str | None]:
+        """Runs the checks in order; the first one that finds a defect wins."""
+        checks = [
+            self.dd_conflict_check,
+            self.property_conflict_check,
+            self.property_omission_check,
+        ]
+        if self.config["final_gate"]:
+            checks.append(self.base_llm_judge)
+
+        for i, check in enumerate(checks):
+            if i and self.out_of_time("detect_time_limit"):
+                break
+            result = check(problem)
             if result is not None and result[0]:
                 return result
+
         return (False, "")
 
-    def base_llm_judge(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
-        response = env.llm(
-            fill(
-                CHECK_CONTRADICTION,
-                prompt=self.problem["prompt"],
-                entry_point=self.problem["entry_point"],
-            )
-        )
-        print("SIMPLE JUDGE:", response, flush=True)
-        return (parse_verdict(response, "Contradiction"), response)
+    def dd_conflict_check(self, problem: dict[str, Any]) -> tuple[bool, str | None]:
+        """Delta-debugging -like approach.
+        Drops prose elements one by one (and all examples together) and reports the drops that change the behavior of the generated solution.
+        """
 
-    def delta_debugging(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
-        """Drops prose elements one by one (and all examples together) and reports
-        the drops that change the behavior of the generated solution."""
-        entry_point = self.problem["entry_point"]
-        context, elements = decompose_prompt(self.problem, self.decomposition, env)
+        context, elements = decompose_prompt(
+            problem, self.config["decomposition"], self.llm
+        )
         if len(elements) < 2:
             return (False, None)
 
-        inputs = self._generate_test_inputs(env)
+        inputs = self.test_designer.generate_inputs(problem)
         if not inputs:
             return (False, None)
 
         is_example = [e.startswith((">>>", "assert ")) for e in elements]
         groups = [[i] for i, example in enumerate(is_example) if not example][
-            : self.max_dropped_elements
+            : self.config["max_dropped_elements"]
         ]
         examples = [i for i, example in enumerate(is_example) if example]
         if examples and len(examples) < len(elements):
@@ -576,9 +842,9 @@ class ContradictionDetector:
             [e for i, e in enumerate(elements) if i not in group] for group in groups
         ]
         sources = [
-            self._generate_solution(env, compose_prompt(context, v)) for v in variants
+            self._generate_solution(compose_prompt(context, v)) for v in variants
         ]
-        behaviors = self._run_candidates(env, sources, inputs)
+        behaviors = self._run_candidates(sources, inputs)
         if behaviors is None:
             return (False, None)
 
@@ -594,113 +860,54 @@ class ContradictionDetector:
             )
             dropped = f'"{elements[group[0]]}"' if len(group) == 1 else "all examples"
             findings.append(
-                f"Dropping {dropped} changes {format_call(entry_point, inputs[k])} "
+                f"Dropping {dropped} changes {format_call(self.entry_point, inputs[k])} "
                 f"from {reference[k]} to {behavior[k]}."
             )
 
         print(
             "DELTA DEBUGGING:",
-            json.dumps(
+            to_json(
                 {
                     "elements": elements,
                     "inputs": repr(inputs),
                     "sources": sources,
                     "behaviors": behaviors,
                     "findings": findings,
-                },
-                ensure_ascii=False,
+                }
             ),
             flush=True,
         )
         if not findings:
             return (False, None)
-        response = env.llm(
-            fill(
-                DELTA_VERIFICATION,
-                task=self.problem["prompt"],
-                findings="\n".join(findings),
-            )
+        return self.judge(
+            "DELTA VERIFICATION",
+            "Contradiction",
+            DELTA_VERIFICATION,
+            task=problem["prompt"],
+            findings="\n".join(findings),
         )
-        print("DELTA VERIFICATION:", response, flush=True)
-        return (parse_verdict(response, "Contradiction"), response)
 
-    def _generate_solution(self, env: ClarificationEnvironment, prompt: str) -> str:
-        response = env.llm(
-            fill(
-                DEFAULT_MBPP_TEMPLATE,
-                prompt=prompt,
-                entry_point=self.problem["entry_point"],
-            )
-        )
+    def _generate_solution(self, prompt: str) -> str:
+        response = self.llm(self.fill(DEFAULT_MBPP_TEMPLATE, prompt=prompt))
         try:
             return _validate_and_parse_evalplus_result(response)
         except ValueError:
             return ""
 
-    def _generate_test_inputs(
-        self, env: ClarificationEnvironment, num_inputs: int = 10
-    ) -> list[tuple]:
-        response = env.llm(
-            fill(
-                GEN_TEST_INPUTS,
-                prompt=self.problem["prompt"],
-                entry_point=self.problem["entry_point"],
-                num_inputs=num_inputs,
-            )
-        )
-        try:
-            inputs = parse_python_literal(response)
-        except (ValueError, SyntaxError, IndexError, AttributeError, TypeError):
-            return []
-
-        if not isinstance(inputs, list):
-            return []
-        return [args if isinstance(args, tuple) else (args,) for args in inputs][
-            :num_inputs
-        ]
-
     def _run_candidates(
-        self, env: ClarificationEnvironment, sources: list[str], inputs: list[tuple]
+        self, sources: list[str], inputs: list[tuple]
     ) -> list[list[str]] | None:
-        script = (
-            f"_sources = {sources!r}\n"
-            f"_inputs = {inputs!r}\n"
-            f"_entry_point = {self.problem['entry_point']!r}\n"
-            f"{BEHAVIOR_HARNESS}"
-        )
-        output = env.exec_code(script)
-        for line in output.splitlines():
-            if line.startswith("__BEHAVIORS__"):
-                return json.loads(line[len("__BEHAVIORS__") :])
-        return None
+        return self.call("run_candidates", sources=sources, inputs=inputs)
 
-    def property_check(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
-        prompt = self.problem["prompt"]
-        response = env.llm(fill(PROPERTY_EXTRACTION, task=prompt))
-        try:
-            properties = parse_python_literal(response)
-            if not isinstance(properties, list):
-                raise ValueError("Expected a list of properties")
-            properties = [
-                p
-                for p in properties
-                if isinstance(p, dict)
-                and all(
-                    isinstance(p.get(k), str) and p[k].strip()
-                    for k in ("name", "quote", "meaning")
-                )
-                and " ".join(p["quote"].split()) in " ".join(prompt.split())
-            ][:12]
-        except (
-            ValueError,
-            SyntaxError,
-            IndexError,
-            AttributeError,
-            TypeError,
-        ) as error:
-            print("PROPERTY EXTRACTION UNAVAILABLE:", error, flush=True)
+    def property_conflict_check(
+        self, problem: dict[str, Any]
+    ) -> tuple[bool, str | None]:
+        """Asks the decision model whether stated properties conflict pairwise."""
+        prompt = problem["prompt"]
+        properties = self.extract_properties(problem)
+        if properties is None:
             return (False, None)
-        print("PROPERTIES:", json.dumps(properties, ensure_ascii=False), flush=True)
+        properties = [p for p in properties if p["quote"].strip()][:12]
         pairs = [
             (i, j)
             for i in range(len(properties))
@@ -714,25 +921,23 @@ class ContradictionDetector:
                     "type": "choice",
                     "instructions": fill(
                         PROPERTY_PAIR,
-                        properties=json.dumps(
-                            [properties[i], properties[j]], ensure_ascii=False
-                        ),
+                        properties=to_json([properties[i], properties[j]]),
                     ),
                     "criteria": PROPERTY_PAIR_CRITERIA,
                 }
                 for i, j in batch
             }
             try:
-                answers = env.decide(questions=questions, context={"task": prompt})
+                answers = self.call(
+                    "decide", questions=questions, context={"task": prompt}
+                )
             except LimitsExceededException:
                 raise
             except Exception as error:
                 # Missing or unsupported decision model
                 print("PROPERTY PAIRS UNAVAILABLE:", error, flush=True)
                 return (False, None)
-            print(
-                "PROPERTY PAIRS:", json.dumps(answers, ensure_ascii=False), flush=True
-            )
+            print("PROPERTY PAIRS:", to_json(answers), flush=True)
             if not isinstance(answers, dict):
                 continue
             for i, j in batch:
@@ -741,126 +946,149 @@ class ContradictionDetector:
                     conflicts.append([properties[i], properties[j]])
         if not conflicts:
             return (False, None)
-        response = env.llm(
-            fill(
-                PROPERTY_CONFLICT_VERIFICATION,
-                task=prompt,
-                conflicts=json.dumps(conflicts, ensure_ascii=False),
-            )
+        return self.judge(
+            "PROPERTY CONFLICT",
+            "Contradiction",
+            PROPERTY_CONFLICT_VERIFICATION,
+            task=prompt,
+            conflicts=to_json(conflicts),
         )
-        print("PROPERTY CONFLICT:", response, flush=True)
-        return (parse_verdict(response, "Contradiction"), response)
 
-    def code_sampling(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
-        pass
-
-    def testcase_sampling(
-        self, env: ClarificationEnvironment
+    def property_omission_check(
+        self, problem: dict[str, Any]
     ) -> tuple[bool, str | None]:
-        pass
-
-
-class AmbiguityDetector:
-    def __init__(self, problem: dict[str, Any]):
-        self.problem = problem
-
-    def is_ambiguous(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
-        checks = (
-            self.base_llm_judge,
-            self.property_check,
-            self.code_sampling,
-            self.testcase_sampling,
-        )
-        for check in checks:
-            result = check(env)
-            if result is not None and result[0]:
-                return result
-        return (False, "")
-
-    def base_llm_judge(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
-        pass
-
-    def property_check(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
-        response = env.llm(fill(AMBIGUITY_CHECK, task=self.problem["prompt"]))
-        print("PROPERTY OMISSION:", response, flush=True)
-        return (parse_verdict(response, "Ambiguity"), response)
-
-    def code_sampling(self, env: ClarificationEnvironment) -> tuple[bool, str | None]:
-        pass
-
-    def testcase_sampling(
-        self, env: ClarificationEnvironment
-    ) -> tuple[bool, str | None]:
-        pass
-
-
-#########################################################################
-# Classifier
-#########################################################################
-
-
-class SHWClassifier(ClarificationAlgorithmBase):
-    DEFAULT_CONFIG = {
-        "decomposition": "heuristic",  # "heuristic" or "llm"
-        "max_dropped_elements": 6,
-        "max_test_versions": 3,
-        "max_code_attempts": 4,
-        "max_tests": 24,
-        "test_timeout": 0.5,
-    }
-
-    def run(self, env: ClarificationEnvironment, problem: dict[str, Any]) -> str:
-        clarifications = []
-        while env.can_ask():
-            task = problem["prompt"]
-            if clarifications:
-                task += fill(
-                    CLARIFICATION_HISTORY,
-                    clarifications=json.dumps(clarifications, ensure_ascii=False),
-                )
-            current_problem = {"prompt": task, "entry_point": problem["entry_point"]}
-            contradiction_detector = ContradictionDetector(
-                current_problem,
-                self.config["decomposition"],
-                self.config["max_dropped_elements"],
+        """Asks the decision model which properties the task leaves undetermined,
+        then picks the one that most changes a correct implementation."""
+        prompt = problem["prompt"]
+        properties = self.extract_properties(problem)
+        if not properties:
+            return self.judge(
+                "PROPERTY OMISSION", "Ambiguity", AMBIGUITY_CHECK, task=prompt
             )
-            ambiguity_detector = AmbiguityDetector(current_problem)
-            try:
-                detected, description = contradiction_detector.is_contradictory(env)
-                if not detected:
-                    detected, description = ambiguity_detector.is_ambiguous(env)
-                if not detected:
-                    break
-                question = env.llm(
-                    fill(QUESTION_PROMPT, task=task, analysis=description)
-                ).strip()
-                if (
-                    question.upper() == "NONE"
-                    or not question
-                    or any(
-                        " ".join(question.lower().split())
-                        == " ".join(q.lower().split())
-                        for q, _ in clarifications
-                    )
-                ):
-                    break
-                answer = env.ask_human(question)
-                clarifications.append((question, answer))
-                print(
-                    "CLARIFICATION:",
-                    json.dumps([question, answer], ensure_ascii=False),
-                    flush=True,
-                )
-            except TooManyQuestionException:
-                break
-            except LimitsExceededException:
-                break
+        questions = {
+            f"property_{i}": {
+                "type": "choice",
+                "instructions": fill(PROPERTY_DETERMINED, property=to_json(p)),
+                "criteria": PROPERTY_DETERMINED_CRITERIA,
+            }
+            for i, p in enumerate(properties)
+        }
+        try:
+            answers = self.call("decide", questions=questions, context={"task": prompt})
+        except LimitsExceededException:
+            raise
+        except Exception as error:
+            # Missing or unsupported decision model
+            print("PROPERTY DETERMINATION UNAVAILABLE:", error, flush=True)
+            return self.judge(
+                "PROPERTY OMISSION", "Ambiguity", AMBIGUITY_CHECK, task=prompt
+            )
+        print("PROPERTY DETERMINATION:", to_json(answers), flush=True)
+        if not isinstance(answers, dict):
+            answers = {}
+        undetermined = [
+            p
+            for i, p in enumerate(properties)
+            if isinstance(answer := answers.get(f"property_{i}"), dict)
+            and answer.get("choice") == "undetermined"
+        ]
+        if not undetermined:
+            return (False, None)
+        return self.judge(
+            "PROPERTY OMISSION",
+            "Ambiguity",
+            OMISSION_SELECTION,
+            task=prompt,
+            properties=to_json(undetermined),
+        )
 
-        spec = self._create_frozen_spec(env, problem, clarifications)
-        tests = self._create_reviewed_tests(env, spec)
-        return self._implement_with_tests(env, problem["entry_point"], spec, tests)
+    def extract_properties(
+        self, problem: dict[str, Any]
+    ) -> list[dict[str, str]] | None:
+        """Stated (quoted) and open (empty quote) properties of the task, extracted
+        once per prompt and shared by the conflict and omission checks."""
+        prompt = problem["prompt"]
+        if prompt in self.properties:
+            return self.properties[prompt]
+        response = self.llm(self.fill(PROPERTY_EXTRACTION, task=prompt))
+        source = " ".join(prompt.split())
+        try:
+            properties = parse_python_literal(response)
+            if not isinstance(properties, list):
+                raise ValueError("Expected a list of properties")
+            properties = [
+                p
+                for p in properties
+                if isinstance(p, dict)
+                and all(isinstance(p.get(k), str) for k in ("name", "quote", "meaning"))
+                and p["name"].strip()
+                and p["meaning"].strip()
+                # Quotes must be verbatim; open properties have none
+                and " ".join(p["quote"].split()) in source
+            ][:20]
+            print("PROPERTIES:", to_json(properties), flush=True)
+        except LITERAL_ERRORS as error:
+            print("PROPERTY EXTRACTION UNAVAILABLE:", error, flush=True)
+            properties = None
+        self.properties[prompt] = properties
+        return properties
 
-    def _create_frozen_spec(self, env, problem, clarifications):
+    def base_llm_judge(self, problem: dict[str, Any]) -> tuple[bool, str | None]:
+        """Final gate for tasks that no other check flagged."""
+        return self.judge(
+            "FINAL GATE", "Defect", BASE_LLM_JUDGE, task=problem["prompt"]
+        )
+
+    def judge(
+        self, log_label: str, verdict: str, template: str, **values: Any
+    ) -> tuple[bool, str]:
+        """Asks for a `<verdict>: yes/no` judgment and logs the response."""
+        response = self.llm(self.fill(template, **values))
+        print(f"{log_label}:", response, flush=True)
+        return (parse_verdict(response, verdict), response)
+
+
+########################################################################
+# Agents: clarification and implementation
+########################################################################
+
+
+class Questioner(Agent):
+    """Turns the detected defect into one question and asks the user."""
+
+    name = "questioner"
+
+    def ask(self, memory: SharedMemory) -> bool:
+        """Returns False when no new grounded question remains."""
+        question = self.llm(
+            fill(QUESTION_PROMPT, task=memory.task, analysis=memory.finding)
+        ).strip()
+        if (
+            question.upper() == "NONE"
+            or not question
+            or any(
+                " ".join(question.lower().split()) == " ".join(q.lower().split())
+                for q, _ in memory.clarifications
+            )
+        ):
+            return False
+        answer = self.call("ask_human", question=question)
+        memory.clarifications.append((question, answer))
+        print(
+            "CLARIFICATION:",
+            to_json([question, answer]),
+            flush=True,
+        )
+        return True
+
+
+class SpecWriter(Agent):
+    """Consolidates the task and the answers into a frozen specification."""
+
+    name = "spec_writer"
+
+    def write(self, memory: SharedMemory) -> dict[str, Any]:
+        problem, clarifications = memory.problem, memory.clarifications
         sources = {
             f"T{i}": line.strip()
             for i, line in enumerate(
@@ -868,16 +1096,15 @@ class SHWClassifier(ClarificationAlgorithmBase):
             )
         }
         sources.update({f"A{i}": a for i, (_, a) in enumerate(clarifications, 1)})
-        prompt = fill(
+        prompt = self.fill(
             SPEC_PROMPT,
-            entry_point=problem["entry_point"],
             protocol=CODE_PROTOCOL,
-            sources=json.dumps(sources, ensure_ascii=False),
-            clarifications=json.dumps(clarifications, ensure_ascii=False),
+            sources=to_json(sources),
+            clarifications=to_json(clarifications),
         )
         errors, spec = [], None
         for attempt in range(2):
-            raw = env.llm(
+            raw = self.llm(
                 prompt + (fill(SPEC_CORRECTION, errors=errors) if errors else "")
             )
             try:
@@ -902,12 +1129,7 @@ class SHWClassifier(ClarificationAlgorithmBase):
                         or row["id"] in ids
                         or not isinstance(row.get("requirement"), str)
                         or not row["requirement"].strip()
-                        or not isinstance(row.get("sources"), list)
-                        or not row["sources"]
-                        or any(
-                            not isinstance(ref, str) or ref not in sources
-                            for ref in row["sources"]
-                        )
+                        or not cites(row.get("sources"), sources)
                     ):
                         errors.append(
                             "Invalid requirement or source citation: " + repr(row)
@@ -924,16 +1146,11 @@ class SHWClassifier(ClarificationAlgorithmBase):
                     if (
                         not isinstance(example, dict)
                         or not isinstance(example.get("case"), str)
-                        or not isinstance(example.get("sources"), list)
-                        or not example["sources"]
-                        or not all(
-                            isinstance(ref, str) and ref in sources
-                            for ref in example["sources"]
-                        )
+                        or not cites(example.get("sources"), sources)
                     ):
                         errors.append("Invalid example/source citation")
                 spec = {
-                    "entry_point": problem["entry_point"],
+                    "entry_point": self.entry_point,
                     "protocol": CODE_PROTOCOL,
                     "requirements": requirements,
                     "examples": value.get("examples", []),
@@ -949,7 +1166,7 @@ class SHWClassifier(ClarificationAlgorithmBase):
             print("SPECIFICATION RETRY:", attempt + 1, errors, flush=True)
         if spec is None:
             spec = {
-                "entry_point": problem["entry_point"],
+                "entry_point": self.entry_point,
                 "protocol": CODE_PROTOCOL,
                 "requirements": [
                     {
@@ -965,18 +1182,39 @@ class SHWClassifier(ClarificationAlgorithmBase):
                 "clarifications": clarifications,
             }
         spec["validation_issues"] = errors
-        print("FROZEN SPECIFICATION:", json.dumps(spec, ensure_ascii=False), flush=True)
+        print("FROZEN SPECIFICATION:", to_json(spec), flush=True)
         return spec
 
-    def _create_reviewed_tests(self, env, spec):
-        frozen_spec = json.dumps(spec, ensure_ascii=False, sort_keys=True)
+
+class TestDesigner(Agent):
+    """Writes tests from the frozen specification, reviews and revises them.
+    Also provides oracle-free probe inputs to the DefectDetector."""
+
+    name = "test_designer"
+
+    def generate_inputs(
+        self, problem: dict[str, Any], num_inputs: int = 10
+    ) -> list[tuple]:
+        response = self.llm(
+            self.fill(GEN_TEST_INPUTS, prompt=problem["prompt"], num_inputs=num_inputs)
+        )
+        inputs = parse_python_list(response)
+        return [args if isinstance(args, tuple) else (args,) for args in inputs][
+            :num_inputs
+        ]
+
+    def design(self, memory: SharedMemory) -> dict[str, Any]:
+        spec = memory.clean_spec
+        frozen_spec = to_json(spec, sort_keys=True)
         requirement_ids = {r["id"] for r in spec["requirements"]}
         prompt = fill(
             TEST_GENERATOR, max_tests=self.config["max_tests"], spec=frozen_spec
         )
         best, previous, review = None, "", ""
         for version in range(1, self.config["max_test_versions"] + 1):
-            raw = env.llm(
+            if version > 1 and self.out_of_time("test_time_limit"):
+                break
+            raw = self.llm(
                 prompt
                 + (
                     fill(TEST_REVISION, previous=previous, review=review)
@@ -998,12 +1236,7 @@ class SHWClassifier(ClarificationAlgorithmBase):
                             or not isinstance(row.get("id"), str)
                             or not row["id"]
                             or row["id"] in test_ids
-                            or not isinstance(row.get("requirement_ids"), list)
-                            or not row["requirement_ids"]
-                            or not all(
-                                isinstance(r, str) and r in requirement_ids
-                                for r in row["requirement_ids"]
-                            )
+                            or not cites(row.get("requirement_ids"), requirement_ids)
                             or row.get("kind")
                             not in {"functional", "property", "static"}
                             or not isinstance(row.get("code"), str)
@@ -1049,12 +1282,7 @@ class SHWClassifier(ClarificationAlgorithmBase):
                 for row in value.get("not_testable", []):
                     if (
                         isinstance(row, dict)
-                        and isinstance(row.get("requirement_ids"), list)
-                        and row["requirement_ids"]
-                        and all(
-                            isinstance(r, str) and r in requirement_ids
-                            for r in row["requirement_ids"]
-                        )
+                        and cites(row.get("requirement_ids"), requirement_ids)
                         and isinstance(row.get("reason"), str)
                         and row["reason"].strip()
                     ):
@@ -1078,17 +1306,11 @@ class SHWClassifier(ClarificationAlgorithmBase):
                 "not_testable": not_testable,
                 "uncovered_requirement_ids": missing,
             }
-            # Mechanical issues replace the LLM review
+            # Mechanical issues replace the review
             review = (
                 "VERDICT: REVISE\n" + "\n".join(issues)
                 if issues
-                else env.llm(
-                    fill(
-                        TEST_REVIEW,
-                        spec=frozen_spec,
-                        tests=json.dumps(suite, ensure_ascii=False),
-                    )
-                ).strip()
+                else self.review(frozen_spec, suite)
             )
             verdicts = set(
                 re.findall(
@@ -1107,7 +1329,7 @@ class SHWClassifier(ClarificationAlgorithmBase):
             print(
                 "TEST REVIEW:",
                 version,
-                json.dumps(suite, ensure_ascii=False),
+                to_json(suite),
                 flush=True,
             )
             rank = (not approved, len(missing), len(issues), -len(tests), -version)
@@ -1116,21 +1338,38 @@ class SHWClassifier(ClarificationAlgorithmBase):
             previous = raw
             if approved:
                 break
-        if json.dumps(spec, ensure_ascii=False, sort_keys=True) != frozen_spec:
+        if to_json(spec, sort_keys=True) != frozen_spec:
             raise RuntimeError("Frozen specification changed during test review")
-        print("FROZEN TESTS:", json.dumps(best[1], ensure_ascii=False), flush=True)
+        print("FROZEN TESTS:", to_json(best[1]), flush=True)
         return best[1]
 
-    def _implement_with_tests(self, env, entry_point, spec, tests):
-        frozen_spec = json.dumps(spec, ensure_ascii=False, sort_keys=True)
-        frozen_tests = json.dumps(tests, ensure_ascii=False, sort_keys=True)
+    def review(self, frozen_spec: str, suite: dict[str, Any]) -> str:
+        return self.llm(
+            fill(
+                TEST_REVIEW,
+                spec=frozen_spec,
+                tests=to_json(suite),
+            )
+        ).strip()
+
+
+class Coder(Agent):
+    """Implements the specification and repairs it with real test failures."""
+
+    name = "coder"
+
+    def implement(self, memory: SharedMemory) -> str:
+        spec, tests = memory.clean_spec, memory.tests
+        frozen_spec = to_json(spec, sort_keys=True)
+        frozen_tests = to_json(tests, sort_keys=True)
         best, feedback, previous, seen = None, "", "", set()
         for attempt in range(1, self.config["max_code_attempts"] + 1):
+            if attempt > 1 and self.out_of_time("code_time_limit"):
+                break
             try:
-                raw = env.llm(
-                    fill(
+                raw = self.llm(
+                    self.fill(
                         CODE_GENERATOR,
-                        entry_point=entry_point,
                         protocol=spec["protocol"],
                         spec=frozen_spec,
                         tests=frozen_tests,
@@ -1153,13 +1392,12 @@ class SHWClassifier(ClarificationAlgorithmBase):
                 )
             except ValueError:
                 code, format_issue = raw, "Missing Python fenced block."
-            execution = _execute_suite(
-                env,
-                code,
-                entry_point,
-                tests["tests"],
-                self.config["test_timeout"],
-                format_issue,
+            execution = self.call(
+                "run_tests",
+                code=code,
+                tests=tests["tests"],
+                timeout=self.config["test_timeout"],
+                format_issue=format_issue,
             )
             passed = {r["id"] for r in execution["checks"] if r["status"] == "passed"}
             eligible = execution["status"] == "ok"
@@ -1179,7 +1417,7 @@ class SHWClassifier(ClarificationAlgorithmBase):
             print(
                 "CODE ATTEMPT:",
                 attempt,
-                json.dumps(execution, ensure_ascii=False),
+                to_json(execution),
                 flush=True,
             )
             if (
@@ -1200,14 +1438,14 @@ class SHWClassifier(ClarificationAlgorithmBase):
             ]
             feedback = fill(
                 CODE_FEEDBACK,
-                failures=json.dumps(failures, ensure_ascii=False),
+                failures=to_json(failures),
                 passed=sorted(best["passed"]),
             )
             if best["attempt"] != attempt:
                 latest = [r for r in execution["checks"] if r["status"] != "passed"]
                 feedback += fill(
                     CODE_FEEDBACK_LATEST,
-                    failures=json.dumps(latest, ensure_ascii=False),
+                    failures=to_json(latest),
                 )
             previous = best["raw"]
             print("CODE FEEDBACK:", feedback, flush=True)
@@ -1228,41 +1466,110 @@ class SHWClassifier(ClarificationAlgorithmBase):
         return best["raw"]
 
 
-def _execute_suite(env, code, entry_point, tests, timeout, format_issue=""):
-    payload = json.dumps(
-        {
-            "source": code,
-            "entry_point": entry_point,
-            "tests": tests,
-            "timeout": timeout,
-            "format_issue": format_issue,
-        },
-        ensure_ascii=True,
-    )
-    script = (
-        "import json\n_payload = json.loads(" + repr(payload) + ")\n" + TEST_HARNESS
-    )
-    output = ""
-    for _ in range(2):
-        try:
-            output = env.exec_code(script)
-        except Exception as error:
-            output = type(error).__name__ + ": " + str(error)
-        for line in reversed(output.splitlines()):
-            if line.startswith("V8_RUN_RESULT="):
-                try:
-                    result = json.loads(line.split("=", 1)[1])
-                    expected = {r["id"] for r in tests} | {"S_FORMAT", "S_SYNTAX"}
-                    if (
-                        result.get("status") == "ok"
-                        and isinstance(result.get("checks"), list)
-                        and expected <= {r["id"] for r in result["checks"]}
-                    ):
-                        return result
-                except (ValueError, KeyError, TypeError):
-                    pass
-    return {
-        "status": "execution_unavailable",
-        "checks": [],
-        "output_excerpt": output[-4000:],
+########################################################################
+# Orchestrator
+########################################################################
+
+MODE_DETECT, MODE_ASK, MODE_SPECIFY, MODE_TEST, MODE_CODE, MODE_DONE = (
+    "DETECT",
+    "ASK",
+    "SPECIFY",
+    "TEST",
+    "CODE",
+    "DONE",
+)
+
+
+class Orchestrator:
+    """Runs the agents as a state machine over a shared memory.
+
+    DETECT -> ASK -> DETECT ... (while questions remain)
+           -> SPECIFY -> TEST -> CODE -> DONE
+    """
+
+    def __init__(
+        self,
+        env: ClarificationEnvironment,
+        problem: dict[str, Any],
+        config: dict[str, Any],
+    ):
+        self.env = env
+        self.config = config
+        self.memory = SharedMemory(problem)
+        self.tools = ToolBox(env, self.memory)
+        self.mode = MODE_DETECT
+
+        self.test_designer = TestDesigner(self.tools, config)
+        self.detector = DefectDetector(self.tools, config, self.test_designer)
+        self.questioner = Questioner(self.tools, config)
+        self.spec_writer = SpecWriter(self.tools, config)
+        self.coder = Coder(self.tools, config)
+
+    def run(self) -> str:
+        while self.mode != MODE_DONE:
+            self.step()
+        print("AGENT TRACE:", json.dumps(self.memory.trace), flush=True)
+        return self.memory.code
+
+    def step(self) -> None:
+        if self.mode == MODE_DETECT:
+            """
+            * Detect: find one defect to ask about
+            """
+            if not self.env.can_ask():
+                self.mode = MODE_SPECIFY
+                return
+            try:
+                detected, finding = self.detector.detect(self.memory.current_problem)
+            except (TooManyQuestionException, LimitsExceededException):
+                self.mode = MODE_SPECIFY
+                return
+            self.memory.finding = finding
+            self.mode = MODE_ASK if detected else MODE_SPECIFY
+
+        elif self.mode == MODE_ASK:
+            """
+            * Ask: one question about the finding
+            """
+            try:
+                asked = self.questioner.ask(self.memory)
+            except (TooManyQuestionException, LimitsExceededException):
+                asked = False
+            self.mode = MODE_DETECT if asked else MODE_SPECIFY
+
+        elif self.mode == MODE_SPECIFY:
+            self.memory.spec = self.spec_writer.write(self.memory)
+            self.mode = MODE_TEST
+
+        elif self.mode == MODE_TEST:
+            self.memory.tests = self.test_designer.design(self.memory)
+            self.mode = MODE_CODE
+
+        elif self.mode == MODE_CODE:
+            self.memory.code = self.coder.implement(self.memory)
+            self.mode = MODE_DONE
+
+
+########################################################################
+# Classifier
+########################################################################
+
+
+class SHWClassifier(ClarificationAlgorithmBase):
+    DEFAULT_CONFIG = {
+        "decomposition": "llm",  # "llm"
+        "max_dropped_elements": 6,
+        "final_gate": True,  # base_llm_judge when no other check fires
+        "max_test_versions": 3,
+        "max_code_attempts": 4,
+        "max_tests": 24,
+        "test_timeout": 0.5,
+        # Seconds after the task start at which a stage stops early, since the
+        # SDK restarts a task that runs longer than 300 seconds
+        "detect_time_limit": 90,
+        "test_time_limit": 150,
+        "code_time_limit": 210,
     }
+
+    def run(self, env: ClarificationEnvironment, problem: dict[str, Any]) -> str:
+        return Orchestrator(env, problem, self.config).run()
