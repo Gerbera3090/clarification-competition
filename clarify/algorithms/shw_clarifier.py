@@ -843,6 +843,11 @@ def run_candidates(
     return None
 
 
+def exception_name(error: BaseException) -> str:
+    """Class name of an exception, e.g. 'ValueError' (from "<class 'ValueError'>")."""
+    return str(type(error)).split("'")[1].rsplit(".", 1)[-1]
+
+
 def run_tests(
     exec_code: Callable[[str], str],
     code: str,
@@ -870,7 +875,7 @@ def run_tests(
         try:
             output = exec_code(script)
         except Exception as error:
-            output = type(error).__name__ + ": " + str(error)
+            output = exception_name(error) + ": " + str(error)
         for line in reversed(output.splitlines()):
             if line.startswith("V8_RUN_RESULT="):
                 try:
@@ -1001,7 +1006,8 @@ class DefectDetector(Agent):
     def __init__(
         self, tools: ToolBox, config: dict[str, Any], test_designer: TestDesigner
     ):
-        super().__init__(tools, config)
+        self.tools = tools
+        self.config = config
         self.test_designer = test_designer
         self.properties: dict[str, list[dict[str, str]] | None] = {}
 
@@ -1051,9 +1057,9 @@ class DefectDetector(Agent):
             [e for i, e in enumerate(elements) if i not in group] for group in groups
         ]
         sources = [
-            self._generate_solution(compose_prompt(context, v)) for v in variants
+            self.generate_solution(compose_prompt(context, v)) for v in variants
         ]
-        behaviors = self._run_candidates(sources, inputs)
+        behaviors = self.run_candidates(sources, inputs)
         if behaviors is None:
             return (False, None)
 
@@ -1096,14 +1102,14 @@ class DefectDetector(Agent):
             findings="\n".join(findings),
         )
 
-    def _generate_solution(self, prompt: str) -> str:
+    def generate_solution(self, prompt: str) -> str:
         response = self.llm(self.fill(DEFAULT_MBPP_TEMPLATE, prompt=prompt))
         try:
             return _validate_and_parse_evalplus_result(response)
         except ValueError:
             return ""
 
-    def _run_candidates(
+    def run_candidates(
         self, sources: list[str], inputs: list[tuple]
     ) -> list[list[str]] | None:
         return self.call("run_candidates", sources=sources, inputs=inputs)
