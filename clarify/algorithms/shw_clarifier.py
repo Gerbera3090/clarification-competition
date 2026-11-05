@@ -283,9 +283,7 @@ CODE_GENERATOR = (
     "\nACTUAL FAILURES AND FEEDBACK:\n{feedback}"
 )
 
-CODE_FEEDBACK = (
-    "FAILURES OF PREVIOUS BEST CODE:\n{failures}\nPASSED CHECKS TO PRESERVE:\n{passed}"
-)
+CODE_FEEDBACK = "FAILURES OF PREVIOUS BEST CODE:\n{failures}\nPASSED CHECKS TO PRESERVE:\n{passed}"
 
 CODE_FEEDBACK_LATEST = "\nFAILURES OF LATEST REJECTED TRIAL:\n{failures}"
 
@@ -661,16 +659,13 @@ def with_call_adapter(response: str, entry_point: str) -> str:
     except (ValueError, SyntaxError):
         return response
     if not any(
-        isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
-        and node.name == entry_point
+        isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == entry_point
         for node in tree.body
     ):
         return response
     snake = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", "_", entry_point).lower()
     aliases = sorted({entry_point.lower(), snake} - {entry_point})
-    adapter = CALL_ADAPTER.replace("{entry_point}", entry_point).replace(
-        "{aliases}", repr(aliases)
-    )
+    adapter = CALL_ADAPTER.replace("{entry_point}", entry_point).replace("{aliases}", repr(aliases))
     return "```python\n" + code.rstrip() + "\n" + adapter + "```"
 
 
@@ -701,12 +696,8 @@ def decompose_prompt(
     return context, _decompose_with_heuristic(description)
 
 
-def _decompose_with_llm(
-    description: str, entry_point: str, llm: Callable[[str], str]
-) -> list[str]:
-    response = llm(
-        fill(DECOMPOSE_PROMPT, prompt=description.strip(), entry_point=entry_point)
-    )
+def _decompose_with_llm(description: str, entry_point: str, llm: Callable[[str], str]) -> list[str]:
+    response = llm(fill(DECOMPOSE_PROMPT, prompt=description.strip(), entry_point=entry_point))
     elements = parse_python_list(response)
     return [e.strip() for e in elements if isinstance(e, str) and e.strip()]
 
@@ -717,9 +708,7 @@ def _decompose_with_heuristic(description: str) -> list[str]:
     def flush_prose():
         text = " ".join(prose).strip()
         for sentence in SENTENCE_BOUNDARY.split(text):
-            elements.extend(
-                c.strip() for c in CLAUSE_BOUNDARY.split(sentence) if c.strip()
-            )
+            elements.extend(c.strip() for c in CLAUSE_BOUNDARY.split(sentence) if c.strip())
         prose.clear()
 
     lines = [line.strip() for line in description.splitlines()]
@@ -867,9 +856,7 @@ def run_tests(
         },
         ensure_ascii=True,
     )
-    script = (
-        "import json\n_payload = json.loads(" + repr(payload) + ")\n" + TEST_HARNESS
-    )
+    script = "import json\n_payload = json.loads(" + repr(payload) + ")\n" + TEST_HARNESS
     output = ""
     for _ in range(2):
         try:
@@ -913,9 +900,7 @@ class ToolBox:
                 "decide",
                 "Answer structured choice questions with the decision model.",
                 {"questions": {"type": "object"}, "context": {"type": "object"}},
-                lambda questions, context: env.decide(
-                    questions=questions, context=context
-                ),
+                lambda questions, context: env.decide(questions=questions, context=context),
             ),
             Tool(
                 "ask_human",
@@ -931,9 +916,7 @@ class ToolBox:
                     "sources": {"type": "array", "items": {"type": "string"}},
                     "inputs": {"type": "array", "items": {"type": "array"}},
                 },
-                lambda sources, inputs: run_candidates(
-                    env.exec_code, sources, inputs, entry_point
-                ),
+                lambda sources, inputs: run_candidates(env.exec_code, sources, inputs, entry_point),
             ),
             Tool(
                 "run_tests",
@@ -1003,9 +986,7 @@ class DefectDetector(Agent):
 
     name = "defect_detector"
 
-    def __init__(
-        self, tools: ToolBox, config: dict[str, Any], test_designer: TestDesigner
-    ):
+    def __init__(self, tools: ToolBox, config: dict[str, Any], test_designer: TestDesigner):
         self.tools = tools
         self.config = config
         self.test_designer = test_designer
@@ -1035,9 +1016,7 @@ class DefectDetector(Agent):
         Drops prose elements one by one (and all examples together) and reports the drops that change the behavior of the generated solution.
         """
 
-        context, elements = decompose_prompt(
-            problem, self.config["decomposition"], self.llm
-        )
+        context, elements = decompose_prompt(problem, self.config["decomposition"], self.llm)
         if len(elements) < 2:
             return (False, None)
 
@@ -1056,9 +1035,7 @@ class DefectDetector(Agent):
         variants = [elements] + [
             [e for i, e in enumerate(elements) if i not in group] for group in groups
         ]
-        sources = [
-            self.generate_solution(compose_prompt(context, v)) for v in variants
-        ]
+        sources = [self.generate_solution(compose_prompt(context, v)) for v in variants]
         behaviors = self.run_candidates(sources, inputs)
         if behaviors is None:
             return (False, None)
@@ -1068,11 +1045,7 @@ class DefectDetector(Agent):
         for group, behavior in zip(groups, behaviors[1:], strict=True):
             if behavior == reference:
                 continue
-            k = next(
-                k
-                for k, (a, b) in enumerate(zip(reference, behavior, strict=True))
-                if a != b
-            )
+            k = next(k for k, (a, b) in enumerate(zip(reference, behavior, strict=True)) if a != b)
             dropped = f'"{elements[group[0]]}"' if len(group) == 1 else "all examples"
             findings.append(
                 f"Dropping {dropped} changes {format_call(self.entry_point, inputs[k])} "
@@ -1109,25 +1082,17 @@ class DefectDetector(Agent):
         except ValueError:
             return ""
 
-    def run_candidates(
-        self, sources: list[str], inputs: list[tuple]
-    ) -> list[list[str]] | None:
+    def run_candidates(self, sources: list[str], inputs: list[tuple]) -> list[list[str]] | None:
         return self.call("run_candidates", sources=sources, inputs=inputs)
 
-    def property_conflict_check(
-        self, problem: dict[str, Any]
-    ) -> tuple[bool, str | None]:
+    def property_conflict_check(self, problem: dict[str, Any]) -> tuple[bool, str | None]:
         """Asks the decision model whether stated properties conflict pairwise."""
         prompt = problem["prompt"]
         properties = self.extract_properties(problem)
         if properties is None:
             return (False, None)
         properties = [p for p in properties if p["quote"].strip()][:12]
-        pairs = [
-            (i, j)
-            for i in range(len(properties))
-            for j in range(i + 1, len(properties))
-        ]
+        pairs = [(i, j) for i in range(len(properties)) for j in range(i + 1, len(properties))]
         conflicts = []
         for start in range(0, len(pairs), 64):
             batch = pairs[start : start + 64]
@@ -1143,9 +1108,7 @@ class DefectDetector(Agent):
                 for i, j in batch
             }
             try:
-                answers = self.call(
-                    "decide", questions=questions, context={"task": prompt}
-                )
+                answers = self.call("decide", questions=questions, context={"task": prompt})
             except LimitsExceededException:
                 raise
             except Exception as error:
@@ -1169,27 +1132,19 @@ class DefectDetector(Agent):
             conflicts=to_json(conflicts),
         )
 
-    def property_omission_check(
-        self, problem: dict[str, Any]
-    ) -> tuple[bool, str | None]:
+    def property_omission_check(self, problem: dict[str, Any]) -> tuple[bool, str | None]:
         """Looks for the unresolved choice that most changes a correct implementation."""
         if self.config["omission_check"] == "properties":
             return self.property_determination_check(problem)
-        return self.judge(
-            "PROPERTY OMISSION", "Ambiguity", AMBIGUITY_CHECK, task=problem["prompt"]
-        )
+        return self.judge("PROPERTY OMISSION", "Ambiguity", AMBIGUITY_CHECK, task=problem["prompt"])
 
-    def property_determination_check(
-        self, problem: dict[str, Any]
-    ) -> tuple[bool, str | None]:
+    def property_determination_check(self, problem: dict[str, Any]) -> tuple[bool, str | None]:
         """Asks the decision model which properties the task leaves undetermined,
         then picks the one that most changes a correct implementation."""
         prompt = problem["prompt"]
         properties = self.extract_properties(problem)
         if not properties:
-            return self.judge(
-                "PROPERTY OMISSION", "Ambiguity", AMBIGUITY_CHECK, task=prompt
-            )
+            return self.judge("PROPERTY OMISSION", "Ambiguity", AMBIGUITY_CHECK, task=prompt)
         questions = {
             f"property_{i}": {
                 "type": "choice",
@@ -1205,9 +1160,7 @@ class DefectDetector(Agent):
         except Exception as error:
             # Missing or unsupported decision model
             print("PROPERTY DETERMINATION UNAVAILABLE:", error, flush=True)
-            return self.judge(
-                "PROPERTY OMISSION", "Ambiguity", AMBIGUITY_CHECK, task=prompt
-            )
+            return self.judge("PROPERTY OMISSION", "Ambiguity", AMBIGUITY_CHECK, task=prompt)
         print("PROPERTY DETERMINATION:", to_json(answers), flush=True)
         if not isinstance(answers, dict):
             answers = {}
@@ -1227,9 +1180,7 @@ class DefectDetector(Agent):
             properties=to_json(undetermined),
         )
 
-    def extract_properties(
-        self, problem: dict[str, Any]
-    ) -> list[dict[str, str]] | None:
+    def extract_properties(self, problem: dict[str, Any]) -> list[dict[str, str]] | None:
         """Stated (quoted) and open (empty quote) properties of the task, extracted
         once per prompt and shared by the conflict and omission checks."""
         prompt = problem["prompt"]
@@ -1260,13 +1211,9 @@ class DefectDetector(Agent):
 
     def base_llm_judge(self, problem: dict[str, Any]) -> tuple[bool, str | None]:
         """Final gate for tasks that no other check flagged."""
-        return self.judge(
-            "FINAL GATE", "Defect", BASE_LLM_JUDGE, task=problem["prompt"]
-        )
+        return self.judge("FINAL GATE", "Defect", BASE_LLM_JUDGE, task=problem["prompt"])
 
-    def judge(
-        self, log_label: str, verdict: str, template: str, **values: Any
-    ) -> tuple[bool, str]:
+    def judge(self, log_label: str, verdict: str, template: str, **values: Any) -> tuple[bool, str]:
         """Asks for a `<verdict>: yes/no` judgment and logs the response."""
         response = self.llm(self.fill(template, **values))
         print(f"{log_label}:", response, flush=True)
@@ -1317,9 +1264,7 @@ class SpecWriter(Agent):
         task = memory.spec_task or problem["prompt"]
         sources = {
             f"T{i}": line.strip()
-            for i, line in enumerate(
-                (line for line in task.splitlines() if line.strip()), 1
-            )
+            for i, line in enumerate((line for line in task.splitlines() if line.strip()), 1)
         }
         sources.update({f"A{i}": a for i, (_, a) in enumerate(clarifications, 1)})
         prompt = self.fill(
@@ -1330,14 +1275,10 @@ class SpecWriter(Agent):
         )
         errors, spec = [], None
         for attempt in range(2):
-            raw = self.llm(
-                prompt + (fill(SPEC_CORRECTION, errors=errors) if errors else "")
-            )
+            raw = self.llm(prompt + (fill(SPEC_CORRECTION, errors=errors) if errors else ""))
             try:
                 value = parse_json(raw)
-                if not isinstance(value, dict) or not isinstance(
-                    value.get("requirements"), list
-                ):
+                if not isinstance(value, dict) or not isinstance(value.get("requirements"), list):
                     raise ValueError("Expected a requirements list")
                 requirements = [
                     {"id": f"ANSWER_{i}", "requirement": answer, "sources": [f"A{i}"]}
@@ -1357,9 +1298,7 @@ class SpecWriter(Agent):
                         or not row["requirement"].strip()
                         or not cites(row.get("sources"), sources)
                     ):
-                        errors.append(
-                            "Invalid requirement or source citation: " + repr(row)
-                        )
+                        errors.append("Invalid requirement or source citation: " + repr(row))
                         continue
                     requirements.append(row)
                     ids.add(row["id"])
@@ -1471,42 +1410,29 @@ class TestDesigner(Agent):
         print("EXAMPLE CHECKS:", to_json([t["description"] for t in tests]), flush=True)
         return tests
 
-    def generate_inputs(
-        self, problem: dict[str, Any], num_inputs: int = 10
-    ) -> list[tuple]:
+    def generate_inputs(self, problem: dict[str, Any], num_inputs: int = 10) -> list[tuple]:
         response = self.llm(
             self.fill(GEN_TEST_INPUTS, prompt=problem["prompt"], num_inputs=num_inputs)
         )
         inputs = parse_python_list(response)
-        return [args if isinstance(args, tuple) else (args,) for args in inputs][
-            :num_inputs
-        ]
+        return [args if isinstance(args, tuple) else (args,) for args in inputs][:num_inputs]
 
     def design(self, memory: SharedMemory) -> dict[str, Any]:
         spec = memory.clean_spec
         frozen_spec = to_json(spec, sort_keys=True)
         requirement_ids = {r["id"] for r in spec["requirements"]}
-        prompt = fill(
-            TEST_GENERATOR, max_tests=self.config["max_tests"], spec=frozen_spec
-        )
+        prompt = fill(TEST_GENERATOR, max_tests=self.config["max_tests"], spec=frozen_spec)
         best, previous, review = None, "", ""
         for version in range(1, self.config["max_test_versions"] + 1):
             if version > 1 and self.out_of_time("test_time_limit"):
                 break
             raw = self.llm(
-                prompt
-                + (
-                    fill(TEST_REVISION, previous=previous, review=review)
-                    if previous
-                    else ""
-                )
+                prompt + (fill(TEST_REVISION, previous=previous, review=review) if previous else "")
             )
             issues, tests, not_testable, test_ids = [], [], [], set()
             try:
                 value = parse_json(raw)
-                if not isinstance(value, dict) or not isinstance(
-                    value.get("tests"), list
-                ):
+                if not isinstance(value, dict) or not isinstance(value.get("tests"), list):
                     raise ValueError("Expected a tests list")
                 for row in value["tests"][: self.config["max_tests"]]:
                     try:
@@ -1516,8 +1442,7 @@ class TestDesigner(Agent):
                             or not row["id"]
                             or row["id"] in test_ids
                             or not cites(row.get("requirement_ids"), requirement_ids)
-                            or row.get("kind")
-                            not in {"functional", "property", "static"}
+                            or row.get("kind") not in {"functional", "property", "static"}
                             or not isinstance(row.get("code"), str)
                             or len(row["code"]) > 14000
                         ):
@@ -1539,15 +1464,11 @@ class TestDesigner(Agent):
                             or check.args.kwarg
                             or not any(
                                 isinstance(n, ast.Assert)
-                                and not (
-                                    isinstance(n.test, ast.Constant)
-                                    and n.test.value is True
-                                )
+                                and not (isinstance(n.test, ast.Constant) and n.test.value is True)
                                 for n in ast.walk(check)
                             )
                             or any(
-                                isinstance(n, ast.Expr)
-                                and isinstance(n.value, ast.Call)
+                                isinstance(n, ast.Expr) and isinstance(n.value, ast.Call)
                                 for n in tree.body
                             )
                         ):
@@ -1572,9 +1493,7 @@ class TestDesigner(Agent):
                     issues.append("Test count limit exceeded")
             except (ValueError, TypeError) as error:
                 issues.append(str(error))
-            covered = {
-                r for row in tests + not_testable for r in row["requirement_ids"]
-            }
+            covered = {r for row in tests + not_testable for r in row["requirement_ids"]}
             missing = sorted(requirement_ids - covered)
             if missing:
                 issues.append("Uncovered requirements: " + ", ".join(missing))
@@ -1680,11 +1599,7 @@ class Coder(Agent):
             )
             passed = {r["id"] for r in execution["checks"] if r["status"] == "passed"}
             eligible = execution["status"] == "ok"
-            if (
-                best is None
-                or eligible
-                and (not best["eligible"] or passed > best["passed"])
-            ):
+            if best is None or eligible and (not best["eligible"] or passed > best["passed"]):
                 best = {
                     "raw": raw,
                     "code": code,
@@ -1705,16 +1620,10 @@ class Coder(Agent):
                 and all(r["status"] == "passed" for r in execution["checks"])
             ):
                 break
-            if (
-                code in seen
-                or not eligible
-                or attempt == self.config["max_code_attempts"]
-            ):
+            if code in seen or not eligible or attempt == self.config["max_code_attempts"]:
                 break
             seen.add(code)
-            failures = [
-                r for r in best["execution"]["checks"] if r["status"] != "passed"
-            ]
+            failures = [r for r in best["execution"]["checks"] if r["status"] != "passed"]
             feedback = fill(
                 CODE_FEEDBACK,
                 failures=to_json(failures),
@@ -1827,9 +1736,7 @@ class Orchestrator:
         elif self.mode == MODE_TEST:
             self.memory.tests = self.test_designer.design(self.memory)
             if self.config["example_checks"]:
-                self.memory.tests["tests"] += self.test_designer.example_tests(
-                    self.memory
-                )
+                self.memory.tests["tests"] += self.test_designer.example_tests(self.memory)
             self.mode = MODE_CODE
 
         elif self.mode == MODE_CODE:
