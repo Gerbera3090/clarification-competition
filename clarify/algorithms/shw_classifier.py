@@ -209,6 +209,16 @@ SPEC_PROMPT = (
 
 SPEC_CORRECTION = "\nCorrect these issues: {errors}"
 
+SPEC_REWRITE = (
+    "Rewrite the task description for `{entry_point}` into one complete and consistent "
+    "specification that incorporates the user's clarification answers. Where an answer "
+    "conflicts with the original text or its examples, the answer wins; keep everything "
+    "else, including the function name `{entry_point}`, its parameters, and the examples "
+    "that are consistent with the answers (fix or drop the others). Output only the "
+    "rewritten specification."
+    "\nTASK:\n{task}\nCLARIFICATION Q/A:\n{clarifications}"
+)
+
 # Tests
 TEST_GENERATOR = (
     "Generate tests from ONLY the frozen specification. No candidate "
@@ -571,6 +581,7 @@ class SharedMemory:
     spec: dict[str, Any] | None = None
     tests: dict[str, Any] | None = None
     code: str | None = None
+    clean_task: str | None = None
     trace: list[dict[str, str]] = field(default_factory=list)
     started: float = field(default_factory=time.monotonic)
 
@@ -592,8 +603,12 @@ class SharedMemory:
     @property
     def clean_spec(self) -> dict[str, Any]:
         """The spec without traces of the resolved defect (superseded statements,
-        raw Q/A, validation issues); answers remain as ANSWER_n requirements."""
-        return {key: self.spec[key] for key in CLEAN_SPEC_FIELDS}
+        raw Q/A, validation issues); answers remain as ANSWER_n requirements, and
+        the task rewritten with the answers keeps the original's other details."""
+        spec = {key: self.spec[key] for key in CLEAN_SPEC_FIELDS}
+        if self.clean_task is not None:
+            spec["task"] = self.clean_task
+        return spec
 
 
 @dataclass(frozen=True)
@@ -1201,6 +1216,18 @@ class SpecWriter(Agent):
         print("FROZEN SPECIFICATION:", to_json(spec), flush=True)
         return spec
 
+    def rewrite(self, memory: SharedMemory) -> str:
+        """The task rewritten into one consistent text that follows the answers."""
+        task = self.llm(
+            self.fill(
+                SPEC_REWRITE,
+                task=memory.problem["prompt"],
+                clarifications=to_json(memory.clarifications),
+            )
+        ).strip()
+        print("REWRITTEN TASK:", task, flush=True)
+        return task
+
 
 class TestDesigner(Agent):
     """Writes tests from the frozen specification, reviews and revises them.
@@ -1555,6 +1582,8 @@ class Orchestrator:
 
         elif self.mode == MODE_SPECIFY:
             self.memory.spec = self.spec_writer.write(self.memory)
+            if self.config["spec_rewrite"] and self.memory.clarifications:
+                self.memory.clean_task = self.spec_writer.rewrite(self.memory)
             self.mode = MODE_TEST
 
         elif self.mode == MODE_TEST:
@@ -1579,6 +1608,8 @@ class SHWClassifier(ClarificationAlgorithmBase):
         # "single": one holistic prompt; "properties": per-property determination,
         # which on under-specified tasks tends to assume conventional defaults
         "omission_check": "single",
+        # Rewrite the task with the answers for the test designer and coder
+        "spec_rewrite": True,
         "max_test_versions": 3,
         "max_code_attempts": 4,
         "max_tests": 24,
