@@ -82,9 +82,12 @@ PROPERTY_EXTRACTION = (
     "Extract the behavioral properties of this task in two groups. "
     "(1) At most 12 properties explicitly stated or entailed by the task, each with a "
     "verbatim source quote. Do not assume unmentioned laws. "
-    "(2) At most 8 properties a correct implementation must settle that the task may "
-    "leave open (e.g. input domain, boundaries, empty inputs, ties, output type and "
-    "order), each with an empty quote. "
+    "(2) At most 8 facts a correct implementation needs that the task may not "
+    "establish, each with an empty quote. Start with the core: what exactly the "
+    "function computes and returns, the meaning of each vague or overloaded word, and "
+    "the number, order and format of the arguments. Add edge cases (empty, zero, "
+    "negative or unusual values) only after the core, and only if typical inputs "
+    "reach them. "
     "Use English names/meanings. Return a single Python list of dictionaries with "
     "name, quote and meaning in ```python fences."
     "\nTASK:\n{task}"
@@ -126,14 +129,17 @@ OMISSION_SELECTION = (
     "A model judged these properties of the task undetermined; the judgment is a hint. "
     "Pick the ONE whose resolution most changes the outputs of a correct implementation "
     "on valid inputs. Ignore performance, style, invalid inputs and facts the source, "
-    "signature or examples already settle. Prior user answers settle only the issue "
+    "signature or examples already settle. Prefer a fact that changes outputs on "
+    "typical inputs, such as those in the examples, over one that matters only for "
+    "edge cases (empty, zero, negative, unusual types or characters). "
+    "Prior user answers settle only the issue "
     "they resolve; do not re-ask it. "
     "Return Ambiguity: yes/no and Description: source evidence, two plausible behaviors, "
     "and ONE question asking for ONE independent missing fact."
     "\nTASK:\n{task}\nUNDETERMINED PROPERTIES:\n{properties}"
 )
 
-# Fallback without properties or decision model
+# Single-prompt omission check (default; also the fallback of the property-based one)
 AMBIGUITY_CHECK = (
     "Analyze this task's relevant behavioral properties: input domain and argument "
     "count/order/types, output type/structure, ordering, boundaries and side effects. "
@@ -957,6 +963,16 @@ class DefectDetector(Agent):
     def property_omission_check(
         self, problem: dict[str, Any]
     ) -> tuple[bool, str | None]:
+        """Looks for the unresolved choice that most changes a correct implementation."""
+        if self.config["omission_check"] == "properties":
+            return self.property_determination_check(problem)
+        return self.judge(
+            "PROPERTY OMISSION", "Ambiguity", AMBIGUITY_CHECK, task=problem["prompt"]
+        )
+
+    def property_determination_check(
+        self, problem: dict[str, Any]
+    ) -> tuple[bool, str | None]:
         """Asks the decision model which properties the task leaves undetermined,
         then picks the one that most changes a correct implementation."""
         prompt = problem["prompt"]
@@ -1560,6 +1576,9 @@ class SHWClassifier(ClarificationAlgorithmBase):
         "decomposition": "llm",  # "llm"
         "max_dropped_elements": 6,
         "final_gate": True,  # base_llm_judge when no other check fires
+        # "single": one holistic prompt; "properties": per-property determination,
+        # which on under-specified tasks tends to assume conventional defaults
+        "omission_check": "single",
         "max_test_versions": 3,
         "max_code_attempts": 4,
         "max_tests": 24,
