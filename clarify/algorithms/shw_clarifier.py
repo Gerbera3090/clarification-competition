@@ -1769,9 +1769,6 @@ class Orchestrator:
                     except (TooManyQuestionException, LimitsExceededException):
                         self.mode = MODE_SPECIFY
                     return
-            if self.questions_on_meaning >= max(self.config["turn_budget"] - 1, 1):
-                self.mode = MODE_SPECIFY
-                return
             try:
                 if self.questions_on_meaning >= 1:
                     if self.detector.out_of_time("detect_time_limit"):
@@ -1845,9 +1842,6 @@ class SHWClarifier(ClarificationAlgorithmBase):
         "call_adapter": True,
         # Ask for the parameters first when the task declares no signature
         "signature_question": True,
-        # Same value as --max_clarification_turns, which the algorithm cannot read;
-        # questions about the task's meaning are capped at max(turn_budget - 1, 1)
-        "turn_budget": 3,
         "max_test_versions": 3,
         "max_code_attempts": 4,
         "max_tests": 24,
