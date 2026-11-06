@@ -1760,7 +1760,7 @@ class Orchestrator:
             if not self.env.can_ask():
                 self.mode = MODE_SPECIFY
                 return
-            if self.config["signature_question"] and not self.signature_checked:
+            if not self.signature_checked:
                 # Without a signature the arguments are a guess, so ask for them first
                 self.signature_checked = True
                 if not has_signature(self.memory.problem["prompt"]):
@@ -1797,25 +1797,22 @@ class Orchestrator:
             self.mode = MODE_DETECT if asked else MODE_SPECIFY
 
         elif self.mode == MODE_SPECIFY:
-            if self.config["preclean"]:
-                self.memory.spec_task = self.spec_writer.preclean(self.memory)
+            self.memory.spec_task = self.spec_writer.preclean(self.memory)
             self.memory.spec = self.spec_writer.write(self.memory)
-            if self.config["spec_rewrite"] and self.memory.clarifications:
+            if self.memory.clarifications:
                 self.memory.clean_task = self.spec_writer.rewrite(self.memory)
             self.mode = MODE_TEST
 
         elif self.mode == MODE_TEST:
             self.memory.tests = self.test_designer.design(self.memory)
-            if self.config["example_checks"]:
-                self.memory.tests["tests"] += self.test_designer.example_tests(self.memory)
+            self.memory.tests["tests"] += self.test_designer.example_tests(self.memory)
             self.mode = MODE_CODE
 
         elif self.mode == MODE_CODE:
             self.memory.code = self.coder.implement(self.memory)
-            if self.config["call_adapter"]:
-                self.memory.code = with_call_adapter(
-                    self.memory.code, self.memory.problem["entry_point"]
-                )
+            self.memory.code = with_call_adapter(
+                self.memory.code, self.memory.problem["entry_point"]
+            )
             self.mode = MODE_DONE
 
 
@@ -1829,19 +1826,7 @@ class SHWClarifier(ClarificationAlgorithmBase):
         "decomposition": "llm",  # "llm"
         "max_dropped_elements": 6,
         "final_gate": True,  # base_llm_judge when no other check fires
-        # "single": one holistic prompt; "properties": per-property determination,
-        # which on under-specified tasks tends to assume conventional defaults
-        "omission_check": "single",
-        # Rewrite the task with the answers for the test designer and coder
-        "spec_rewrite": True,
-        # Remove a sentence that cannot hold with the rest before the spec stage
-        "preclean": True,
-        # Add the task's stated examples to the coder's checks
-        "example_checks": True,
-        # Let the final code accept alternative calling conventions and name variants
-        "call_adapter": True,
-        # Ask for the parameters first when the task declares no signature
-        "signature_question": True,
+        "omission_check": "single",  # "single": one holistic prompt | "properties": per-property determination,
         "max_test_versions": 3,
         "max_code_attempts": 4,
         "max_tests": 24,
