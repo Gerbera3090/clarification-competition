@@ -168,6 +168,21 @@ BASE_LLM_JUDGE = (
     "\nTASK:\n{task}"
 )
 
+# Gate for every question after the first one about the task's meaning
+FOLLOW_UP_GATE = (
+    "The user has already answered the clarification turns appended to this task. "
+    "Decide whether a defect remains that those answers do not settle: a contradiction, "
+    "an ambiguity or a missing fact that changes the outputs on typical inputs. Answers "
+    "settle what they address; do not count those issues again. Ignore edge cases "
+    "(empty, zero, negative or invalid inputs), stylistic choices and details any "
+    "reasonable programmer would settle the same way. Return Defect: yes/no and "
+    "Description: source evidence and ONE question asking for ONE missing fact."
+    "\nTASK:\n{task}"
+)
+
+# Asked first when the task gives no signature
+SIGNATURE_QUESTION = "Which parameters does {entry_point} take, in what order, and of which types?"
+
 # Clarification
 CLARIFICATION_HISTORY = (
     "\nPrevious clarification turns (answers are authoritative within their scope):\n"
@@ -649,6 +664,11 @@ def is_pure_deletion(original: str, edited: str, entry_point: str) -> bool:
         and parse_examples(edited, entry_point) == parse_examples(original, entry_point)
         and (entry_point not in original or entry_point in edited)
     )
+
+
+def has_signature(prompt: str) -> bool:
+    """True if the task defines any function; variants may rename the entry point."""
+    return re.search(r"(?m)^\s*(?:async\s+)?def\s+\w+\s*\(", prompt) is not None
 
 
 def with_call_adapter(response: str, entry_point: str) -> str:
@@ -1228,6 +1248,10 @@ class DefectDetector(Agent):
         self.properties[prompt] = properties
         return properties
 
+    def follow_up_check(self, problem: dict[str, Any]) -> tuple[bool, str | None]:
+        """Stricter check for questions after the first one about the task's meaning."""
+        return self.judge("FOLLOW-UP GATE", "Defect", FOLLOW_UP_GATE, task=problem["prompt"])
+
     def base_llm_judge(self, problem: dict[str, Any]) -> tuple[bool, str | None]:
         """Final gate for tasks that no other check flagged."""
         return self.judge("FINAL GATE", "Defect", BASE_LLM_JUDGE, task=problem["prompt"])
@@ -1263,6 +1287,14 @@ class Questioner(Agent):
             )
         ):
             return False
+        self.send(memory, question)
+        return True
+
+    def ask_signature(self, memory: SharedMemory) -> None:
+        """Asks for the parameters of an entry point that the task does not declare."""
+        self.send(memory, self.fill(SIGNATURE_QUESTION))
+
+    def send(self, memory: SharedMemory, question: str) -> None:
         answer = self.call("ask_human", question=question)
         memory.clarifications.append((question, answer))
         print(
@@ -1270,7 +1302,6 @@ class Questioner(Agent):
             to_json([question, answer]),
             flush=True,
         )
-        return True
 
 
 class SpecWriter(Agent):
@@ -1705,6 +1736,8 @@ class Orchestrator:
         self.memory = SharedMemory(problem)
         self.tools = ToolBox(env, self.memory)
         self.mode = MODE_DETECT
+        self.signature_checked = False
+        self.questions_on_meaning = 0
 
         self.test_designer = TestDesigner(self.tools, config)
         self.detector = DefectDetector(self.tools, config, self.test_designer)
@@ -1726,8 +1759,26 @@ class Orchestrator:
             if not self.env.can_ask():
                 self.mode = MODE_SPECIFY
                 return
+            if self.config["signature_question"] and not self.signature_checked:
+                # Without a signature the arguments are a guess, so ask for them first
+                self.signature_checked = True
+                if not has_signature(self.memory.problem["prompt"]):
+                    try:
+                        self.questioner.ask_signature(self.memory)
+                    except (TooManyQuestionException, LimitsExceededException):
+                        self.mode = MODE_SPECIFY
+                    return
+            if self.questions_on_meaning >= max(self.config["turn_budget"] - 1, 1):
+                self.mode = MODE_SPECIFY
+                return
             try:
-                detected, finding = self.detector.detect(self.memory.current_problem)
+                if self.questions_on_meaning >= 1:
+                    if self.detector.out_of_time("detect_time_limit"):
+                        self.mode = MODE_SPECIFY
+                        return
+                    detected, finding = self.detector.follow_up_check(self.memory.current_problem)
+                else:
+                    detected, finding = self.detector.detect(self.memory.current_problem)
             except (TooManyQuestionException, LimitsExceededException):
                 self.mode = MODE_SPECIFY
                 return
@@ -1740,6 +1791,7 @@ class Orchestrator:
             """
             try:
                 asked = self.questioner.ask(self.memory)
+                self.questions_on_meaning += asked
                 if asked and self.env.can_ask():
                     self.memory.spec = self.spec_writer.write(self.memory)
             except (TooManyQuestionException, LimitsExceededException):
@@ -1790,6 +1842,11 @@ class SHWClarifier(ClarificationAlgorithmBase):
         "example_checks": True,
         # Let the final code accept alternative calling conventions and name variants
         "call_adapter": True,
+        # Ask for the parameters first when the task declares no signature
+        "signature_question": True,
+        # Same value as --max_clarification_turns, which the algorithm cannot read;
+        # questions about the task's meaning are capped at max(turn_budget - 1, 1)
+        "turn_budget": 3,
         "max_test_versions": 3,
         "max_code_attempts": 4,
         "max_tests": 24,
