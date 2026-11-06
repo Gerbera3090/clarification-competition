@@ -1,5 +1,6 @@
 # SPDX-FileCopyrightText: 2026 Sihyun Ahn <sihyun.ahn@kaist.ac.kr>
 # SPDX-FileCopyrightText: 2026 Hyukwon Kwon <gerbera3090@kaist.ac.kr>
+# SPDX-FileCopyrightText: 2026 Shin Yoo <shin.yoo@kaist.ac.kr>
 #
 # SPDX-License-Identifier: MIT
 
@@ -13,7 +14,7 @@ designer and coder turn the clarified task into code that is repaired with real
 test failures.
 
 Team: SHW
-Team Members: Sihyun Ahn (KAIST), Hyukwon Kwon (KAIST)
+Team Members: Sihyun Ahn (KAIST), Hyukwon Kwon (KAIST), Shin Yoo (KAIST)
 Main Contact: gerbera3090@kaist.ac.kr (Hyukwon Kwon)
 """
 
